@@ -9,3 +9,4 @@ session_breakout:
   stop_atr_multiple: 1.0
   take_profit_r: 1.5
   max_holding_bars: 12
+  breakout_buffer_atr: 0.0

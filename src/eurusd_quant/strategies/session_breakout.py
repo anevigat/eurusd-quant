@@ -23,6 +23,7 @@ class SessionBreakoutConfig:
     stop_atr_multiple: float
     take_profit_r: float
     max_holding_bars: int
+    breakout_buffer_atr: float = 0.0
 
     @classmethod
     def from_dict(cls, data: dict) -> "SessionBreakoutConfig":
@@ -116,10 +117,11 @@ class SessionRangeBreakoutStrategy(BaseStrategy):
             return None
 
         stop_distance = atr * self.config.stop_atr_multiple
+        breakout_buffer = atr * self.config.breakout_buffer_atr
         bid_close = float(bar["bid_close"])
         ask_close = float(bar["ask_close"])
 
-        if bid_close > self._asian_high:
+        if bid_close > (self._asian_high + breakout_buffer):
             self._traded_today = True
             entry_reference = ask_close
             stop_loss = entry_reference - stop_distance
@@ -135,7 +137,7 @@ class SessionRangeBreakoutStrategy(BaseStrategy):
                 max_holding_bars=self.config.max_holding_bars,
             )
 
-        if ask_close < self._asian_low:
+        if ask_close < (self._asian_low - breakout_buffer):
             self._traded_today = True
             entry_reference = bid_close
             stop_loss = entry_reference + stop_distance

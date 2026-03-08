@@ -115,6 +115,27 @@ Diagnostics outputs:
 - `outputs/diagnostics/hourly_stats.csv`
 - `outputs/diagnostics/stress_test_metrics.json`
 
+## Running buffer experiments
+
+Run breakout-buffer experiments for the 07:00-08:00 UTC entry window:
+
+```bash
+.venv/bin/python scripts/run_buffer_experiments.py \
+  --bars data/bars/15m/eurusd_bars_15m_2023.parquet \
+  --strategy session_breakout \
+  --output-root outputs/buffer_experiments \
+  --run-stress \
+  --stress-spread-penalty-pips 0.2
+```
+
+Buffer outputs:
+
+- `outputs/buffer_experiments/0_0/`
+- `outputs/buffer_experiments/0_1/`
+- `outputs/buffer_experiments/0_2/`
+- `outputs/buffer_experiments/0_3/`
+- `outputs/buffer_experiments/buffer_comparison.json`
+
 ## Example commands
 
 ```bash
@@ -125,4 +146,5 @@ Diagnostics outputs:
 .venv/bin/python scripts/add_sessions.py --input-file data/bars/15m/eurusd_bars_15m_2023_raw.parquet --output-file data/bars/15m/eurusd_bars_15m_2023.parquet --report-file data/bars/15m/eurusd_bars_15m_2023_report.json
 .venv/bin/python scripts/run_backtest.py --input data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --output-dir outputs/dukascopy_2023
 .venv/bin/python scripts/analyze_backtest.py --trades outputs/dukascopy_2023/trades.parquet --metrics outputs/dukascopy_2023/metrics.json --bars data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --output-dir outputs/diagnostics
+.venv/bin/python scripts/run_buffer_experiments.py --bars data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --output-root outputs/buffer_experiments --run-stress --stress-spread-penalty-pips 0.2
 ```

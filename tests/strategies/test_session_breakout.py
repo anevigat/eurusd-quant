@@ -17,6 +17,7 @@ def _config() -> SessionBreakoutConfig:
         stop_atr_multiple=1.0,
         take_profit_r=1.5,
         max_holding_bars=12,
+        breakout_buffer_atr=0.0,
     )
 
 
@@ -157,6 +158,7 @@ def test_atr_uses_true_range_not_close_to_close() -> None:
         stop_atr_multiple=1.0,
         take_profit_r=1.5,
         max_holding_bars=12,
+        breakout_buffer_atr=0.0,
     )
     strategy = SessionRangeBreakoutStrategy(cfg)
 
@@ -190,3 +192,49 @@ def test_atr_uses_true_range_not_close_to_close() -> None:
         False,
     )
     assert order is not None
+
+
+def test_breakout_buffer_blocks_weak_breakout() -> None:
+    cfg = SessionBreakoutConfig(
+        timeframe="15m",
+        asian_range_start_utc="00:00",
+        asian_range_end_utc="06:00",
+        entry_start_utc="07:00",
+        entry_end_utc="10:00",
+        atr_period=1,
+        atr_min_threshold=0.0,
+        stop_atr_multiple=1.0,
+        take_profit_r=1.5,
+        max_holding_bars=12,
+        breakout_buffer_atr=1.0,
+    )
+    strategy = SessionRangeBreakoutStrategy(cfg)
+    strategy.generate_order(
+        _bar(
+            "2024-01-02 00:00:00",
+            bid_high=1.1005,
+            ask_low=1.0998,
+            bid_close=1.1001,
+            ask_close=1.1002,
+            mid_close=1.1000,
+            mid_high=1.1005,
+            mid_low=1.0995,
+        ),
+        False,
+        False,
+    )
+    order = strategy.generate_order(
+        _bar(
+            "2024-01-02 07:00:00",
+            bid_high=1.1007,
+            ask_low=1.0999,
+            bid_close=1.10095,  # above asian high by 0.00045, but below buffered threshold of +ATR
+            ask_close=1.10105,
+            mid_close=1.1002,
+            mid_high=1.1006,
+            mid_low=1.1001,
+        ),
+        False,
+        False,
+    )
+    assert order is None
