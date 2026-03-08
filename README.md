@@ -130,6 +130,22 @@ Outputs:
 - `outputs/range_compression/range_stats.csv`
 - `outputs/range_compression/summary.json`
 - `outputs/range_compression/daily_ranges.csv`
+## Running excursion analysis
+
+Compute MFE/MAE distributions and summary ratio from bars + trades:
+
+```bash
+.venv/bin/python scripts/analyze_excursions.py \
+  --bars data/bars/15m/eurusd_bars_15m_2023.parquet \
+  --trades outputs/dukascopy_2023_partial/trades.parquet \
+  --output-dir outputs/excursions
+```
+
+Excursion outputs:
+
+- `outputs/excursions/mfe_distribution.csv`
+- `outputs/excursions/mae_distribution.csv`
+- `outputs/excursions/summary.json`
 
 ## Running window experiments
 
@@ -193,6 +209,7 @@ Buffer outputs:
 .venv/bin/python scripts/run_backtest.py --input data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --output-dir outputs/dukascopy_2023
 .venv/bin/python scripts/analyze_backtest.py --trades outputs/dukascopy_2023/trades.parquet --metrics outputs/dukascopy_2023/metrics.json --bars data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --output-dir outputs/diagnostics
 .venv/bin/python scripts/analyze_range_compression.py --bars data/bars/15m/eurusd_bars_15m_2023.parquet --output-dir outputs/range_compression
+.venv/bin/python scripts/analyze_excursions.py --bars data/bars/15m/eurusd_bars_15m_2023.parquet --trades outputs/dukascopy_2023_partial/trades.parquet --output-dir outputs/excursions
 .venv/bin/python scripts/run_buffer_experiments.py --bars data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --output-root outputs/buffer_experiments --run-stress --stress-spread-penalty-pips 0.2
 .venv/bin/python scripts/run_window_experiments.py --bars data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --entry-window-mode fixed_utc --output-root outputs/window_experiments --run-stress --stress-spread-penalty-pips 0.2
 ```
