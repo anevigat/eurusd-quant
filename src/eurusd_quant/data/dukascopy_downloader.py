@@ -77,6 +77,24 @@ class FileValidationError(RuntimeError):
     pass
 
 
+def is_expected_no_data_hour(task: DownloadTask) -> bool:
+    ts = datetime(
+        year=task.year,
+        month=task.month,
+        day=task.day,
+        hour=task.hour,
+        tzinfo=timezone.utc,
+    )
+    weekday = ts.weekday()
+    if weekday == 5:
+        return True
+    if weekday == 6 and ts.hour < 22:
+        return True
+    if weekday == 4 and ts.hour >= 22:
+        return True
+    return False
+
+
 class ManifestLogger:
     def __init__(self, manifest_path: Path) -> None:
         self.manifest_path = manifest_path
@@ -267,6 +285,7 @@ def _download_one(
         validate_lzma=cfg.validate_lzma,
     )
     if should_skip:
+        print(f"skipping existing valid file for hour {task.hour_label}")
         return DownloadResult(
             task=task,
             target_path=target_path,
@@ -275,14 +294,44 @@ def _download_one(
             error_message=None,
             attempted_at=utc_now_iso(),
         )
+    if invalid_reason == "file_empty" and is_expected_no_data_hour(task):
+        target_path.unlink(missing_ok=True)
+        print(f"no data for hour {task.hour_label}; marking skipped_no_data")
+        return DownloadResult(
+            task=task,
+            target_path=target_path,
+            status="skipped_no_data",
+            retries=0,
+            error_message=None,
+            attempted_at=utc_now_iso(),
+        )
     if invalid_reason and target_path.exists():
         target_path.unlink(missing_ok=True)
 
     for attempt in range(cfg.max_retries + 1):
+        print(
+            f"attempting hour {task.hour_label} "
+            f"(attempt {attempt + 1}/{cfg.max_retries + 1})"
+        )
         try:
             throttler.wait(sleep_fn=sleep_fn)
             with opener(task.url, timeout=cfg.timeout) as response:
                 payload = response.read()
+
+            if len(payload) == 0:
+                if is_expected_no_data_hour(task):
+                    target_path.unlink(missing_ok=True)
+                    print(f"no data for hour {task.hour_label}; marking skipped_no_data")
+                    return DownloadResult(
+                        task=task,
+                        target_path=target_path,
+                        status="skipped_no_data",
+                        retries=attempt,
+                        error_message=None,
+                        attempted_at=utc_now_iso(),
+                    )
+                raise FileValidationError("file_empty")
+
             target_path.write_bytes(payload)
 
             valid, reason = is_valid_download_file(
@@ -292,6 +341,7 @@ def _download_one(
                 target_path.unlink(missing_ok=True)
                 raise FileValidationError(reason or "file_validation_failed")
 
+            print(f"downloaded successfully for hour {task.hour_label}")
             return DownloadResult(
                 task=task,
                 target_path=target_path,
@@ -302,6 +352,7 @@ def _download_one(
             )
         except Exception as exc:
             if not should_retry_exception(exc, attempt=attempt, max_retries=cfg.max_retries):
+                print(f"failed hour {task.hour_label}: {_error_to_message(exc)}")
                 return DownloadResult(
                     task=task,
                     target_path=target_path,
@@ -313,6 +364,11 @@ def _download_one(
 
             backoff_seconds = cfg.backoff_base_seconds * (2**attempt)
             backoff_seconds += rng.uniform(0.0, cfg.backoff_jitter_seconds)
+            print(
+                "retrying after transient failure "
+                f"for hour {task.hour_label}: {_error_to_message(exc)} "
+                f"(sleep {backoff_seconds:.2f}s)"
+            )
             sleep_fn(backoff_seconds)
 
     return DownloadResult(
@@ -341,6 +397,7 @@ def run_downloads(
             "total_attempted": 0,
             "successful": 0,
             "skipped": 0,
+            "skipped_no_data": 0,
             "failed": 0,
             "total_retries": 0,
             "elapsed_seconds": 0.0,
@@ -351,7 +408,7 @@ def run_downloads(
     manifest = ManifestLogger(cfg.manifest_path)
     throttler = RequestThrottler(cfg.sleep_seconds)
     start = time.monotonic()
-    counts = {"success": 0, "skipped": 0, "failed": 0}
+    counts = {"success": 0, "skipped": 0, "skipped_no_data": 0, "failed": 0}
     total_retries = 0
     consecutive_failures = 0
 
@@ -387,7 +444,8 @@ def run_downloads(
         if idx % progress_every == 0 or idx == len(tasks):
             print(
                 f"{idx}/{len(tasks)} "
-                f"(success={counts['success']}, skipped={counts['skipped']}, failed={counts['failed']}, "
+                f"(success={counts['success']}, skipped={counts['skipped']}, "
+                f"skipped_no_data={counts['skipped_no_data']}, failed={counts['failed']}, "
                 f"retries={total_retries})"
             )
 
@@ -425,6 +483,7 @@ def run_downloads(
         "total_attempted": len(tasks),
         "successful": counts["success"],
         "skipped": counts["skipped"],
+        "skipped_no_data": counts["skipped_no_data"],
         "failed": counts["failed"],
         "total_retries": total_retries,
         "elapsed_seconds": round(elapsed, 2),
@@ -441,6 +500,7 @@ def print_summary(summary: dict[str, object]) -> None:
         f"total attempted={summary['total_attempted']}, "
         f"successful={summary['successful']}, "
         f"skipped={summary['skipped']}, "
+        f"skipped_no_data={summary['skipped_no_data']}, "
         f"failed={summary['failed']}, "
         f"retries={summary['total_retries']}"
     )
