@@ -23,6 +23,7 @@ class SessionBreakoutConfig:
     stop_atr_multiple: float
     take_profit_r: float
     max_holding_bars: int
+    entry_window_mode: str = "fixed_utc"
 
     @classmethod
     def from_dict(cls, data: dict) -> "SessionBreakoutConfig":
@@ -36,6 +37,8 @@ class SessionRangeBreakoutStrategy(BaseStrategy):
         self._asian_end: time = parse_hhmm(config.asian_range_end_utc)
         self._entry_start: time = parse_hhmm(config.entry_start_utc)
         self._entry_end: time = parse_hhmm(config.entry_end_utc)
+        if config.entry_window_mode not in {"fixed_utc", "london_local"}:
+            raise ValueError("entry_window_mode must be 'fixed_utc' or 'london_local'")
 
         self._current_date: date | None = None
         self._asian_high: float | None = None
@@ -78,6 +81,11 @@ class SessionRangeBreakoutStrategy(BaseStrategy):
         window = self._tr_values[-self.config.atr_period :]
         return float(np.mean(window))
 
+    def _entry_window_timestamp(self, timestamp: pd.Timestamp) -> pd.Timestamp:
+        if self.config.entry_window_mode == "fixed_utc":
+            return timestamp
+        return timestamp.tz_convert("Europe/London")
+
     def generate_order(
         self,
         bar: pd.Series,
@@ -102,7 +110,8 @@ class SessionRangeBreakoutStrategy(BaseStrategy):
             self._asian_low = ask_low if self._asian_low is None else min(self._asian_low, ask_low)
             self._asian_bars += 1
 
-        if not in_time_window(timestamp, self._entry_start, self._entry_end):
+        entry_timestamp = self._entry_window_timestamp(timestamp)
+        if not in_time_window(entry_timestamp, self._entry_start, self._entry_end):
             return None
 
         if self._asian_bars == 0 or self._asian_high is None or self._asian_low is None:
