@@ -1,0 +1,11 @@
+{
+  "total_trades": 2,
+  "win_rate": 0.5,
+  "gross_pnl": 0.000591071428570844,
+  "net_pnl": 0.000591071428570844,
+  "average_win": 0.0006374999999994024,
+  "average_loss": -4.6428571428558385e-05,
+  "expectancy": 0.000295535714285422,
+  "profit_factor": 13.730769230760217,
+  "max_drawdown": 0.0
+}

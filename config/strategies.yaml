@@ -1,0 +1,11 @@
+session_breakout:
+  timeframe: "15m"
+  asian_range_start_utc: "00:00"
+  asian_range_end_utc: "06:00"
+  entry_start_utc: "07:00"
+  entry_end_utc: "10:00"
+  atr_period: 14
+  atr_min_threshold: 0.0005
+  stop_atr_multiple: 1.0
+  take_profit_r: 1.5
+  max_holding_bars: 12

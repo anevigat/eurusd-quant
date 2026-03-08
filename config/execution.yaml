@@ -1,0 +1,11 @@
+mode: "bar"
+fill_on_next_open: true
+ambiguity_mode: "conservative"
+market_slippage_pips: 0.1
+stop_slippage_pips: 0.2
+fee_per_trade: 0.0
+pip_size: 0.0001
+max_positions_per_symbol: 1
+flatten_intraday: true
+flatten_time_utc: "21:45"
+reanchor_brackets_after_fill: false
