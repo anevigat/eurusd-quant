@@ -115,6 +115,22 @@ Diagnostics outputs:
 - `outputs/diagnostics/hourly_stats.csv`
 - `outputs/diagnostics/stress_test_metrics.json`
 
+## Research diagnostics: Asian range compression
+
+Analyze whether narrower Asian ranges (00:00-06:00 UTC) are followed by larger London moves (07:00-12:00 UTC):
+
+```bash
+.venv/bin/python scripts/analyze_range_compression.py \
+  --bars data/bars/15m/eurusd_bars_15m_2023.parquet \
+  --output-dir outputs/range_compression
+```
+
+Outputs:
+
+- `outputs/range_compression/range_stats.csv`
+- `outputs/range_compression/summary.json`
+- `outputs/range_compression/daily_ranges.csv`
+
 ## Running window experiments
 
 Run segmented entry-window experiments for 07-08, 08-09, 09-10 UTC:
@@ -176,6 +192,7 @@ Buffer outputs:
 .venv/bin/python scripts/add_sessions.py --input-file data/bars/15m/eurusd_bars_15m_2023_raw.parquet --output-file data/bars/15m/eurusd_bars_15m_2023.parquet --report-file data/bars/15m/eurusd_bars_15m_2023_report.json
 .venv/bin/python scripts/run_backtest.py --input data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --output-dir outputs/dukascopy_2023
 .venv/bin/python scripts/analyze_backtest.py --trades outputs/dukascopy_2023/trades.parquet --metrics outputs/dukascopy_2023/metrics.json --bars data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --output-dir outputs/diagnostics
+.venv/bin/python scripts/analyze_range_compression.py --bars data/bars/15m/eurusd_bars_15m_2023.parquet --output-dir outputs/range_compression
 .venv/bin/python scripts/run_buffer_experiments.py --bars data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --output-root outputs/buffer_experiments --run-stress --stress-spread-penalty-pips 0.2
 .venv/bin/python scripts/run_window_experiments.py --bars data/bars/15m/eurusd_bars_15m_2023.parquet --strategy session_breakout --entry-window-mode fixed_utc --output-root outputs/window_experiments --run-stress --stress-spread-penalty-pips 0.2
 ```
