@@ -6,12 +6,15 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 
 from eurusd_quant.data.dukascopy_downloader import (
+    DownloadConfig,
     DownloadTask,
     FileValidationError,
     build_manifest_row,
     evaluate_existing_file_for_resume,
     is_valid_download_file,
+    is_expected_no_data_hour,
     load_failed_tasks_from_manifest,
+    run_downloads,
     should_retry_exception,
 )
 
@@ -146,3 +149,100 @@ def test_load_failed_tasks_from_manifest_uses_latest_status(tmp_path: Path) -> N
     tasks = load_failed_tasks_from_manifest(manifest, symbol="EURUSD")
     assert len(tasks) == 1
     assert tasks[0].hour == 1
+
+
+class _FakeResponse:
+    def __init__(self, payload: bytes) -> None:
+        self.payload = payload
+
+    def __enter__(self) -> "_FakeResponse":
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        return None
+
+    def read(self) -> bytes:
+        return self.payload
+
+
+def test_weekend_empty_download_is_classified_no_data_without_retries(tmp_path: Path) -> None:
+    calls = {"count": 0}
+
+    def opener(_url: str, timeout: float) -> _FakeResponse:  # noqa: ARG001
+        calls["count"] += 1
+        return _FakeResponse(b"")
+
+    task = DownloadTask(symbol="EURUSD", year=2023, month=1, day=7, hour=10)  # Saturday
+    cfg = DownloadConfig(
+        output_root=tmp_path / "raw",
+        manifest_path=tmp_path / "manifest.jsonl",
+        timeout=1.0,
+        max_retries=5,
+        sleep_seconds=0.0,
+        max_workers=1,
+        resume=False,
+        validate_lzma=True,
+        max_consecutive_failures=10,
+    )
+    summary = run_downloads(
+        [task],
+        cfg,
+        opener=opener,
+        sleep_fn=lambda _seconds: None,
+        progress_every=1,
+    )
+    assert calls["count"] == 1
+    assert summary["skipped_no_data"] == 1
+    assert summary["failed"] == 0
+    rows = [json.loads(line) for line in cfg.manifest_path.read_text(encoding="utf-8").splitlines()]
+    assert rows[-1]["status"] == "skipped_no_data"
+    assert rows[-1]["retries"] == 0
+
+
+def test_true_network_failure_still_retries(tmp_path: Path) -> None:
+    calls = {"count": 0}
+
+    def opener(_url: str, timeout: float) -> _FakeResponse:  # noqa: ARG001
+        calls["count"] += 1
+        raise URLError("temporary DNS failure")
+
+    task = DownloadTask(symbol="EURUSD", year=2023, month=1, day=2, hour=10)  # Monday
+    cfg = DownloadConfig(
+        output_root=tmp_path / "raw",
+        manifest_path=tmp_path / "manifest.jsonl",
+        timeout=1.0,
+        max_retries=2,
+        sleep_seconds=0.0,
+        max_workers=1,
+        resume=False,
+        validate_lzma=True,
+        max_consecutive_failures=10,
+    )
+    summary = run_downloads(
+        [task],
+        cfg,
+        opener=opener,
+        sleep_fn=lambda _seconds: None,
+        progress_every=1,
+    )
+    assert calls["count"] == 3
+    assert summary["failed"] == 1
+    assert summary["total_retries"] == 2
+    rows = [json.loads(line) for line in cfg.manifest_path.read_text(encoding="utf-8").splitlines()]
+    assert rows[-1]["status"] == "failed"
+    assert rows[-1]["retries"] == 2
+
+
+def test_is_expected_no_data_hour_weekend_boundaries() -> None:
+    assert is_expected_no_data_hour(
+        DownloadTask(symbol="EURUSD", year=2023, month=1, day=6, hour=21)
+    ) is False
+    assert is_expected_no_data_hour(
+        DownloadTask(symbol="EURUSD", year=2023, month=1, day=6, hour=22)
+    ) is True
+    assert is_expected_no_data_hour(
+        DownloadTask(symbol="EURUSD", year=2023, month=1, day=8, hour=21)
+    ) is True
+    assert is_expected_no_data_hour(
+        DownloadTask(symbol="EURUSD", year=2023, month=1, day=8, hour=22)
+    ) is False

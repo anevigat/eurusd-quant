@@ -51,6 +51,7 @@ Raw files are saved under:
 
 - `data/raw/dukascopy/EURUSD/<year>/<month>/<day>/<hour>h_ticks.bi5`
 - Manifest is written as `data/raw/dukascopy/download_manifest_YYYY.jsonl`
+- Market-closed empty hours are classified as `skipped_no_data` and are not retried
 
 Resume an interrupted run:
 
