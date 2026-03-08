@@ -31,18 +31,50 @@ The project includes scripts to download Dukascopy hourly tick files (`.bi5`), c
 
 ### 1. Download raw tick data
 
+Recommended safe command for large ranges:
+
 ```bash
 .venv/bin/python scripts/download_dukascopy_ticks.py \
-  --year 2023 \
+  --symbol EURUSD \
+  --start-date 2023-01-01 \
+  --end-date 2023-12-31 \
   --output-dir data/raw/dukascopy/EURUSD \
-  --max-workers 16 \
-  --timeout-seconds 60 \
-  --retries 2
+  --resume \
+  --max-workers 1 \
+  --max-retries 5 \
+  --timeout 30 \
+  --sleep-seconds 0.25 \
+  --max-consecutive-failures 25
 ```
 
 Raw files are saved under:
 
 - `data/raw/dukascopy/EURUSD/<year>/<month>/<day>/<hour>h_ticks.bi5`
+- Manifest is written as `data/raw/dukascopy/download_manifest_YYYY.jsonl`
+
+Resume an interrupted run:
+
+```bash
+.venv/bin/python scripts/download_dukascopy_ticks.py \
+  --symbol EURUSD \
+  --start-date 2023-01-01 \
+  --end-date 2023-12-31 \
+  --output-dir data/raw/dukascopy/EURUSD \
+  --resume
+```
+
+Retry only failed files from a previous run:
+
+```bash
+.venv/bin/python scripts/retry_failed_downloads.py \
+  --manifest-file data/raw/dukascopy/download_manifest_2023.jsonl \
+  --symbol EURUSD \
+  --output-dir data/raw/dukascopy/EURUSD \
+  --resume \
+  --max-retries 6 \
+  --timeout 30 \
+  --sleep-seconds 0.5
+```
 
 ### 2. Clean raw ticks
 
@@ -134,6 +166,7 @@ Outputs:
 - `outputs/range_compression/range_stats.csv`
 - `outputs/range_compression/summary.json`
 - `outputs/range_compression/daily_ranges.csv`
+
 ## Running excursion analysis
 
 Compute MFE/MAE distributions and summary ratio from bars + trades:
@@ -206,7 +239,8 @@ Buffer outputs:
 
 ```bash
 # Full pipeline + backtest + diagnostics
-.venv/bin/python scripts/download_dukascopy_ticks.py --year 2023 --output-dir data/raw/dukascopy/EURUSD --max-workers 16 --timeout-seconds 60 --retries 2
+.venv/bin/python scripts/download_dukascopy_ticks.py --symbol EURUSD --start-date 2023-01-01 --end-date 2023-12-31 --output-dir data/raw/dukascopy/EURUSD --resume --max-workers 1 --max-retries 5 --timeout 30 --sleep-seconds 0.25 --max-consecutive-failures 25
+.venv/bin/python scripts/retry_failed_downloads.py --manifest-file data/raw/dukascopy/download_manifest_2023.jsonl --symbol EURUSD --output-dir data/raw/dukascopy/EURUSD --resume --max-retries 6 --timeout 30 --sleep-seconds 0.5
 .venv/bin/python scripts/clean_ticks.py --input-dir data/raw/dukascopy/EURUSD/2023 --output-file data/ticks/clean/eurusd_ticks_2023.parquet
 .venv/bin/python scripts/build_bars.py --input-file data/ticks/clean/eurusd_ticks_2023.parquet --output-file data/bars/15m/eurusd_bars_15m_2023_raw.parquet
 .venv/bin/python scripts/add_sessions.py --input-file data/bars/15m/eurusd_bars_15m_2023_raw.parquet --output-file data/bars/15m/eurusd_bars_15m_2023.parquet --report-file data/bars/15m/eurusd_bars_15m_2023_report.json

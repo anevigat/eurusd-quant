@@ -1,111 +1,82 @@
 from __future__ import annotations
 
 import argparse
-import calendar
-import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass
+import sys
 from pathlib import Path
-from urllib.error import HTTPError, URLError
-from urllib.request import urlopen
 
+ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = ROOT / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
-BASE_URL = "https://datafeed.dukascopy.com/datafeed"
-
-
-@dataclass(frozen=True)
-class DownloadTask:
-    year: int
-    month: int
-    day: int
-    hour: int
-
-    @property
-    def url(self) -> str:
-        month_zero_based = self.month - 1
-        return (
-            f"{BASE_URL}/EURUSD/{self.year}/{month_zero_based:02d}/"
-            f"{self.day:02d}/{self.hour:02d}h_ticks.bi5"
-        )
-
-    @property
-    def relative_path(self) -> Path:
-        return Path(str(self.year)) / f"{self.month:02d}" / f"{self.day:02d}" / f"{self.hour:02d}h_ticks.bi5"
+from eurusd_quant.data.dukascopy_downloader import (
+    DownloadConfig,
+    build_tasks,
+    default_manifest_path,
+    parse_date_range,
+    print_summary,
+    run_downloads,
+)
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Download Dukascopy EURUSD tick files for 2023")
+    parser = argparse.ArgumentParser(
+        description="Download Dukascopy tick files with retries, resume support, and manifest logging"
+    )
+    parser.add_argument("--symbol", default="EURUSD")
     parser.add_argument("--year", type=int, default=2023)
+    parser.add_argument("--start-date", help="YYYY-MM-DD (UTC)")
+    parser.add_argument("--end-date", help="YYYY-MM-DD (UTC, inclusive)")
     parser.add_argument("--output-dir", default="data/raw/dukascopy/EURUSD")
-    parser.add_argument("--max-workers", type=int, default=8)
-    parser.add_argument("--timeout-seconds", type=int, default=60)
-    parser.add_argument("--retries", type=int, default=3)
+    parser.add_argument("--manifest-file", help="JSONL manifest path")
+    parser.add_argument("--resume", action="store_true", help="Skip already valid files")
+    parser.add_argument("--max-workers", type=int, default=1)
+    parser.add_argument("--max-retries", "--retries", dest="max_retries", type=int, default=4)
+    parser.add_argument("--timeout", "--timeout-seconds", dest="timeout", type=float, default=30.0)
+    parser.add_argument("--sleep-seconds", type=float, default=0.25)
+    parser.add_argument("--max-consecutive-failures", type=int, default=25)
+    parser.add_argument(
+        "--no-validate-lzma",
+        action="store_true",
+        help="Disable lightweight .bi5 decompression validation",
+    )
     return parser.parse_args()
-
-
-def build_tasks(year: int) -> list[DownloadTask]:
-    tasks: list[DownloadTask] = []
-    for month in range(1, 13):
-        _, days_in_month = calendar.monthrange(year, month)
-        for day in range(1, days_in_month + 1):
-            for hour in range(24):
-                tasks.append(DownloadTask(year=year, month=month, day=day, hour=hour))
-    return tasks
-
-
-def download_one(task: DownloadTask, output_root: Path, timeout_seconds: int, retries: int) -> tuple[str, DownloadTask]:
-    target = output_root / task.relative_path
-    target.parent.mkdir(parents=True, exist_ok=True)
-
-    if target.exists() and target.stat().st_size > 0:
-        return ("skipped", task)
-
-    for attempt in range(retries + 1):
-        try:
-            with urlopen(task.url, timeout=timeout_seconds) as response:
-                payload = response.read()
-            target.write_bytes(payload)
-            return ("downloaded", task)
-        except HTTPError as exc:
-            if exc.code == 404:
-                return ("missing", task)
-            if attempt == retries:
-                return ("error", task)
-        except URLError:
-            if attempt == retries:
-                return ("error", task)
-        time.sleep(0.25 * (attempt + 1))
-
-    return ("error", task)
 
 
 def main() -> None:
     args = parse_args()
     output_root = Path(args.output_dir)
-    tasks = build_tasks(args.year)
+    start_date, end_date = parse_date_range(
+        year=args.year,
+        start_date_str=args.start_date,
+        end_date_str=args.end_date,
+    )
+    tasks = build_tasks(args.symbol.upper(), start_date, end_date)
+    manifest_path = (
+        Path(args.manifest_file)
+        if args.manifest_file
+        else default_manifest_path(output_root, start_date, end_date)
+    )
 
-    counts = {"downloaded": 0, "skipped": 0, "missing": 0, "error": 0}
-    failed_urls: list[str] = []
-    with ThreadPoolExecutor(max_workers=args.max_workers) as pool:
-        futures = [pool.submit(download_one, t, output_root, args.timeout_seconds, args.retries) for t in tasks]
-        for idx, future in enumerate(as_completed(futures), start=1):
-            status, task = future.result()
-            counts[status] += 1
-            if idx % 500 == 0 or idx == len(tasks):
-                print(
-                    f"{idx}/{len(tasks)} "
-                    f"(downloaded={counts['downloaded']}, skipped={counts['skipped']}, "
-                    f"missing={counts['missing']}, error={counts['error']})"
-                )
-            if status == "error":
-                failed_urls.append(task.url)
+    cfg = DownloadConfig(
+        output_root=output_root,
+        manifest_path=manifest_path,
+        timeout=args.timeout,
+        max_retries=args.max_retries,
+        sleep_seconds=args.sleep_seconds,
+        max_workers=args.max_workers,
+        resume=args.resume,
+        validate_lzma=not args.no_validate_lzma,
+        max_consecutive_failures=args.max_consecutive_failures,
+    )
 
-    print("Download completed")
-    print(counts)
-    if failed_urls:
-        print("Sample failed URLs:")
-        for url in failed_urls[:20]:
-            print(url)
+    print(
+        f"Starting Dukascopy download for {args.symbol.upper()} "
+        f"{start_date.isoformat()} -> {end_date.isoformat()} "
+        f"(hours={len(tasks)}, workers={args.max_workers}, resume={args.resume})"
+    )
+    summary = run_downloads(tasks, cfg)
+    print_summary(summary)
 
 
 if __name__ == "__main__":
