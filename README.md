@@ -2,6 +2,10 @@
 
 Minimal MVP for backtesting a EURUSD M15 Session Range Breakout strategy with a realistic bar-based execution simulator.
 
+## Research findings
+
+- [Asian session breakout strategy notes](docs/strategy_asian_range_breakout.md)
+
 ## Requirements
 
 - Python 3.11+
