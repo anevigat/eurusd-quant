@@ -10,3 +10,4 @@ session_breakout:
   take_profit_r: 1.5
   max_holding_bars: 12
   breakout_buffer_atr: 0.0
+  entry_window_mode: "fixed_utc"
