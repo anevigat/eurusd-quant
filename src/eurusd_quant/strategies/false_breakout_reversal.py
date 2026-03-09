@@ -24,14 +24,19 @@ class FalseBreakoutReversalConfig:
     atr_min_threshold: float
     stop_mode: str
     stop_atr_buffer_multiple: float
-    take_profit_mode: str
+    exit_model: str
     take_profit_r: float
     max_holding_bars: int
+    atr_target_multiple: float = 1.2
     allowed_side: str = "both"
     one_trade_per_day: bool = True
 
     @classmethod
     def from_dict(cls, data: dict) -> "FalseBreakoutReversalConfig":
+        data = dict(data)
+        # Backward compatibility for older configs.
+        if "exit_model" not in data and "take_profit_mode" in data:
+            data["exit_model"] = data.pop("take_profit_mode")
         return cls(**data)
 
 
@@ -47,8 +52,8 @@ class FalseBreakoutReversalStrategy(BaseStrategy):
 
         if config.stop_mode != "outside_break_extreme":
             raise ValueError("MVP supports only stop_mode='outside_break_extreme'")
-        if config.take_profit_mode not in {"range_midpoint", "fixed_r"}:
-            raise ValueError("take_profit_mode must be 'range_midpoint' or 'fixed_r'")
+        if config.exit_model not in {"range_midpoint", "fixed_r", "atr_target"}:
+            raise ValueError("exit_model must be 'range_midpoint', 'fixed_r', or 'atr_target'")
         if config.allowed_side not in {"both", "long_only", "short_only"}:
             raise ValueError("allowed_side must be 'both', 'long_only', or 'short_only'")
 
@@ -156,10 +161,17 @@ class FalseBreakoutReversalStrategy(BaseStrategy):
         side: str,
         entry_reference: float,
         stop_loss: float,
+        atr: float,
     ) -> float:
+        if self.config.exit_model == "fixed_r":
+            return self._fixed_r_take_profit(side, entry_reference, stop_loss)
+
+        if self.config.exit_model == "atr_target":
+            if side == "long":
+                return entry_reference + (atr * self.config.atr_target_multiple)
+            return entry_reference - (atr * self.config.atr_target_multiple)
+
         fixed_r_tp = self._fixed_r_take_profit(side, entry_reference, stop_loss)
-        if self.config.take_profit_mode != "range_midpoint":
-            return fixed_r_tp
         if self._asian_high is None or self._asian_low is None:
             return fixed_r_tp
 
@@ -209,17 +221,16 @@ class FalseBreakoutReversalStrategy(BaseStrategy):
 
         if (
             self.config.allowed_side != "short_only"
-            and (
-            self._false_break_below_seen
+            and self._false_break_below_seen
             and self._break_below_extreme is not None
             and self._break_below_seen_at is not None
             and timestamp > self._break_below_seen_at
-        )):
+        ):
             if bid_close >= (self._asian_low + reentry_buffer):
                 entry_reference = ask_close
                 stop_loss = self._break_below_extreme - atr_buffer
                 if stop_loss < entry_reference:
-                    take_profit = self._take_profit("long", entry_reference, stop_loss)
+                    take_profit = self._take_profit("long", entry_reference, stop_loss, atr)
                     if take_profit > entry_reference:
                         self._traded_today = True
                         return Order(
@@ -235,17 +246,16 @@ class FalseBreakoutReversalStrategy(BaseStrategy):
 
         if (
             self.config.allowed_side != "long_only"
-            and (
-            self._false_break_above_seen
+            and self._false_break_above_seen
             and self._break_above_extreme is not None
             and self._break_above_seen_at is not None
             and timestamp > self._break_above_seen_at
-        )):
+        ):
             if ask_close <= (self._asian_high - reentry_buffer):
                 entry_reference = bid_close
                 stop_loss = self._break_above_extreme + atr_buffer
                 if stop_loss > entry_reference:
-                    take_profit = self._take_profit("short", entry_reference, stop_loss)
+                    take_profit = self._take_profit("short", entry_reference, stop_loss, atr)
                     if take_profit < entry_reference:
                         self._traded_today = True
                         return Order(
