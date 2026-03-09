@@ -27,6 +27,7 @@ class FalseBreakoutReversalConfig:
     take_profit_mode: str
     take_profit_r: float
     max_holding_bars: int
+    allowed_side: str = "both"
     one_trade_per_day: bool = True
 
     @classmethod
@@ -48,6 +49,8 @@ class FalseBreakoutReversalStrategy(BaseStrategy):
             raise ValueError("MVP supports only stop_mode='outside_break_extreme'")
         if config.take_profit_mode not in {"range_midpoint", "fixed_r"}:
             raise ValueError("take_profit_mode must be 'range_midpoint' or 'fixed_r'")
+        if config.allowed_side not in {"both", "long_only", "short_only"}:
+            raise ValueError("allowed_side must be 'both', 'long_only', or 'short_only'")
 
         self._current_date: date | None = None
         self._asian_high: float | None = None
@@ -205,11 +208,13 @@ class FalseBreakoutReversalStrategy(BaseStrategy):
         ask_close = float(bar["ask_close"])
 
         if (
+            self.config.allowed_side != "short_only"
+            and (
             self._false_break_below_seen
             and self._break_below_extreme is not None
             and self._break_below_seen_at is not None
             and timestamp > self._break_below_seen_at
-        ):
+        )):
             if bid_close >= (self._asian_low + reentry_buffer):
                 entry_reference = ask_close
                 stop_loss = self._break_below_extreme - atr_buffer
@@ -229,11 +234,13 @@ class FalseBreakoutReversalStrategy(BaseStrategy):
                         )
 
         if (
+            self.config.allowed_side != "long_only"
+            and (
             self._false_break_above_seen
             and self._break_above_extreme is not None
             and self._break_above_seen_at is not None
             and timestamp > self._break_above_seen_at
-        ):
+        )):
             if ask_close <= (self._asian_high - reentry_buffer):
                 entry_reference = bid_close
                 stop_loss = self._break_above_extreme + atr_buffer

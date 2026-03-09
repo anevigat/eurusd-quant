@@ -226,6 +226,18 @@ This writes:
 - `excursions.json`
 - `holding_time.json`
 
+Run false-breakout side/window segmentation experiments:
+
+```bash
+.venv/bin/python scripts/run_false_breakout_segmentation.py \
+  --input data/bars/15m/eurusd_bars_15m_2023.parquet \
+  --output-root outputs/false_breakout_reversal_segmentation
+```
+
+This writes per-combination run folders and:
+
+- `outputs/false_breakout_reversal_segmentation/summary.json`
+
 ## Research diagnostics: Asian range compression
 
 Analyze whether narrower Asian ranges (00:00-06:00 UTC) are followed by larger London moves (07:00-12:00 UTC):

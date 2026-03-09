@@ -8,13 +8,18 @@ from eurusd_quant.strategies.false_breakout_reversal import (
 )
 
 
-def _config() -> FalseBreakoutReversalConfig:
+def _config(
+    *,
+    allowed_side: str = "both",
+    entry_start_utc: str = "07:00",
+    entry_end_utc: str = "10:00",
+) -> FalseBreakoutReversalConfig:
     return FalseBreakoutReversalConfig(
         timeframe="15m",
         asian_range_start_utc="00:00",
         asian_range_end_utc="06:00",
-        entry_start_utc="07:00",
-        entry_end_utc="10:00",
+        entry_start_utc=entry_start_utc,
+        entry_end_utc=entry_end_utc,
         break_buffer_pips=0.5,
         reentry_buffer_pips=0.0,
         atr_period=1,
@@ -24,6 +29,7 @@ def _config() -> FalseBreakoutReversalConfig:
         take_profit_mode="range_midpoint",
         take_profit_r=1.5,
         max_holding_bars=12,
+        allowed_side=allowed_side,
         one_trade_per_day=True,
     )
 
@@ -181,3 +187,43 @@ def test_one_trade_per_day_enforced() -> None:
     )
     assert first_order is not None
     assert second_order is None
+
+
+def test_long_only_blocks_short_signals() -> None:
+    strategy = FalseBreakoutReversalStrategy(_config(allowed_side="long_only"))
+    strategy.generate_order(
+        _bar("2024-01-02 00:00:00", 1.1010, 1.1000, 1.1006, 1.1011, 1.1001, 1.1007, 1.10065),
+        False,
+        False,
+    )
+    strategy.generate_order(
+        _bar("2024-01-02 07:00:00", 1.1016, 1.1008, 1.1014, 1.1017, 1.1009, 1.1015, 1.10145),
+        False,
+        False,
+    )
+    order = strategy.generate_order(
+        _bar("2024-01-02 07:15:00", 1.1011, 1.1002, 1.1007, 1.1012, 1.1003, 1.1008, 1.10075),
+        False,
+        False,
+    )
+    assert order is None
+
+
+def test_short_only_blocks_long_signals() -> None:
+    strategy = FalseBreakoutReversalStrategy(_config(allowed_side="short_only"))
+    strategy.generate_order(
+        _bar("2024-01-02 00:00:00", 1.1010, 1.1000, 1.1006, 1.1011, 1.1001, 1.1007, 1.10065),
+        False,
+        False,
+    )
+    strategy.generate_order(
+        _bar("2024-01-02 07:00:00", 1.1005, 1.0994, 1.0997, 1.1006, 1.0995, 1.0998, 1.09975),
+        False,
+        False,
+    )
+    order = strategy.generate_order(
+        _bar("2024-01-02 07:15:00", 1.1006, 1.0999, 1.1002, 1.1007, 1.1000, 1.1003, 1.10025),
+        False,
+        False,
+    )
+    assert order is None

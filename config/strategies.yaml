@@ -27,4 +27,5 @@ false_breakout_reversal:
   take_profit_mode: "range_midpoint"
   take_profit_r: 1.5
   max_holding_bars: 12
+  allowed_side: "both"
   one_trade_per_day: true
