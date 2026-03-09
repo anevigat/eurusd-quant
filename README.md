@@ -121,6 +121,25 @@ Validate cleaned ticks + bars for a target year:
   --output-dir outputs/data_validation_2022
 ```
 
+Validate a multi-year range:
+
+```bash
+.venv/bin/python scripts/validate_dataset.py \
+  --start-date 2018-01-01 \
+  --end-date 2024-12-31 \
+  --raw-dir data/raw/dukascopy/EURUSD \
+  --ticks-file data/cleaned_ticks/EURUSD/2018_2024/eurusd_ticks_2018_2024.parquet \
+  --bars-file data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/data_validation_2018_2024
+```
+
+Continuity diagnostics include both:
+
+- `total_gap_count`: all gaps greater than bar timeframe
+- `unexpected_gap_count`: gaps excluding expected weekend market closures
+
+Weekend FX closures are expected and should not be treated as data anomalies.
+
 Validation outputs:
 
 - `outputs/data_validation_2022/bar_continuity.json`
