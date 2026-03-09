@@ -205,6 +205,27 @@ Diagnostics outputs:
 - `outputs/diagnostics/hourly_stats.csv`
 - `outputs/diagnostics/stress_test_metrics.json`
 
+## Strategy diagnostics
+
+Analyze trade behavior for any strategy from `trades.parquet` + bars:
+
+```bash
+.venv/bin/python scripts/analyze_strategy_behavior.py \
+  --trades outputs/false_breakout_reversal_smoke/trades.parquet \
+  --bars data/bars/15m/eurusd_bars_15m_2023.parquet \
+  --output-dir outputs/false_breakout_reversal_diagnostics
+```
+
+This writes:
+
+- `trade_distribution.json`
+- `exit_reason_counts.json`
+- `win_loss_stats.json`
+- `side_stats.json`
+- `hourly_stats.csv`
+- `excursions.json`
+- `holding_time.json`
+
 ## Research diagnostics: Asian range compression
 
 Analyze whether narrower Asian ranges (00:00-06:00 UTC) are followed by larger London moves (07:00-12:00 UTC):
