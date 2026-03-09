@@ -1,6 +1,6 @@
 # eurusd_quant
 
-Minimal MVP for backtesting a EURUSD M15 Session Range Breakout strategy with a realistic bar-based execution simulator.
+Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-based execution simulator.
 
 ## Research findings
 
@@ -149,6 +149,11 @@ Validation outputs:
 
 ## Running backtests
 
+Available strategies:
+
+- `session_breakout`
+- `false_breakout_reversal` (MVP research hypothesis; not a validated edge)
+
 Run on fixture data:
 
 ```bash
@@ -165,6 +170,15 @@ Run on Dukascopy-derived bars:
   --input data/bars/15m/eurusd_bars_15m_2023.parquet \
   --strategy session_breakout \
   --output-dir outputs/dukascopy_2023
+```
+
+Run false-breakout reversal MVP on Dukascopy-derived bars:
+
+```bash
+.venv/bin/python scripts/run_backtest.py \
+  --input data/bars/15m/eurusd_bars_15m_2023.parquet \
+  --strategy false_breakout_reversal \
+  --output-dir outputs/false_breakout_reversal_smoke
 ```
 
 Backtest outputs:

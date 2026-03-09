@@ -15,11 +15,15 @@ if str(SRC_DIR) not in sys.path:
 from eurusd_quant.analytics.metrics import compute_metrics
 from eurusd_quant.data.loaders import load_bars
 from eurusd_quant.execution.simulator import ExecutionConfig, ExecutionSimulator
+from eurusd_quant.strategies.false_breakout_reversal import (
+    FalseBreakoutReversalConfig,
+    FalseBreakoutReversalStrategy,
+)
 from eurusd_quant.strategies.session_breakout import SessionBreakoutConfig, SessionRangeBreakoutStrategy
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run EURUSD Session Breakout backtest")
+    parser = argparse.ArgumentParser(description="Run EURUSD strategy backtest")
     parser.add_argument("--input", required=True, help="Path to input parquet bars")
     parser.add_argument("--strategy", required=True, help="Strategy key from config/strategies.yaml")
     parser.add_argument("--output-dir", required=True, help="Output directory for results")
@@ -38,13 +42,19 @@ def main() -> None:
     strategy_cfg_all = load_yaml(ROOT / "config" / "strategies.yaml")
     if args.strategy not in strategy_cfg_all:
         raise ValueError(f"Unsupported strategy: {args.strategy}")
-    if args.strategy != "session_breakout":
-        raise ValueError("MVP only supports --strategy session_breakout")
 
     bars = load_bars(args.input)
 
-    strategy_cfg = SessionBreakoutConfig.from_dict(strategy_cfg_all["session_breakout"])
-    strategy = SessionRangeBreakoutStrategy(strategy_cfg)
+    if args.strategy == "session_breakout":
+        strategy_cfg = SessionBreakoutConfig.from_dict(strategy_cfg_all["session_breakout"])
+        strategy = SessionRangeBreakoutStrategy(strategy_cfg)
+    elif args.strategy == "false_breakout_reversal":
+        strategy_cfg = FalseBreakoutReversalConfig.from_dict(
+            strategy_cfg_all["false_breakout_reversal"]
+        )
+        strategy = FalseBreakoutReversalStrategy(strategy_cfg)
+    else:
+        raise ValueError(f"Strategy wired in config but not implemented in runner: {args.strategy}")
 
     simulator = ExecutionSimulator(ExecutionConfig.from_dict(execution_cfg))
 

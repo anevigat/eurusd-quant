@@ -11,3 +11,20 @@ session_breakout:
   max_holding_bars: 12
   breakout_buffer_atr: 0.0
   entry_window_mode: "fixed_utc"
+
+false_breakout_reversal:
+  timeframe: "15m"
+  asian_range_start_utc: "00:00"
+  asian_range_end_utc: "06:00"
+  entry_start_utc: "07:00"
+  entry_end_utc: "10:00"
+  break_buffer_pips: 0.5
+  reentry_buffer_pips: 0.0
+  atr_period: 14
+  atr_min_threshold: 0.0004
+  stop_mode: "outside_break_extreme"
+  stop_atr_buffer_multiple: 0.25
+  take_profit_mode: "range_midpoint"
+  take_profit_r: 1.5
+  max_holding_bars: 12
+  one_trade_per_day: true
