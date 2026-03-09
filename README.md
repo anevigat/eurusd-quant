@@ -238,6 +238,18 @@ This writes per-combination run folders and:
 
 - `outputs/false_breakout_reversal_segmentation/summary.json`
 
+Run false-breakout exit-model experiments (fixed to `allowed_side=both`, `08:00-09:00 UTC`):
+
+```bash
+.venv/bin/python scripts/run_false_breakout_exit_models.py \
+  --input data/bars/15m/eurusd_bars_15m_2023.parquet \
+  --output-root outputs/false_breakout_exit_models
+```
+
+This writes per-model run folders and:
+
+- `outputs/false_breakout_exit_models/summary.json`
+
 ## Research diagnostics: Asian range compression
 
 Analyze whether narrower Asian ranges (00:00-06:00 UTC) are followed by larger London moves (07:00-12:00 UTC):

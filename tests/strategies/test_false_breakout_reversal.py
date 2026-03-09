@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pandas as pd
+import pytest
 
 from eurusd_quant.strategies.false_breakout_reversal import (
     FalseBreakoutReversalConfig,
@@ -13,6 +14,9 @@ def _config(
     allowed_side: str = "both",
     entry_start_utc: str = "07:00",
     entry_end_utc: str = "10:00",
+    exit_model: str = "range_midpoint",
+    take_profit_r: float = 1.5,
+    atr_target_multiple: float = 1.2,
 ) -> FalseBreakoutReversalConfig:
     return FalseBreakoutReversalConfig(
         timeframe="15m",
@@ -26,9 +30,10 @@ def _config(
         atr_min_threshold=0.0,
         stop_mode="outside_break_extreme",
         stop_atr_buffer_multiple=0.0,
-        take_profit_mode="range_midpoint",
-        take_profit_r=1.5,
+        exit_model=exit_model,
+        take_profit_r=take_profit_r,
         max_holding_bars=12,
+        atr_target_multiple=atr_target_multiple,
         allowed_side=allowed_side,
         one_trade_per_day=True,
     )
@@ -227,3 +232,118 @@ def test_short_only_blocks_long_signals() -> None:
         False,
     )
     assert order is None
+
+
+def _build_long_reentry_scenario(strategy: FalseBreakoutReversalStrategy) -> None:
+    strategy.generate_order(
+        _bar("2024-01-02 00:00:00", 1.1010, 1.1000, 1.1006, 1.1011, 1.1001, 1.1007, 1.10065),
+        False,
+        False,
+    )
+    strategy.generate_order(
+        _bar("2024-01-02 07:00:00", 1.1005, 1.0994, 1.0997, 1.1006, 1.0995, 1.0998, 1.09975),
+        False,
+        False,
+    )
+
+
+def test_range_midpoint_exit_target_is_computed_correctly() -> None:
+    strategy = FalseBreakoutReversalStrategy(_config(exit_model="range_midpoint"))
+    _build_long_reentry_scenario(strategy)
+
+    order = strategy.generate_order(
+        _bar(
+            "2024-01-02 07:15:00",
+            1.1006,
+            1.0999,
+            1.1002,
+            1.1007,
+            1.1000,
+            1.1003,
+            1.10025,
+            mid_high=1.1007,
+            mid_low=1.0999,
+        ),
+        False,
+        False,
+    )
+
+    assert order is not None
+    assert order.side == "long"
+    assert order.take_profit == pytest.approx(1.10055)
+
+
+def test_fixed_r_exit_target_is_computed_correctly() -> None:
+    strategy = FalseBreakoutReversalStrategy(_config(exit_model="fixed_r", take_profit_r=1.5))
+    _build_long_reentry_scenario(strategy)
+
+    order = strategy.generate_order(
+        _bar(
+            "2024-01-02 07:15:00",
+            1.1006,
+            1.0999,
+            1.1002,
+            1.1007,
+            1.1000,
+            1.1003,
+            1.10025,
+            mid_high=1.1007,
+            mid_low=1.0999,
+        ),
+        False,
+        False,
+    )
+
+    assert order is not None
+    assert order.take_profit == pytest.approx(1.10165)
+
+
+def test_atr_target_exit_target_is_computed_correctly() -> None:
+    strategy = FalseBreakoutReversalStrategy(
+        _config(exit_model="atr_target", atr_target_multiple=1.2)
+    )
+    _build_long_reentry_scenario(strategy)
+
+    order = strategy.generate_order(
+        _bar(
+            "2024-01-02 07:15:00",
+            1.1006,
+            1.0999,
+            1.1002,
+            1.1007,
+            1.1000,
+            1.1003,
+            1.10025,
+            mid_high=1.1008,
+            mid_low=1.0996,
+        ),
+        False,
+        False,
+    )
+
+    assert order is not None
+    assert order.take_profit == pytest.approx(1.10174)
+
+
+def test_entry_behavior_unchanged_across_exit_models() -> None:
+    for exit_model in ("range_midpoint", "fixed_r", "atr_target"):
+        strategy = FalseBreakoutReversalStrategy(_config(exit_model=exit_model))
+        _build_long_reentry_scenario(strategy)
+        order = strategy.generate_order(
+            _bar(
+                "2024-01-02 07:15:00",
+                1.1006,
+                1.0999,
+                1.1002,
+                1.1007,
+                1.1000,
+                1.1003,
+                1.10025,
+                mid_high=1.1008,
+                mid_low=1.0996,
+            ),
+            False,
+            False,
+        )
+        assert order is not None
+        assert order.side == "long"

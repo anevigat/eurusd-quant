@@ -24,8 +24,9 @@ false_breakout_reversal:
   atr_min_threshold: 0.0004
   stop_mode: "outside_break_extreme"
   stop_atr_buffer_multiple: 0.25
-  take_profit_mode: "range_midpoint"
+  exit_model: "range_midpoint"
   take_profit_r: 1.5
+  atr_target_multiple: 1.2
   max_holding_bars: 12
   allowed_side: "both"
   one_trade_per_day: true
