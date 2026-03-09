@@ -24,6 +24,7 @@ env/
 outputs/
 data/raw/
 data/ticks/
+data/cleaned_ticks/
 data/bars/
 
 # Optional local archives

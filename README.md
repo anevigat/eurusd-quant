@@ -108,6 +108,26 @@ Final dataset:
 
 - `data/bars/15m/eurusd_bars_15m_2023.parquet`
 
+## Dataset validation
+
+Validate cleaned ticks + bars for a target year:
+
+```bash
+.venv/bin/python scripts/validate_dataset.py \
+  --year 2022 \
+  --raw-dir data/raw/dukascopy/EURUSD/2022 \
+  --ticks-file data/cleaned_ticks/EURUSD/2022/eurusd_ticks_2022.parquet \
+  --bars-file data/bars/15m/eurusd_bars_15m_2022.parquet \
+  --output-dir outputs/data_validation_2022
+```
+
+Validation outputs:
+
+- `outputs/data_validation_2022/bar_continuity.json`
+- `outputs/data_validation_2022/spread_stats.json`
+- `outputs/data_validation_2022/daily_bar_counts.csv`
+- `outputs/data_validation_2022/summary.json`
+
 ## Running backtests
 
 Run on fixture data:
