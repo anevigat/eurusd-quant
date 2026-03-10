@@ -374,6 +374,21 @@ Outputs:
 - `outputs/range_compression/summary.json`
 - `outputs/range_compression/daily_ranges.csv`
 
+## Research diagnostics: session impulse retracement
+
+Analyze whether large London/NY opening impulses tend to retrace afterward:
+
+```bash
+.venv/bin/python scripts/analyze_session_impulse_retracement.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/session_impulse_retracement
+```
+
+Outputs:
+
+- `outputs/session_impulse_retracement/daily_metrics.csv`
+- `outputs/session_impulse_retracement/summary.json`
+
 ## Running excursion analysis
 
 Compute MFE/MAE distributions and summary ratio from bars + trades:
