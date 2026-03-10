@@ -261,6 +261,28 @@ This writes:
 - `outputs/ny_impulse_threshold_experiments/p90/trades.parquet`
 - `outputs/ny_impulse_threshold_experiments/summary.json`
 
+## NY impulse threshold robustness test
+
+Stress the best NY impulse setup by slightly varying the threshold around baseline
+(`p85`, `p90`, `p95`) while keeping the retracement entry ratio fixed at `0.50`
+and leaving all other parameters unchanged:
+
+```bash
+.venv/bin/python scripts/run_ny_impulse_threshold_robustness.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-root outputs/ny_impulse_threshold_robustness
+```
+
+This writes:
+
+- `outputs/ny_impulse_threshold_robustness/p85/metrics.json`
+- `outputs/ny_impulse_threshold_robustness/p85/trades.parquet`
+- `outputs/ny_impulse_threshold_robustness/p90/metrics.json`
+- `outputs/ny_impulse_threshold_robustness/p90/trades.parquet`
+- `outputs/ny_impulse_threshold_robustness/p95/metrics.json`
+- `outputs/ny_impulse_threshold_robustness/p95/trades.parquet`
+- `outputs/ny_impulse_threshold_robustness/summary.json`
+
 ## NY impulse entry trigger experiments
 
 Compare retracement entry trigger levels for frozen `ny_impulse_mean_reversion` with p90 impulse threshold fixed:
