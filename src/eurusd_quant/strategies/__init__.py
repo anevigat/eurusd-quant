@@ -7,6 +7,7 @@ from .london_pullback_continuation import (
     LondonPullbackContinuationConfig,
     LondonPullbackContinuationStrategy,
 )
+from .ny_impulse_mean_reversion import NYImpulseMeanReversionConfig, NYImpulseMeanReversionStrategy
 from .session_breakout import SessionBreakoutConfig, SessionRangeBreakoutStrategy
 
 __all__ = [
@@ -18,4 +19,6 @@ __all__ = [
     "FalseBreakoutReversalStrategy",
     "LondonPullbackContinuationConfig",
     "LondonPullbackContinuationStrategy",
+    "NYImpulseMeanReversionConfig",
+    "NYImpulseMeanReversionStrategy",
 ]

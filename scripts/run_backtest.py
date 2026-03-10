@@ -27,6 +27,10 @@ from eurusd_quant.strategies.london_pullback_continuation import (
     LondonPullbackContinuationConfig,
     LondonPullbackContinuationStrategy,
 )
+from eurusd_quant.strategies.ny_impulse_mean_reversion import (
+    NYImpulseMeanReversionConfig,
+    NYImpulseMeanReversionStrategy,
+)
 from eurusd_quant.strategies.session_breakout import SessionBreakoutConfig, SessionRangeBreakoutStrategy
 
 
@@ -71,6 +75,11 @@ def main() -> None:
             strategy_cfg_all["london_pullback_continuation"]
         )
         strategy = LondonPullbackContinuationStrategy(strategy_cfg)
+    elif args.strategy == "ny_impulse_mean_reversion":
+        strategy_cfg = NYImpulseMeanReversionConfig.from_dict(
+            strategy_cfg_all["ny_impulse_mean_reversion"]
+        )
+        strategy = NYImpulseMeanReversionStrategy(strategy_cfg)
     else:
         raise ValueError(f"Strategy wired in config but not implemented in runner: {args.strategy}")
 
