@@ -258,6 +258,26 @@ This writes:
 - `outputs/diagnostics/fbr_regime_analysis/monthly_performance.csv`
 - `outputs/diagnostics/fbr_regime_analysis/yearly_performance.csv`
 
+### Strategy regime experiments: pre-London drift
+
+Run frozen `false_breakout_reversal` by drift regimes where:
+
+- `pre_london_drift = mid_close(07:45) - mid_close(00:00)`
+- `drift_down`: drift `< -0.0002`
+- `drift_flat`: `-0.0002 <= drift <= 0.0002`
+- `drift_up`: drift `> 0.0002`
+
+```bash
+.venv/bin/python scripts/run_false_breakout_pre_london_drift.py \
+  --bars-file data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/false_breakout_pre_london_drift
+```
+
+This writes:
+
+- `outputs/false_breakout_pre_london_drift/summary.json`
+- `outputs/false_breakout_pre_london_drift/regime_yearly.csv`
+
 Run false-breakout exit-model experiments (fixed to `allowed_side=both`, `08:00-09:00 UTC`):
 
 ```bash
