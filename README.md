@@ -6,6 +6,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 
 - [Asian session breakout strategy notes](docs/strategy_asian_range_breakout.md)
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
+- [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
 
 ## Requirements
 
@@ -268,6 +269,22 @@ Run false-breakout exit-model experiments (fixed to `allowed_side=both`, `08:00-
 This writes per-model run folders and:
 
 - `outputs/false_breakout_exit_models/summary.json`
+
+Run frozen multi-year validation (2018-2024) for `false_breakout_reversal` with
+`allowed_side=both`, `entry 08:00-09:00 UTC`, `exit_model=atr_target`:
+
+```bash
+.venv/bin/python scripts/run_false_breakout_multiyear_validation.py \
+  --start-year 2018 \
+  --end-year 2024 \
+  --bars-dir data/bars/15m \
+  --output-root outputs/experiments/false_breakout_reversal_atr_target_0809
+```
+
+This writes per-year outputs plus:
+
+- `outputs/experiments/false_breakout_reversal_atr_target_0809/summary.csv`
+- `outputs/experiments/false_breakout_reversal_atr_target_0809/monthly_pnl.csv`
 
 ## Research diagnostics: Asian range compression
 
