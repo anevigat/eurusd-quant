@@ -5,6 +5,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 ## Research findings
 
 - [Asian session breakout strategy notes](docs/strategy_asian_range_breakout.md)
+- [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 
 ## Requirements
 
@@ -237,6 +238,24 @@ Run false-breakout side/window segmentation experiments:
 This writes per-combination run folders and:
 
 - `outputs/false_breakout_reversal_segmentation/summary.json`
+
+Run regime diagnostics on frozen multi-year validation outputs:
+
+```bash
+.venv/bin/python scripts/analyze_fbr_regimes.py \
+  --start-year 2018 \
+  --end-year 2024 \
+  --trades-root outputs/experiments/false_breakout_reversal_atr_target_0809 \
+  --bars-dir data/bars/15m \
+  --output-dir outputs/diagnostics/fbr_regime_analysis
+```
+
+This writes:
+
+- `outputs/diagnostics/fbr_regime_analysis/regime_summary_by_feature.csv`
+- `outputs/diagnostics/fbr_regime_analysis/regime_summary_by_quantile.csv`
+- `outputs/diagnostics/fbr_regime_analysis/monthly_performance.csv`
+- `outputs/diagnostics/fbr_regime_analysis/yearly_performance.csv`
 
 Run false-breakout exit-model experiments (fixed to `allowed_side=both`, `08:00-09:00 UTC`):
 
