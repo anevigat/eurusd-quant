@@ -280,6 +280,29 @@ This writes:
 - `excursions.json`
 - `holding_time.json`
 
+Run NY impulse mean reversion diagnostics + stress re-run:
+
+```bash
+.venv/bin/python scripts/analyze_ny_impulse_mean_reversion.py \
+  --trades outputs/ny_impulse_mean_reversion_smoke/trades.parquet \
+  --metrics outputs/ny_impulse_mean_reversion_smoke/metrics.json \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/ny_impulse_mean_reversion_diagnostics \
+  --stress-spread-penalty-pips 0.0
+```
+
+This writes:
+
+- `outputs/ny_impulse_mean_reversion_diagnostics/trade_distribution.json`
+- `outputs/ny_impulse_mean_reversion_diagnostics/exit_reason_counts.json`
+- `outputs/ny_impulse_mean_reversion_diagnostics/win_loss_stats.json`
+- `outputs/ny_impulse_mean_reversion_diagnostics/side_stats.json`
+- `outputs/ny_impulse_mean_reversion_diagnostics/impulse_bucket_stats.json`
+- `outputs/ny_impulse_mean_reversion_diagnostics/excursions.json`
+- `outputs/ny_impulse_mean_reversion_diagnostics/yearly_stats.csv`
+- `outputs/ny_impulse_mean_reversion_diagnostics/stress_metrics.json`
+- `outputs/ny_impulse_mean_reversion_diagnostics/summary.json`
+
 Run false-breakout side/window segmentation experiments:
 
 ```bash
