@@ -5,6 +5,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 ## Research findings
 
 - [Asian session breakout strategy notes](docs/strategy_asian_range_breakout.md)
+- [False breakout reversal strategy summary](docs/strategy_false_breakout_reversal.md)
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
 
