@@ -30,3 +30,21 @@ false_breakout_reversal:
   max_holding_bars: 12
   allowed_side: "both"
   one_trade_per_day: true
+
+london_pullback_continuation:
+  timeframe: "15m"
+  drift_start_utc: "00:00"
+  drift_end_utc: "07:45"
+  entry_start_utc: "08:00"
+  entry_end_utc: "10:00"
+  drift_threshold_pips: 8.0
+  pullback_mode: "ema20"
+  atr_period: 14
+  atr_min_threshold: 0.0004
+  stop_mode: "atr"
+  stop_atr_multiple: 1.0
+  exit_model: "atr_target"
+  atr_target_multiple: 1.2
+  max_holding_bars: 12
+  one_trade_per_day: true
+  allowed_side: "both"
