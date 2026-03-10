@@ -160,6 +160,7 @@ Available strategies:
 - `asian_range_compression_breakout` (MVP research hypothesis; not a validated edge)
 - `false_breakout_reversal` (MVP research hypothesis; not a validated edge)
 - `london_pullback_continuation` (MVP research hypothesis; not a validated edge)
+- `ny_impulse_mean_reversion` (MVP research hypothesis; not a validated edge)
 
 Run on fixture data:
 
@@ -208,6 +209,18 @@ Hypothesis: a compressed Asian range (relative to ATR) can precede London-sessio
   --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
   --strategy asian_range_compression_breakout \
   --output-dir outputs/asian_range_compression_breakout_smoke
+```
+
+Run NY impulse mean reversion MVP:
+
+Hypothesis: large NY opening impulses (`13:00-13:30 UTC`) tend to overreact and mean-revert in
+`13:30-15:00 UTC`, with entry on midpoint cross back against impulse direction.
+
+```bash
+.venv/bin/python scripts/run_backtest.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --strategy ny_impulse_mean_reversion \
+  --output-dir outputs/ny_impulse_mean_reversion_smoke
 ```
 
 Backtest outputs:

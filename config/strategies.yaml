@@ -63,3 +63,17 @@ asian_range_compression_breakout:
   atr_target_multiple: 1.5
   max_holding_bars: 12
   one_trade_per_day: true
+
+ny_impulse_mean_reversion:
+  timeframe: "15m"
+  impulse_start_utc: "13:00"
+  impulse_end_utc: "13:30"
+  entry_start_utc: "13:30"
+  entry_end_utc: "15:00"
+  impulse_threshold_pips: 17.5
+  entry_mode: "impulse_midpoint_cross"
+  retracement_target_ratio: 0.5
+  stop_buffer_pips: 2.0
+  max_holding_bars: 6
+  one_trade_per_day: true
+  allowed_side: "both"
