@@ -261,6 +261,29 @@ This writes:
 - `outputs/ny_impulse_threshold_experiments/p90/trades.parquet`
 - `outputs/ny_impulse_threshold_experiments/summary.json`
 
+## NY impulse entry trigger experiments
+
+Compare retracement entry trigger levels for frozen `ny_impulse_mean_reversion` with p90 impulse threshold fixed:
+- `0.30` retracement
+- `0.40` retracement
+- `0.50` retracement (midpoint baseline)
+
+```bash
+.venv/bin/python scripts/run_ny_impulse_entry_experiments.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-root outputs/ny_impulse_entry_experiments
+```
+
+This writes:
+
+- `outputs/ny_impulse_entry_experiments/0.30/metrics.json`
+- `outputs/ny_impulse_entry_experiments/0.30/trades.parquet`
+- `outputs/ny_impulse_entry_experiments/0.40/metrics.json`
+- `outputs/ny_impulse_entry_experiments/0.40/trades.parquet`
+- `outputs/ny_impulse_entry_experiments/0.50/metrics.json`
+- `outputs/ny_impulse_entry_experiments/0.50/trades.parquet`
+- `outputs/ny_impulse_entry_experiments/summary.json`
+
 ## Running diagnostics
 
 ```bash

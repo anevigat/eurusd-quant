@@ -72,6 +72,7 @@ ny_impulse_mean_reversion:
   entry_end_utc: "15:00"
   impulse_threshold_pips: 17.5
   entry_mode: "impulse_midpoint_cross"
+  retracement_entry_ratio: 0.5
   retracement_target_ratio: 0.5
   stop_buffer_pips: 2.0
   max_holding_bars: 6
