@@ -19,6 +19,10 @@ from eurusd_quant.strategies.false_breakout_reversal import (
     FalseBreakoutReversalConfig,
     FalseBreakoutReversalStrategy,
 )
+from eurusd_quant.strategies.london_pullback_continuation import (
+    LondonPullbackContinuationConfig,
+    LondonPullbackContinuationStrategy,
+)
 from eurusd_quant.strategies.session_breakout import SessionBreakoutConfig, SessionRangeBreakoutStrategy
 
 
@@ -53,6 +57,11 @@ def main() -> None:
             strategy_cfg_all["false_breakout_reversal"]
         )
         strategy = FalseBreakoutReversalStrategy(strategy_cfg)
+    elif args.strategy == "london_pullback_continuation":
+        strategy_cfg = LondonPullbackContinuationConfig.from_dict(
+            strategy_cfg_all["london_pullback_continuation"]
+        )
+        strategy = LondonPullbackContinuationStrategy(strategy_cfg)
     else:
         raise ValueError(f"Strategy wired in config but not implemented in runner: {args.strategy}")
 

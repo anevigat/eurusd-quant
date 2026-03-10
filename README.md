@@ -156,6 +156,7 @@ Available strategies:
 
 - `session_breakout`
 - `false_breakout_reversal` (MVP research hypothesis; not a validated edge)
+- `london_pullback_continuation` (MVP research hypothesis; not a validated edge)
 
 Run on fixture data:
 
@@ -182,6 +183,17 @@ Run false-breakout reversal MVP on Dukascopy-derived bars:
   --input data/bars/15m/eurusd_bars_15m_2023.parquet \
   --strategy false_breakout_reversal \
   --output-dir outputs/false_breakout_reversal_smoke
+```
+
+Run London pullback continuation MVP:
+
+Hypothesis: when overnight drift is strong, the first London pullback to EMA20 may continue in drift direction.
+
+```bash
+.venv/bin/python scripts/run_backtest.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --strategy london_pullback_continuation \
+  --output-dir outputs/london_pullback_continuation_smoke
 ```
 
 Backtest outputs:
