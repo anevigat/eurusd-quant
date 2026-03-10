@@ -284,6 +284,22 @@ This writes:
 - `outputs/ny_impulse_entry_experiments/0.50/trades.parquet`
 - `outputs/ny_impulse_entry_experiments/summary.json`
 
+## NY impulse yearly stability
+
+Analyze year-by-year stability for the best NY impulse configuration (`p90` threshold, `0.50` entry ratio):
+
+```bash
+.venv/bin/python scripts/analyze_ny_impulse_yearly_stability.py \
+  --trades outputs/ny_impulse_entry_experiments/0.50/trades.parquet \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/ny_impulse_yearly_stability
+```
+
+This writes:
+
+- `outputs/ny_impulse_yearly_stability/yearly_stats.csv`
+- `outputs/ny_impulse_yearly_stability/equity_curve.csv`
+
 ## Running diagnostics
 
 ```bash
