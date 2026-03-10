@@ -240,6 +240,27 @@ Run Asian compression breakout threshold experiments:
 This writes per-threshold runs under `outputs/asian_compression_breakout_experiments/<threshold>/`
 and a combined comparison file at `outputs/asian_compression_breakout_experiments/summary.json`.
 
+## NY impulse threshold experiments
+
+Compare frozen `ny_impulse_mean_reversion` behavior across NY impulse thresholds
+(`p50`, `p75`, `p90`) with all other parameters unchanged:
+
+```bash
+.venv/bin/python scripts/run_ny_impulse_threshold_experiments.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-root outputs/ny_impulse_threshold_experiments
+```
+
+This writes:
+
+- `outputs/ny_impulse_threshold_experiments/p50/metrics.json`
+- `outputs/ny_impulse_threshold_experiments/p50/trades.parquet`
+- `outputs/ny_impulse_threshold_experiments/p75/metrics.json`
+- `outputs/ny_impulse_threshold_experiments/p75/trades.parquet`
+- `outputs/ny_impulse_threshold_experiments/p90/metrics.json`
+- `outputs/ny_impulse_threshold_experiments/p90/trades.parquet`
+- `outputs/ny_impulse_threshold_experiments/summary.json`
+
 ## Running diagnostics
 
 ```bash
