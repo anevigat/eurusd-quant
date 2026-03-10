@@ -15,6 +15,10 @@ if str(SRC_DIR) not in sys.path:
 from eurusd_quant.analytics.metrics import compute_metrics
 from eurusd_quant.data.loaders import load_bars
 from eurusd_quant.execution.simulator import ExecutionConfig, ExecutionSimulator
+from eurusd_quant.strategies.asian_range_compression_breakout import (
+    AsianRangeCompressionBreakoutConfig,
+    AsianRangeCompressionBreakoutStrategy,
+)
 from eurusd_quant.strategies.false_breakout_reversal import (
     FalseBreakoutReversalConfig,
     FalseBreakoutReversalStrategy,
@@ -52,6 +56,11 @@ def main() -> None:
     if args.strategy == "session_breakout":
         strategy_cfg = SessionBreakoutConfig.from_dict(strategy_cfg_all["session_breakout"])
         strategy = SessionRangeBreakoutStrategy(strategy_cfg)
+    elif args.strategy == "asian_range_compression_breakout":
+        strategy_cfg = AsianRangeCompressionBreakoutConfig.from_dict(
+            strategy_cfg_all["asian_range_compression_breakout"]
+        )
+        strategy = AsianRangeCompressionBreakoutStrategy(strategy_cfg)
     elif args.strategy == "false_breakout_reversal":
         strategy_cfg = FalseBreakoutReversalConfig.from_dict(
             strategy_cfg_all["false_breakout_reversal"]

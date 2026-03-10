@@ -156,6 +156,7 @@ Validation outputs:
 Available strategies:
 
 - `session_breakout`
+- `asian_range_compression_breakout` (MVP research hypothesis; not a validated edge)
 - `false_breakout_reversal` (MVP research hypothesis; not a validated edge)
 - `london_pullback_continuation` (MVP research hypothesis; not a validated edge)
 
@@ -195,6 +196,17 @@ Hypothesis: when overnight drift is strong, the first London pullback to EMA20 m
   --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
   --strategy london_pullback_continuation \
   --output-dir outputs/london_pullback_continuation_smoke
+```
+
+Run Asian range compression breakout MVP:
+
+Hypothesis: a compressed Asian range (relative to ATR) can precede London-session breakout expansion.
+
+```bash
+.venv/bin/python scripts/run_backtest.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --strategy asian_range_compression_breakout \
+  --output-dir outputs/asian_range_compression_breakout_smoke
 ```
 
 Backtest outputs:
