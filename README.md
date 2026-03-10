@@ -278,6 +278,19 @@ This writes:
 - `outputs/false_breakout_pre_london_drift/summary.json`
 - `outputs/false_breakout_pre_london_drift/regime_yearly.csv`
 
+Run drift-down side filter comparison (frozen config, `both` vs `short_only`):
+
+```bash
+.venv/bin/python scripts/run_false_breakout_drift_down_short_only.py \
+  --bars-file data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/false_breakout_drift_down_short_only
+```
+
+This writes:
+
+- `outputs/false_breakout_drift_down_short_only/summary.json`
+- `outputs/false_breakout_drift_down_short_only/yearly_breakdown.csv`
+
 Run false-breakout exit-model experiments (fixed to `allowed_side=both`, `08:00-09:00 UTC`):
 
 ```bash
