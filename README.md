@@ -214,6 +214,18 @@ Backtest outputs:
 - `trades.parquet`
 - `metrics.json`
 
+Run Asian compression breakout threshold experiments:
+
+```bash
+.venv/bin/python scripts/run_asian_compression_experiments.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-root outputs/asian_compression_breakout_experiments \
+  --thresholds 4.0 4.5 4.7
+```
+
+This writes per-threshold runs under `outputs/asian_compression_breakout_experiments/<threshold>/`
+and a combined comparison file at `outputs/asian_compression_breakout_experiments/summary.json`.
+
 ## Running diagnostics
 
 ```bash
