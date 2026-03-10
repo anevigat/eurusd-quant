@@ -15,6 +15,7 @@ def _config(
     entry_start_utc: str = "13:30",
     entry_end_utc: str = "15:00",
     allowed_side: str = "both",
+    retracement_entry_ratio: float = 0.5,
 ) -> NYImpulseMeanReversionConfig:
     return NYImpulseMeanReversionConfig(
         timeframe="15m",
@@ -24,6 +25,7 @@ def _config(
         entry_end_utc=entry_end_utc,
         impulse_threshold_pips=impulse_threshold_pips,
         entry_mode="impulse_midpoint_cross",
+        retracement_entry_ratio=retracement_entry_ratio,
         retracement_target_ratio=0.5,
         stop_buffer_pips=2.0,
         max_holding_bars=6,
@@ -168,3 +170,25 @@ def test_stop_and_target_computed_from_impulse_range() -> None:
     # TP distance = 0.5 * 0.0016 = 0.0008 -> 1.09955
     assert order.stop_loss == pytest.approx(1.1016)
     assert order.take_profit == pytest.approx(1.09955)
+
+
+def test_retracement_entry_ratio_changes_trigger_level() -> None:
+    strategy_early = NYImpulseMeanReversionStrategy(_config(retracement_entry_ratio=0.3))
+    _bullish_impulse_setup(strategy_early)
+    early_order = strategy_early.generate_order(
+        _bar("2024-01-02 13:30:00", 1.1012, 1.1013, 1.1007, 1.1008),
+        False,
+        False,
+    )
+
+    strategy_mid = NYImpulseMeanReversionStrategy(_config(retracement_entry_ratio=0.5))
+    _bullish_impulse_setup(strategy_mid)
+    mid_order = strategy_mid.generate_order(
+        _bar("2024-01-02 13:30:00", 1.1012, 1.1013, 1.1007, 1.1008),
+        False,
+        False,
+    )
+
+    assert early_order is not None
+    assert early_order.side == "short"
+    assert mid_order is None

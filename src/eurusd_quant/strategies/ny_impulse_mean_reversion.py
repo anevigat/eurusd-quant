@@ -22,6 +22,7 @@ class NYImpulseMeanReversionConfig:
     retracement_target_ratio: float
     stop_buffer_pips: float
     max_holding_bars: int
+    retracement_entry_ratio: float = 0.5
     one_trade_per_day: bool = True
     allowed_side: str = "both"
 
@@ -44,6 +45,8 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
             raise ValueError("MVP supports only entry_mode='impulse_midpoint_cross'")
         if config.allowed_side not in {"both", "long_only", "short_only"}:
             raise ValueError("allowed_side must be 'both', 'long_only', or 'short_only'")
+        if config.retracement_entry_ratio <= 0 or config.retracement_entry_ratio >= 1:
+            raise ValueError("retracement_entry_ratio must be between 0 and 1 (exclusive)")
 
         self._current_date: date | None = None
         self._impulse_high: float | None = None
@@ -113,16 +116,21 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
         if impulse_size < threshold:
             return None
 
-        impulse_midpoint = (self._impulse_high + self._impulse_low) / 2.0
+        retracement_level_short = self._impulse_high - (
+            self.config.retracement_entry_ratio * impulse_size
+        )
+        retracement_level_long = self._impulse_low + (
+            self.config.retracement_entry_ratio * impulse_size
+        )
         stop_buffer = self.config.stop_buffer_pips * self.PIP_SIZE
         retracement_target = self.config.retracement_target_ratio * impulse_size
 
-        # Bullish impulse -> mean-reversion short on midpoint cross-down.
+        # Bullish impulse -> mean-reversion short on retracement-level cross-down.
         if (
             self._impulse_close > self._impulse_open
             and self.config.allowed_side != "long_only"
-            and prev_mid_close >= impulse_midpoint
-            and mid_close < impulse_midpoint
+            and prev_mid_close >= retracement_level_short
+            and mid_close < retracement_level_short
         ):
             entry_reference = float(bar["bid_close"])
             stop_loss = self._impulse_high + stop_buffer
@@ -140,12 +148,12 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
                     max_holding_bars=self.config.max_holding_bars,
                 )
 
-        # Bearish impulse -> mean-reversion long on midpoint cross-up.
+        # Bearish impulse -> mean-reversion long on retracement-level cross-up.
         if (
             self._impulse_close < self._impulse_open
             and self.config.allowed_side != "short_only"
-            and prev_mid_close <= impulse_midpoint
-            and mid_close > impulse_midpoint
+            and prev_mid_close <= retracement_level_long
+            and mid_close > retracement_level_long
         ):
             entry_reference = float(bar["ask_close"])
             stop_loss = self._impulse_low - stop_buffer
