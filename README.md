@@ -836,6 +836,23 @@ Outputs:
 - `outputs/session_impulse_retracement/daily_metrics.csv`
 - `outputs/session_impulse_retracement/summary.json`
 
+## London Opening Range Breakout Diagnostic
+
+Analyze whether the London window (07:00-10:00 UTC) breaks and follows through beyond
+the Asian range (00:00-07:00 UTC):
+
+```bash
+python scripts/analyze_london_range_breakout.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/london_range_breakout_diagnostic
+```
+
+Outputs:
+
+- `outputs/london_range_breakout_diagnostic/summary.json`
+- `outputs/london_range_breakout_diagnostic/daily_metrics.csv`
+- `outputs/london_range_breakout_diagnostic/range_distribution.csv`
+
 ## Running excursion analysis
 
 Compute MFE/MAE distributions and summary ratio from bars + trades:
