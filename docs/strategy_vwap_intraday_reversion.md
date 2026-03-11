@@ -77,39 +77,81 @@ Sign split medians:
   - 4 bars: `-0.0549`
   - 8 bars: `-0.1045`
 
-## 5. Interpretation
+## 5. MVP Implementation and Results
 
-Key observations:
+### 5.1 MVP strategy design
 
-- deviations are frequent and often substantial in ATR terms
-- small deviations mostly continue away from VWAP (negative median reversion)
-- medium/large/extreme buckets show positive median reversion over 4-8 bars
-- reversion signal exists but is modest in magnitude (median ratios near `0.08-0.14` for larger buckets)
+Implemented MVP logic:
+
+- session window: `07:00-17:00 UTC`
+- VWAP proxy: cumulative average of typical price from `00:00`
+- entry:
+  - long when negative deviation from VWAP crosses threshold
+  - short when positive deviation from VWAP crosses threshold
+- threshold:
+  - `deviation_threshold_atr = 2.8`
+- exits:
+  - target: partial reversion toward VWAP (`50%` of entry-to-VWAP distance)
+  - stop: `1.0 * ATR(14)`
+  - time exit: `max_holding_bars = 4`
+
+### 5.2 Backtest dataset
+
+- `data/bars/15m/eurusd_bars_15m_2018_2024.parquet`
+
+### 5.3 Backtest results (smoke run)
+
+- `total_trades`: `1580`
+- `win_rate`: `0.4297`
+- `net_pnl`: `-0.01617`
+- `profit_factor`: `0.9736`
+- `max_drawdown`: `0.03188`
+
+## 6. Interpretation
+
+Although the diagnostic stage suggested a mild mean-reversion tendency when price deviates far from VWAP, the MVP strategy itself was not profitable.
+
+With a relatively large sample (`1580` trades), profit factor remained below `1` and net PnL remained negative.
 
 Interpretation:
 
-- the effect looks directionally real for stretched states, but not strong enough yet to imply a robust standalone edge without additional filters and execution constraints.
+- the raw VWAP reversion effect appears too weak for a simple implementation
+- additional structure is likely required before this idea can become tradable
 
-## 6. Conclusion
+## 7. Conclusion
 
-Classification:
+Status:
 
-- promising enough to implement as MVP
+- researched but not promising (current form)
 
-Rationale:
+Conclusion:
 
-- larger deviations revert positively on median over both 1-hour and 2-hour horizons
-- deviations occur frequently enough to support strategy feasibility testing
-- effect size is moderate, so any future MVP should remain conservative and cost-aware
+- VWAP intraday reversion behavior exists directionally in diagnostics
+- but the tested MVP design does not translate that into a profitable strategy
 
-## 7. Final status
+Potential future revisit paths:
 
-- diagnostic research completed
-- no strategy implementation added in this phase
-- next step can be a small, controlled MVP strategy test
+- volatility regime filters
+- session-specific behavior constraints
+- liquidity/spread-aware conditions
+- stronger deviation thresholds
+- alternative exit models
 
-## Outputs
+## 8. Outputs
+
+Diagnostic artifacts:
 
 - `outputs/vwap_intraday_reversion_diagnostic/summary.json`
 - `outputs/vwap_intraday_reversion_diagnostic/daily_metrics.csv`
 - `outputs/vwap_intraday_reversion_diagnostic/distribution.csv`
+
+MVP backtest artifacts:
+
+- `outputs/vwap_intraday_reversion_smoke/metrics.json`
+- `outputs/vwap_intraday_reversion_smoke/trades.parquet`
+
+## 9. Final status
+
+- diagnostic research completed
+- MVP implementation tested
+- current verdict: not promising without additional filtering/structure
