@@ -11,6 +11,7 @@ from eurusd_quant.strategies.ny_impulse_mean_reversion import (
     NYImpulseMeanReversionConfig,
     NYImpulseMeanReversionStrategy,
 )
+from eurusd_quant.utils.fx import infer_pip_size
 
 ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_P90_THRESHOLD_PRICE = 0.002455
@@ -61,7 +62,9 @@ class NYImpulseLiveStrategy(LiveStrategy):
             return None
 
         impulse_size = self._compute_impulse_size(today_bars)
-        impulse_threshold = float(self._config.impulse_threshold_pips * NYImpulseMeanReversionStrategy.PIP_SIZE)
+        impulse_threshold = float(
+            self._config.impulse_threshold_pips * infer_pip_size(latest_order.symbol)
+        )
 
         return {
             "timestamp": latest_ts.strftime("%Y-%m-%dT%H:%M:%SZ"),

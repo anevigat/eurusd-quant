@@ -223,6 +223,12 @@ Hypothesis: large NY opening impulses (`13:00-13:30 UTC`) tend to overreact and 
   --output-dir outputs/ny_impulse_mean_reversion_smoke
 ```
 
+Symbol handling for `ny_impulse_mean_reversion`:
+
+- Symbol is inferred from input bars (not hardcoded).
+- JPY pairs use pip size `0.01` (for example `USDJPY`).
+- Non-JPY FX pairs use pip size `0.0001` (for example `EURUSD`, `GBPUSD`).
+
 Backtest outputs:
 
 - `trades.parquet`
