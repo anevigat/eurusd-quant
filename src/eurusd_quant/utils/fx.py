@@ -1,8 +1,5 @@
 from __future__ import annotations
 
+from .fx_utils import infer_pip_size
 
-def infer_pip_size(symbol: str) -> float:
-    pair = str(symbol or "").upper()
-    if pair.endswith("JPY"):
-        return 0.01
-    return 0.0001
+__all__ = ["infer_pip_size"]
