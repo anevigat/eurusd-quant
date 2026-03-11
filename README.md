@@ -431,6 +431,26 @@ This writes:
 - `signals/YYYY-MM-DD_HHMM.json`
 - `paper_trading_log/signals_log.csv`
 
+## Paper trading simulator
+
+Execute paper trades from live signals and track open positions, closures, and equity:
+
+```bash
+python scripts/run_paper_trading_simulator.py
+```
+
+Optional inputs:
+
+- `--signals-dir signals`
+- `--bars-file data/bars/15m/eurusd_bars_latest.parquet`
+- `--log-dir paper_trading_log`
+
+This writes:
+
+- `paper_trading_log/trades_open.csv`
+- `paper_trading_log/trades_closed.csv`
+- `paper_trading_log/equity_curve.csv`
+
 ## Running diagnostics
 
 ```bash
