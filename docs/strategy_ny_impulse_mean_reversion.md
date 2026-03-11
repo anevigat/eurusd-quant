@@ -151,6 +151,112 @@ Walk-forward highlights:
 - 2023 test: PF `1.27`, net PnL `0.00228`
 - 2024 test: PF `2.27`, net PnL `0.00249`
 
+## Extended Diagnostics and Regime Analysis
+
+### 1. Volatility Regime Analysis
+
+Method:
+
+- computed daily ATR from 15m bars (True Range based)
+- defined ATR quantile regimes:
+  - `low_vol`: `<= p30`
+  - `mid_vol`: `p30 < ATR <= p70`
+  - `high_vol`: `> p70`
+
+Results:
+
+- `low_vol`: 7 trades, PF `23.52` (small sample)
+- `mid_vol`: 17 trades, PF `1.47`
+- `high_vol`: 75 trades, PF `1.64`
+
+Interpretation:
+
+- strategy performance is strongest in elevated-volatility environments, consistent with the NY impulse mean-reversion hypothesis.
+
+### 2. Trend Regime Analysis
+
+Method:
+
+- daily trend strength:
+  - `abs(close_23_45 - open_00_00)`
+- regimes:
+  - `range_day`
+  - `normal_day`
+  - `trend_day`
+
+Results:
+
+- `range_day`: 17 trades, PF `1.28`
+- `normal_day`: 38 trades, PF `2.38`
+- `trend_day`: 44 trades, PF `1.59`
+
+Interpretation:
+
+- best performance appears in moderate-trend environments, suggesting NY impulses often overreact but still mean-revert partially.
+
+### 3. Impulse Size Regime Analysis
+
+Method:
+
+- impulses bucketed by quantile size within the NY impulse window.
+
+Result:
+
+- all live strategy trades mapped to `extreme_impulse` due to the existing `p90` threshold filter:
+  - `extreme_impulse`: 99 trades, PF `1.74`
+
+Interpretation:
+
+- strategy is specifically targeting extreme NY opening impulses by design.
+
+### 4. Entry Efficiency Analysis
+
+Method:
+
+- measured how close each actual entry was to the best achievable entry between entry and exit.
+
+Results:
+
+- trades: `99`
+- mean efficiency: `0.56`
+- median efficiency: `0.45`
+- p25: `0.23`
+- p75: `1.00`
+
+Interpretation:
+
+- entries are often somewhat early versus the best retracement point (consistent with a fixed 50% trigger), while a meaningful share still captures near-optimal entries.
+
+### 5. Recent Data Validation (2025-now)
+
+Holdout validation snapshot on 2025-now data:
+
+- trades: `46`
+- profit factor: `0.65`
+- net PnL: negative
+
+Interpretation:
+
+- recent performance degraded versus the 2018-2024 sample.
+- sample size is still limited; regime diagnostics continue to indicate strongest behavior in high-volatility conditions.
+- this supports continuing paper-trading observation before any live deployment decision.
+
+### 6. Strategy Edge Map
+
+Best-performing conditions identified:
+
+- elevated volatility
+- moderate daily trend
+- extreme NY session impulse
+
+These conditions are broadly aligned with liquidity-shock and macro-driven NY session opens.
+
+### 7. Current Status
+
+The NY impulse mean reversion strategy has completed the research phase and has been moved to paper trading for live validation.
+
+The strategy is **not approved for live trading** at this stage.
+
 ## Interpretation
 
 - evidence supports an NY-session impulse mean-reversion effect on EURUSD in this dataset
@@ -187,10 +293,9 @@ Operational outputs:
 
 ## Future research directions
 
-- cross-pair robustness testing (for example GBPUSD, USDJPY, AUDUSD)
-- multi-timeframe impulse detection logic
-- dynamic impulse thresholds by volatility regime
-- volatility-adjusted entry timing inside NY window
+- cross-pair robustness testing
+- multi-timeframe impulse analysis
+- extended paper-trading observation
 
 ## Related outputs
 
