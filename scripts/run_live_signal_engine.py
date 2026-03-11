@@ -16,17 +16,38 @@ if str(SRC_DIR) not in sys.path:
 from eurusd_quant.data.loaders import load_bars
 from eurusd_quant.live.strategy_registry import get_strategy, list_strategies
 
-DEFAULT_OUTPUT_DIR = "signals"
-DEFAULT_LOG_DIR = "paper_trading_log"
+DEFAULT_OUTPUT_DIR = "paper_trading/signals"
+DEFAULT_LOG_DIR = "paper_trading/logs"
 DEFAULT_STRATEGY = "ny_impulse_mean_reversion"
 DEFAULT_P90_THRESHOLD_PRICE = 0.002455
+LAYOUT_DIRS = ("signals", "state", "logs", "reports")
+
+
+def infer_layout_root(*paths: Path) -> Path:
+    for path in paths:
+        if path.name in LAYOUT_DIRS:
+            return path.parent
+    return Path("paper_trading")
+
+
+def ensure_paper_trading_layout(root: Path) -> None:
+    for name in LAYOUT_DIRS:
+        (root / name).mkdir(parents=True, exist_ok=True)
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run live signal engine with strategy registry")
     parser.add_argument("--bars-file", required=True, help="Path to latest 15m bars parquet")
-    parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR, help="Signal JSON output directory")
-    parser.add_argument("--log-dir", default=DEFAULT_LOG_DIR, help="Paper trading log directory")
+    parser.add_argument(
+        "--output-dir",
+        default=DEFAULT_OUTPUT_DIR,
+        help="Signal JSON output directory",
+    )
+    parser.add_argument(
+        "--log-dir",
+        default=DEFAULT_LOG_DIR,
+        help="Paper trading logs directory",
+    )
     parser.add_argument(
         "--strategy",
         default=DEFAULT_STRATEGY,
@@ -112,7 +133,10 @@ def main() -> None:
 
     latest_ts = pd.to_datetime(bars["timestamp"].iloc[-1], utc=True)
     output_dir = Path(args.output_dir)
+    log_dir = Path(args.log_dir)
+    ensure_paper_trading_layout(infer_layout_root(output_dir, log_dir))
     output_dir.mkdir(parents=True, exist_ok=True)
+    log_dir.mkdir(parents=True, exist_ok=True)
 
     if args.all_strategies:
         strategy_names = list_strategies()
@@ -142,7 +166,7 @@ def main() -> None:
                 print("no signal")
             continue
 
-        log_csv = Path(args.log_dir) / "signals_log.csv"
+        log_csv = log_dir / "signal_log.csv"
         append_signal_log(log_csv, payload)
 
         if args.all_strategies:

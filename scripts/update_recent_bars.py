@@ -15,6 +15,7 @@ DOWNLOAD_SCRIPT = ROOT / "scripts" / "download_dukascopy_ticks.py"
 CLEAN_SCRIPT = ROOT / "scripts" / "clean_ticks.py"
 BUILD_BARS_SCRIPT = ROOT / "scripts" / "build_bars.py"
 ADD_SESSIONS_SCRIPT = ROOT / "scripts" / "add_sessions.py"
+LAYOUT_DIRS = ("signals", "state", "logs", "reports")
 
 
 def parse_args() -> argparse.Namespace:
@@ -24,7 +25,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--raw-dir", default="data/raw/dukascopy/EURUSD")
     parser.add_argument("--clean-dir", default="data/cleaned_ticks/EURUSD")
     parser.add_argument("--bars-dir", default="data/bars/15m")
-    parser.add_argument("--log-dir", default="paper_trading_log")
+    parser.add_argument("--log-dir", default="paper_trading/logs")
     parser.add_argument(
         "--as-of-date",
         help="Optional YYYY-MM-DD override for update end date (UTC). Defaults to today UTC.",
@@ -42,6 +43,17 @@ def run_command(cmd: list[str]) -> None:
     if result.returncode != 0:
         joined = " ".join(cmd)
         raise RuntimeError(f"Command failed ({result.returncode}): {joined}")
+
+
+def infer_layout_root(log_dir: Path) -> Path:
+    if log_dir.name in LAYOUT_DIRS:
+        return log_dir.parent
+    return Path("paper_trading")
+
+
+def ensure_paper_trading_layout(root: Path) -> None:
+    for name in LAYOUT_DIRS:
+        (root / name).mkdir(parents=True, exist_ok=True)
 
 
 def resolve_date_range(days_back: int, as_of_date: str | None) -> tuple[date, date]:
@@ -215,6 +227,7 @@ def main() -> None:
     clean_dir = Path(args.clean_dir)
     bars_dir = Path(args.bars_dir)
     log_dir = Path(args.log_dir)
+    ensure_paper_trading_layout(infer_layout_root(log_dir))
 
     if not args.skip_download:
         print(f"Downloading recent {symbol} ticks (last {args.days_back} days)")
