@@ -573,6 +573,31 @@ What it updates:
 
 The orchestrator is intended to be run every 15 minutes; scheduling is external (cron/systemd/etc.).
 
+## Paper Trading Dashboard
+
+Use the local Streamlit dashboard to monitor paper-trading outputs and system health.
+
+Install Streamlit:
+
+```bash
+pip install streamlit
+```
+
+Run dashboard:
+
+```bash
+streamlit run dashboard.py
+```
+
+The dashboard reads from:
+
+- `paper_trading/state/open_positions.csv`
+- `paper_trading/state/closed_positions.csv`
+- `paper_trading/state/equity_curve.csv`
+- `paper_trading/logs/orchestrator_log.csv`
+- `paper_trading/logs/execution_log.csv`
+- `paper_trading/signals/`
+
 ## Running diagnostics
 
 ```bash
