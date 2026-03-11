@@ -632,6 +632,20 @@ This writes:
 - `outputs/ny_impulse_mean_reversion_diagnostics/stress_metrics.json`
 - `outputs/ny_impulse_mean_reversion_diagnostics/summary.json`
 
+Run NY impulse volatility-regime analysis:
+
+```bash
+python scripts/analyze_ny_impulse_volatility_regime.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --trades outputs/ny_impulse_exit_models_extended/atr_1_0/trades.parquet \
+  --output-dir outputs/ny_impulse_volatility_regime
+```
+
+This writes:
+
+- `outputs/ny_impulse_volatility_regime/volatility_regime_summary.json`
+- `outputs/ny_impulse_volatility_regime/volatility_regime_trades.csv`
+
 Run false-breakout side/window segmentation experiments:
 
 ```bash
