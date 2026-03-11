@@ -32,6 +32,10 @@ from eurusd_quant.strategies.ny_impulse_mean_reversion import (
     NYImpulseMeanReversionStrategy,
 )
 from eurusd_quant.strategies.session_breakout import SessionBreakoutConfig, SessionRangeBreakoutStrategy
+from eurusd_quant.strategies.vwap_intraday_reversion import (
+    VWAPIntradayReversionConfig,
+    VWAPIntradayReversionStrategy,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -80,6 +84,11 @@ def main() -> None:
             strategy_cfg_all["ny_impulse_mean_reversion"]
         )
         strategy = NYImpulseMeanReversionStrategy(strategy_cfg)
+    elif args.strategy == "vwap_intraday_reversion":
+        strategy_cfg = VWAPIntradayReversionConfig.from_dict(
+            strategy_cfg_all["vwap_intraday_reversion"]
+        )
+        strategy = VWAPIntradayReversionStrategy(strategy_cfg)
     else:
         raise ValueError(f"Strategy wired in config but not implemented in runner: {args.strategy}")
 
