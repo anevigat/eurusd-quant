@@ -354,6 +354,22 @@ This writes:
 - `outputs/ny_impulse_yearly_stability/yearly_stats.csv`
 - `outputs/ny_impulse_yearly_stability/equity_curve.csv`
 
+## NY impulse walk-forward validation
+
+Run rolling walk-forward validation (`train=3y`, `test=1y`) with frozen NY impulse
+configuration: p90 threshold, `0.50` entry ratio, ATR target exit (`atr_target_multiple=1.0`).
+
+```bash
+.venv/bin/python scripts/run_ny_impulse_walkforward.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-root outputs/ny_impulse_walkforward
+```
+
+This writes:
+
+- `outputs/ny_impulse_walkforward/walkforward_summary.csv`
+- `outputs/ny_impulse_walkforward/equity_curve.csv`
+
 ## Running diagnostics
 
 ```bash
