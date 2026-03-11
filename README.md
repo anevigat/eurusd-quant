@@ -399,6 +399,22 @@ This writes:
 - `outputs/ny_impulse_execution_stress/slippage_2pip/trades.parquet`
 - `outputs/ny_impulse_execution_stress/summary.json`
 
+## Live signal engine (paper trading)
+
+Run the NY impulse paper-trading signal engine on the latest available 15m bars:
+
+```bash
+python scripts/run_live_signal_engine.py \
+  --bars-file data/bars/15m/latest.parquet \
+  --output-dir signals \
+  --log-dir paper_trading_log
+```
+
+This writes:
+
+- `signals/YYYY-MM-DD_HHMM.json`
+- `paper_trading_log/signals_log.csv`
+
 ## Running diagnostics
 
 ```bash
