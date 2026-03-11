@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 UPDATE_SCRIPT = ROOT / "scripts" / "update_recent_bars.py"
 LIVE_SCRIPT = ROOT / "scripts" / "run_live_signal_engine.py"
 SIM_SCRIPT = ROOT / "scripts" / "run_paper_trading_simulator.py"
+LAYOUT_DIRS = ("signals", "state", "logs", "reports")
 
 
 def parse_args() -> argparse.Namespace:
@@ -19,8 +20,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--symbol", default="EURUSD")
     parser.add_argument("--days-back", type=int, default=7)
     parser.add_argument("--bars-file", default="data/bars/15m/eurusd_bars_latest.parquet")
-    parser.add_argument("--signals-dir", default="signals")
-    parser.add_argument("--log-dir", default="paper_trading_log")
+    parser.add_argument("--signals-dir", default="paper_trading/signals")
+    parser.add_argument("--state-dir", default="paper_trading/state")
+    parser.add_argument("--log-dir", default="paper_trading/logs")
     parser.add_argument("--strategy", default="ny_impulse_mean_reversion")
     parser.add_argument("--all-strategies", action="store_true")
     parser.add_argument("--skip-download", action="store_true")
@@ -30,6 +32,18 @@ def parse_args() -> argparse.Namespace:
 
 def utc_now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def infer_layout_root(*paths: Path) -> Path:
+    for path in paths:
+        if path.name in LAYOUT_DIRS:
+            return path.parent
+    return Path("paper_trading")
+
+
+def ensure_paper_trading_layout(root: Path) -> None:
+    for name in LAYOUT_DIRS:
+        (root / name).mkdir(parents=True, exist_ok=True)
 
 
 def append_orchestrator_log(log_file: Path, step: str, status: str, message: str) -> None:
@@ -96,7 +110,12 @@ def run_step_with_parse(step: str, cmd: list[str], log_file: Path, parser_fn) ->
 def main() -> None:
     args = parse_args()
 
-    log_file = Path(args.log_dir) / "orchestrator_log.csv"
+    signals_dir = Path(args.signals_dir)
+    state_dir = Path(args.state_dir)
+    log_dir = Path(args.log_dir)
+    ensure_paper_trading_layout(infer_layout_root(signals_dir, state_dir, log_dir))
+
+    log_file = log_dir / "orchestrator_log.csv"
     bars_dir = str(Path(args.bars_file).parent)
 
     update_cmd = [
@@ -109,7 +128,7 @@ def main() -> None:
         "--bars-dir",
         bars_dir,
         "--log-dir",
-        args.log_dir,
+        str(log_dir),
     ]
     if args.skip_download:
         update_cmd.append("--skip-download")
@@ -122,9 +141,9 @@ def main() -> None:
         "--bars-file",
         args.bars_file,
         "--output-dir",
-        args.signals_dir,
+        str(signals_dir),
         "--log-dir",
-        args.log_dir,
+        str(log_dir),
     ]
     if args.all_strategies:
         live_cmd.append("--all-strategies")
@@ -135,11 +154,13 @@ def main() -> None:
         sys.executable,
         str(SIM_SCRIPT),
         "--signals-dir",
-        args.signals_dir,
+        str(signals_dir),
         "--bars-file",
         args.bars_file,
+        "--state-dir",
+        str(state_dir),
         "--log-dir",
-        args.log_dir,
+        str(log_dir),
     ]
 
     print("[1/3] Updating recent bars...")

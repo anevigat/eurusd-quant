@@ -30,17 +30,32 @@ CLOSED_COLS = [
     "exit_reason",
 ]
 EQUITY_COLS = ["timestamp", "equity"]
+EXECUTION_LOG_COLS = ["timestamp", "event", "strategy", "symbol", "message"]
+LAYOUT_DIRS = ("signals", "state", "logs", "reports")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run paper trading simulator from live signal files")
-    parser.add_argument("--signals-dir", default="signals", help="Directory with signal JSON files")
+    parser.add_argument(
+        "--signals-dir",
+        default="paper_trading/signals",
+        help="Directory with signal JSON files",
+    )
     parser.add_argument(
         "--bars-file",
         default="data/bars/15m/eurusd_bars_latest.parquet",
         help="Latest bars parquet used for stop/target checks",
     )
-    parser.add_argument("--log-dir", default="paper_trading_log", help="Directory for trade/equity logs")
+    parser.add_argument(
+        "--state-dir",
+        default="paper_trading/state",
+        help="Directory for open/closed positions and equity state",
+    )
+    parser.add_argument(
+        "--log-dir",
+        default="paper_trading/logs",
+        help="Directory for execution logs",
+    )
     return parser.parse_args()
 
 
@@ -69,6 +84,28 @@ def write_csv(df: pd.DataFrame, path: Path, columns: list[str]) -> None:
     else:
         out = out[columns]
     out.to_csv(path, index=False)
+
+
+def infer_layout_root(*paths: Path) -> Path:
+    for path in paths:
+        if path.name in LAYOUT_DIRS:
+            return path.parent
+    return Path("paper_trading")
+
+
+def ensure_paper_trading_layout(root: Path) -> None:
+    for name in LAYOUT_DIRS:
+        (root / name).mkdir(parents=True, exist_ok=True)
+
+
+def append_execution_log(log_file: Path, rows: list[dict]) -> None:
+    if not rows:
+        return
+    log_file.parent.mkdir(parents=True, exist_ok=True)
+    write_header = not log_file.exists()
+    with log_file.open("a", newline="", encoding="utf-8") as f:
+        writer = pd.DataFrame(rows, columns=EXECUTION_LOG_COLS)
+        writer.to_csv(f, header=write_header, index=False)
 
 
 def latest_signal_file(signals_dir: Path) -> Path | None:
@@ -114,14 +151,25 @@ def main() -> None:
     latest_bar = bars.iloc[-1]
     latest_bar_ts = latest_bar["timestamp"]
 
+    signals_dir = Path(args.signals_dir)
+    state_dir = Path(args.state_dir)
     log_dir = Path(args.log_dir)
-    open_path = log_dir / "trades_open.csv"
-    closed_path = log_dir / "trades_closed.csv"
-    equity_path = log_dir / "equity_curve.csv"
+    ensure_paper_trading_layout(infer_layout_root(signals_dir, state_dir, log_dir))
+    signals_dir.mkdir(parents=True, exist_ok=True)
+    state_dir.mkdir(parents=True, exist_ok=True)
+    log_dir.mkdir(parents=True, exist_ok=True)
+
+    open_path = state_dir / "open_positions.csv"
+    closed_path = state_dir / "closed_positions.csv"
+    equity_path = state_dir / "equity_curve.csv"
+    execution_log_path = log_dir / "execution_log.csv"
+    if not execution_log_path.exists():
+        pd.DataFrame(columns=EXECUTION_LOG_COLS).to_csv(execution_log_path, index=False)
 
     open_df = read_csv_or_empty(open_path, OPEN_COLS)
     closed_df = read_csv_or_empty(closed_path, CLOSED_COLS)
     equity_df = read_csv_or_empty(equity_path, EQUITY_COLS)
+    execution_events: list[dict] = []
 
     # Step 1: monitor existing open trades against the latest bar.
     closed_rows: list[dict] = []
@@ -159,6 +207,15 @@ def main() -> None:
                 "exit_reason": exit_reason,
             }
         )
+        execution_events.append(
+            {
+                "timestamp": latest_bar_ts.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "event": "trade_closed_target" if exit_reason == "take_profit" else "trade_closed_stop",
+                "strategy": str(row["strategy"]),
+                "symbol": str(row["symbol"]),
+                "message": f"side={side} pnl_pips={pnl_pips:.2f}",
+            }
+        )
 
         print(f"Trade closed: {'TP hit' if exit_reason == 'take_profit' else 'SL hit'}")
         sign = "+" if pnl_pips >= 0 else ""
@@ -167,11 +224,20 @@ def main() -> None:
     updated_open_df = pd.DataFrame(remaining_rows, columns=OPEN_COLS)
 
     # Step 2: open a trade from the latest signal file if it is a real signal and not already tracked.
-    signal_file = latest_signal_file(Path(args.signals_dir))
+    signal_file = latest_signal_file(signals_dir)
     opened_new = False
     if signal_file is not None:
         signal = load_signal(signal_file)
         if signal.get("signal") != "none":
+            execution_events.append(
+                {
+                    "timestamp": str(signal["timestamp"]),
+                    "event": "signal_consumed",
+                    "strategy": str(signal.get("strategy", "")),
+                    "symbol": str(signal.get("symbol", "")),
+                    "message": signal_file.name,
+                }
+            )
             signal_ts = str(signal["timestamp"])
             signal_key = (
                 signal_ts,
@@ -204,6 +270,15 @@ def main() -> None:
                     ignore_index=True,
                 )
                 opened_new = True
+                execution_events.append(
+                    {
+                        "timestamp": signal_ts,
+                        "event": "trade_opened",
+                        "strategy": open_row["strategy"],
+                        "symbol": open_row["symbol"],
+                        "message": f"side={open_row['side']} entry={open_row['entry_price']}",
+                    }
+                )
 
                 print(
                     f"Open trade: {'BUY' if open_row['side'] == 'long' else 'SELL'} "
@@ -230,6 +305,7 @@ def main() -> None:
             equity_rows.append({"timestamp": row["exit_time"], "equity": running_equity})
         equity_df = pd.concat([equity_df, pd.DataFrame(equity_rows, columns=EQUITY_COLS)], ignore_index=True)
     write_csv(equity_df, equity_path, EQUITY_COLS)
+    append_execution_log(execution_log_path, execution_events)
 
     if not opened_new and not closed_rows:
         print(latest_bar_ts.tz_convert("UTC").strftime("%Y-%m-%d %H:%M UTC"))
