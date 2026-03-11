@@ -9,6 +9,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [London pullback continuation strategy summary](docs/strategy_london_pullback_continuation.md)
 - [London pullback continuation (refined) diagnostic summary](docs/strategy_london_pullback_continuation_refined.md)
 - [VWAP intraday reversion summary (researched but not promising, MVP tested)](docs/strategy_vwap_intraday_reversion.md)
+- [Multi-day momentum continuation diagnostic summary](docs/strategy_multi_day_momentum_continuation.md)
 - [Asian range compression breakout strategy summary](docs/strategy_asian_range_compression_breakout.md)
 - [London opening range breakout diagnostic summary](docs/strategy_london_range_breakout.md)
 - [NY impulse mean reversion strategy summary](docs/strategy_ny_impulse_mean_reversion.md)
@@ -914,6 +915,22 @@ Outputs:
 - `outputs/vwap_intraday_reversion_diagnostic/summary.json`
 - `outputs/vwap_intraday_reversion_diagnostic/daily_metrics.csv`
 - `outputs/vwap_intraday_reversion_diagnostic/distribution.csv`
+
+## Multi-day Momentum Continuation diagnostic
+
+Analyze whether strong daily momentum moves continue over the next 1-3 trading days:
+
+```bash
+python scripts/analyze_multi_day_momentum_continuation.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/multi_day_momentum_continuation_diagnostic
+```
+
+Outputs:
+
+- `outputs/multi_day_momentum_continuation_diagnostic/summary.json`
+- `outputs/multi_day_momentum_continuation_diagnostic/daily_metrics.csv`
+- `outputs/multi_day_momentum_continuation_diagnostic/distribution.csv`
 
 ## Running excursion analysis
 
