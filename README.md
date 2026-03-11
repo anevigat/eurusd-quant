@@ -399,6 +399,22 @@ This writes:
 - `outputs/ny_impulse_execution_stress/slippage_2pip/trades.parquet`
 - `outputs/ny_impulse_execution_stress/summary.json`
 
+## Market data update pipeline
+
+Update recent market data before running the live signal engine:
+
+```bash
+python scripts/update_recent_bars.py --symbol EURUSD --days-back 7
+```
+
+This pipeline:
+
+1. downloads recent Dukascopy ticks
+2. cleans ticks into `data/cleaned_ticks/EURUSD/eurusd_ticks_recent.parquet`
+3. rebuilds 15m bars
+4. merges into `data/bars/15m/eurusd_bars_latest.parquet` with deduplicated timestamps
+5. appends an update record to `paper_trading_log/data_update_log.csv`
+
 ## Live signal engine (paper trading)
 
 Run the NY impulse paper-trading signal engine on the latest available 15m bars:
