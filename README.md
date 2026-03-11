@@ -8,6 +8,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [False breakout reversal strategy summary](docs/strategy_false_breakout_reversal.md)
 - [London pullback continuation strategy summary](docs/strategy_london_pullback_continuation.md)
 - [Asian range compression breakout strategy summary](docs/strategy_asian_range_compression_breakout.md)
+- [London opening range breakout diagnostic summary](docs/strategy_london_range_breakout.md)
 - [NY impulse mean reversion strategy summary](docs/strategy_ny_impulse_mean_reversion.md)
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
