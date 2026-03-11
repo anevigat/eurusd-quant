@@ -16,6 +16,9 @@ def _config(
     entry_end_utc: str = "15:00",
     allowed_side: str = "both",
     retracement_entry_ratio: float = 0.5,
+    exit_model: str = "retracement",
+    atr_period: int = 14,
+    atr_target_multiple: float = 1.0,
 ) -> NYImpulseMeanReversionConfig:
     return NYImpulseMeanReversionConfig(
         timeframe="15m",
@@ -26,7 +29,10 @@ def _config(
         impulse_threshold_pips=impulse_threshold_pips,
         entry_mode="impulse_midpoint_cross",
         retracement_entry_ratio=retracement_entry_ratio,
+        exit_model=exit_model,
         retracement_target_ratio=0.5,
+        atr_period=atr_period,
+        atr_target_multiple=atr_target_multiple,
         stop_buffer_pips=2.0,
         max_holding_bars=6,
         one_trade_per_day=True,
@@ -192,3 +198,22 @@ def test_retracement_entry_ratio_changes_trigger_level() -> None:
     assert early_order is not None
     assert early_order.side == "short"
     assert mid_order is None
+
+
+def test_atr_exit_target_uses_atr_multiple() -> None:
+    strategy = NYImpulseMeanReversionStrategy(
+        _config(exit_model="atr", atr_period=1, atr_target_multiple=1.0)
+    )
+    _bullish_impulse_setup(strategy)
+    order = strategy.generate_order(
+        _bar("2024-01-02 13:30:00", 1.1012, 1.1013, 1.1002, 1.1004),
+        False,
+        False,
+    )
+    assert order is not None
+
+    # With atr_period=1, ATR at signal bar equals TR of 13:30 bar.
+    # TR = max(1.1013-1.1002, |1.1013-1.1012|, |1.1002-1.1012|) = 0.0011.
+    # Entry reference short = bid_close = 1.10035 -> TP = 1.09925.
+    assert order.stop_loss == pytest.approx(1.1016)
+    assert order.take_profit == pytest.approx(1.09925)

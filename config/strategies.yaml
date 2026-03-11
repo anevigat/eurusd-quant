@@ -73,7 +73,10 @@ ny_impulse_mean_reversion:
   impulse_threshold_pips: 17.5
   entry_mode: "impulse_midpoint_cross"
   retracement_entry_ratio: 0.5
+  exit_model: "retracement"
   retracement_target_ratio: 0.5
+  atr_period: 14
+  atr_target_multiple: 1.0
   stop_buffer_pips: 2.0
   max_holding_bars: 6
   one_trade_per_day: true

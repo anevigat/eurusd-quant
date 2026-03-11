@@ -283,6 +283,38 @@ This writes:
 - `outputs/ny_impulse_threshold_robustness/p95/trades.parquet`
 - `outputs/ny_impulse_threshold_robustness/summary.json`
 
+## NY impulse extended exit models
+
+Compare structured exit models for frozen `ny_impulse_mean_reversion` entry logic
+using p90 threshold and retracement entry ratio `0.50`:
+
+- Retracement exits: `0.25`, `0.50`, `0.75`, `1.00`
+- ATR exits: `0.5 ATR`, `1.0 ATR`, `1.5 ATR`
+
+```bash
+.venv/bin/python scripts/run_ny_impulse_exit_models_extended.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-root outputs/ny_impulse_exit_models_extended
+```
+
+This writes:
+
+- `outputs/ny_impulse_exit_models_extended/retracement_0_25/metrics.json`
+- `outputs/ny_impulse_exit_models_extended/retracement_0_25/trades.parquet`
+- `outputs/ny_impulse_exit_models_extended/retracement_0_50/metrics.json`
+- `outputs/ny_impulse_exit_models_extended/retracement_0_50/trades.parquet`
+- `outputs/ny_impulse_exit_models_extended/retracement_0_75/metrics.json`
+- `outputs/ny_impulse_exit_models_extended/retracement_0_75/trades.parquet`
+- `outputs/ny_impulse_exit_models_extended/retracement_1_00/metrics.json`
+- `outputs/ny_impulse_exit_models_extended/retracement_1_00/trades.parquet`
+- `outputs/ny_impulse_exit_models_extended/atr_0_5/metrics.json`
+- `outputs/ny_impulse_exit_models_extended/atr_0_5/trades.parquet`
+- `outputs/ny_impulse_exit_models_extended/atr_1_0/metrics.json`
+- `outputs/ny_impulse_exit_models_extended/atr_1_0/trades.parquet`
+- `outputs/ny_impulse_exit_models_extended/atr_1_5/metrics.json`
+- `outputs/ny_impulse_exit_models_extended/atr_1_5/trades.parquet`
+- `outputs/ny_impulse_exit_models_extended/summary.json`
+
 ## NY impulse entry trigger experiments
 
 Compare retracement entry trigger levels for frozen `ny_impulse_mean_reversion` with p90 impulse threshold fixed:
