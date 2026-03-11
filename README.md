@@ -671,6 +671,20 @@ These write:
 - `outputs/ny_impulse_impulse_regime/impulse_regime_summary.json`
 - `outputs/ny_impulse_impulse_regime/impulse_regime_trades.csv`
 
+Run NY impulse entry-efficiency analysis:
+
+```bash
+python scripts/analyze_ny_impulse_entry_efficiency.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --trades outputs/ny_impulse_exit_models_extended/atr_1_0/trades.parquet \
+  --output-dir outputs/ny_impulse_entry_efficiency
+```
+
+This writes:
+
+- `outputs/ny_impulse_entry_efficiency/entry_efficiency_summary.json`
+- `outputs/ny_impulse_entry_efficiency/entry_efficiency_per_trade.csv`
+
 Run false-breakout side/window segmentation experiments:
 
 ```bash
