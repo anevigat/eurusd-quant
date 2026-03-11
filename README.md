@@ -7,6 +7,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [Asian session breakout strategy notes](docs/strategy_asian_range_breakout.md)
 - [False breakout reversal strategy summary](docs/strategy_false_breakout_reversal.md)
 - [London pullback continuation strategy summary](docs/strategy_london_pullback_continuation.md)
+- [London pullback continuation (refined) diagnostic summary](docs/strategy_london_pullback_continuation_refined.md)
 - [Asian range compression breakout strategy summary](docs/strategy_asian_range_compression_breakout.md)
 - [London opening range breakout diagnostic summary](docs/strategy_london_range_breakout.md)
 - [NY impulse mean reversion strategy summary](docs/strategy_ny_impulse_mean_reversion.md)
@@ -853,6 +854,22 @@ Outputs:
 - `outputs/london_range_breakout_diagnostic/summary.json`
 - `outputs/london_range_breakout_diagnostic/daily_metrics.csv`
 - `outputs/london_range_breakout_diagnostic/range_distribution.csv`
+
+## London Pullback Continuation (Refined) Diagnostic
+
+Analyze whether strong London opening impulses continue after an intermediate pullback:
+
+```bash
+python scripts/analyze_london_pullback_continuation.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/london_pullback_continuation_refined_diagnostic
+```
+
+Outputs:
+
+- `outputs/london_pullback_continuation_refined_diagnostic/summary.json`
+- `outputs/london_pullback_continuation_refined_diagnostic/daily_metrics.csv`
+- `outputs/london_pullback_continuation_refined_diagnostic/distribution.csv`
 
 ## Running excursion analysis
 
