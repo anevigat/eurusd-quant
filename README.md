@@ -646,6 +646,31 @@ This writes:
 - `outputs/ny_impulse_volatility_regime/volatility_regime_summary.json`
 - `outputs/ny_impulse_volatility_regime/volatility_regime_trades.csv`
 
+Run NY impulse trend-regime analysis:
+
+```bash
+python scripts/analyze_ny_impulse_trend_regime.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --trades outputs/ny_impulse_exit_models_extended/atr_1_0/trades.parquet \
+  --output-dir outputs/ny_impulse_trend_regime
+```
+
+Run NY impulse impulse-size regime analysis:
+
+```bash
+python scripts/analyze_ny_impulse_impulse_size_regime.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --trades outputs/ny_impulse_exit_models_extended/atr_1_0/trades.parquet \
+  --output-dir outputs/ny_impulse_impulse_regime
+```
+
+These write:
+
+- `outputs/ny_impulse_trend_regime/trend_regime_summary.json`
+- `outputs/ny_impulse_trend_regime/trend_regime_trades.csv`
+- `outputs/ny_impulse_impulse_regime/impulse_regime_summary.json`
+- `outputs/ny_impulse_impulse_regime/impulse_regime_trades.csv`
+
 Run false-breakout side/window segmentation experiments:
 
 ```bash
