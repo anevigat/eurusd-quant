@@ -7,9 +7,10 @@ import pandas as pd
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build EURUSD 15m bars from cleaned ticks parquet")
+    parser = argparse.ArgumentParser(description="Build 15m bars from cleaned ticks parquet")
     parser.add_argument("--input-file", default="data/ticks/clean/eurusd_ticks_2023.parquet")
     parser.add_argument("--output-file", default="data/bars/15m/eurusd_bars_15m_2023_raw.parquet")
+    parser.add_argument("--symbol", default="EURUSD")
     return parser.parse_args()
 
 
@@ -37,7 +38,7 @@ def main() -> None:
 
     bars = pd.concat([bid_bars, ask_bars, mid_bars, spread_bars], axis=1).dropna().reset_index()
     bars = bars.rename(columns={"timestamp": "timestamp"})
-    bars["symbol"] = "EURUSD"
+    bars["symbol"] = str(args.symbol).upper()
     bars["timeframe"] = "15m"
 
     ordered_cols = [
