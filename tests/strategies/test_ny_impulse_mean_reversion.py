@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
+from eurusd_quant.execution.models import Position
 from eurusd_quant.strategies.ny_impulse_mean_reversion import (
     NYImpulseMeanReversionConfig,
     NYImpulseMeanReversionStrategy,
@@ -59,7 +60,13 @@ def _bar(
             "mid_high": mid_high,
             "mid_low": mid_low,
             "mid_close": mid_close,
+            "bid_open": mid_open - half,
+            "bid_high": mid_high - half,
+            "bid_low": mid_low - half,
             "bid_close": mid_close - half,
+            "ask_open": mid_open + half,
+            "ask_high": mid_high + half,
+            "ask_low": mid_low + half,
             "ask_close": mid_close + half,
         }
     )
@@ -329,3 +336,43 @@ def test_usdjpy_threshold_blocks_signal_when_impulse_too_small() -> None:
         False,
     )
     assert order is None
+
+
+def test_atr_trailing_exit_initializes_and_trails_for_short() -> None:
+    strategy = NYImpulseMeanReversionStrategy(
+        _config(
+            exit_model="atr_trailing",
+            atr_period=1,
+            atr_target_multiple=1.0,
+        )
+    )
+    _bullish_impulse_setup(strategy)
+    order = strategy.generate_order(
+        _bar("2024-01-02 13:30:00", 1.1012, 1.1013, 1.1002, 1.1004),
+        False,
+        False,
+    )
+    assert order is not None
+
+    position = Position(
+        side="short",
+        symbol="EURUSD",
+        entry_time=pd.Timestamp("2024-01-02 13:45:00", tz="UTC"),
+        entry_price=order.entry_reference,
+        stop_loss=order.stop_loss,
+        take_profit=order.take_profit,
+        bars_held=0,
+        max_holding_bars=order.max_holding_bars,
+        signal_time=order.signal_time,
+        entry_slippage_cost=0.0,
+        entry_spread_cost=0.0,
+    )
+    updated = strategy.update_open_position(
+        _bar("2024-01-02 13:45:00", 1.1004, 1.1005, 1.0996, 1.0998),
+        position,
+    )
+
+    assert updated is not None
+    stop_loss, take_profit = updated
+    assert stop_loss <= order.stop_loss
+    assert take_profit == pytest.approx(order.take_profit)

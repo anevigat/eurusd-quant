@@ -57,6 +57,15 @@ class ExecutionSimulator:
     def has_pending_order(self) -> bool:
         return self._pending_order is not None
 
+    def get_open_position(self) -> Position | None:
+        return self._position
+
+    def update_open_position_brackets(self, stop_loss: float, take_profit: float) -> None:
+        if self._position is None:
+            return
+        self._position.stop_loss = float(stop_loss)
+        self._position.take_profit = float(take_profit)
+
     def process_bar(self, bar: pd.Series) -> None:
         if self._pending_order is not None and self.config.fill_on_next_open:
             self._fill_pending_order(bar)

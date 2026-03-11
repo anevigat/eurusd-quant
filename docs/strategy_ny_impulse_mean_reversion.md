@@ -85,6 +85,35 @@ Result summary:
 - ATR exits were consistently competitive.
 - `atr_1.0` was selected as the baseline operational configuration for downstream stress/walk-forward tests.
 
+### 3b. Exit engine refactor and extended exit grid
+
+Exit logic was refactored into pluggable models so entry logic stays unchanged while exits are swapped
+without strategy rewrites. Grid run:
+
+- `retracement_0_50`
+- `retracement_0_75`
+- `atr_1_0`
+- `atr_1_5`
+- `atr_trailing_0_8`
+- `breakeven_atr_trailing`
+
+Results (`2018-2024`, frozen entry config):
+
+| exit_model | trades | win_rate | profit_factor | net_pnl | max_drawdown |
+|---|---:|---:|---:|---:|---:|
+| retracement_0_50 | 99 | 0.6364 | 1.5577 | 0.034310 | 0.011862 |
+| retracement_0_75 | 99 | 0.5859 | 1.6746 | 0.046344 | 0.017609 |
+| atr_1_0 | 99 | 0.6465 | 1.7408 | 0.042471 | 0.011239 |
+| atr_1_5 | 99 | 0.5859 | 1.7194 | 0.049931 | 0.015574 |
+| atr_trailing_0_8 | 99 | 0.4141 | 1.1660 | 0.008890 | 0.011599 |
+| breakeven_atr_trailing | 99 | 0.4242 | 1.3750 | 0.017155 | 0.010185 |
+
+Interpretation:
+
+- trailing variants improved drawdown modestly but underperformed fixed-target exits on net PnL and PF.
+- best PF remained `atr_1_0`; best net PnL in this grid was `atr_1_5`.
+- current preferred operational baseline remains `atr_1_0` for robustness balance.
+
 ### 4. Execution stress tests
 
 Scenarios:
@@ -302,6 +331,7 @@ Operational outputs:
 - `outputs/ny_impulse_threshold_experiments/`
 - `outputs/ny_impulse_entry_experiments/`
 - `outputs/ny_impulse_exit_models_extended/`
+- `outputs/ny_impulse_exit_grid/`
 - `outputs/ny_impulse_execution_stress/`
 - `outputs/ny_impulse_montecarlo/`
 - `outputs/ny_impulse_walkforward/`
