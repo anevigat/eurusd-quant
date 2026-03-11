@@ -8,7 +8,7 @@ import pandas as pd
 from eurusd_quant.data.sessions import in_time_window, parse_hhmm
 from eurusd_quant.execution.models import Order
 from eurusd_quant.strategies.base import BaseStrategy
-from eurusd_quant.utils.fx import infer_pip_size
+from eurusd_quant.utils import normalize_symbol, pips_to_price
 
 
 @dataclass(frozen=True)
@@ -37,7 +37,6 @@ class NYImpulseMeanReversionConfig:
 
 class NYImpulseMeanReversionStrategy(BaseStrategy):
     DEFAULT_SYMBOL = "EURUSD"
-    PIP_SIZE = 0.0001
 
     def __init__(self, config: NYImpulseMeanReversionConfig) -> None:
         self.config = config
@@ -118,7 +117,6 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
     ) -> Order | None:
         timestamp: pd.Timestamp = bar["timestamp"]
         symbol = self._extract_symbol(bar)
-        pip_size = infer_pip_size(symbol)
         bar_day = timestamp.date()
         if self._current_date != bar_day:
             self._reset_day(bar_day)
@@ -146,7 +144,7 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
             return None
 
         impulse_size = self._impulse_high - self._impulse_low
-        threshold = self.config.impulse_threshold_pips * pip_size
+        threshold = pips_to_price(symbol, self.config.impulse_threshold_pips)
         if impulse_size < threshold:
             return None
 
@@ -156,7 +154,7 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
         retracement_level_long = self._impulse_low + (
             self.config.retracement_entry_ratio * impulse_size
         )
-        stop_buffer = self.config.stop_buffer_pips * pip_size
+        stop_buffer = pips_to_price(symbol, self.config.stop_buffer_pips)
         retracement_target = self.config.retracement_target_ratio * impulse_size
         atr_target = (self._atr or 0.0) * self.config.atr_target_multiple
 
@@ -218,4 +216,7 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
         raw_symbol = bar.get("symbol", self.DEFAULT_SYMBOL)
         if pd.isna(raw_symbol):
             return self.DEFAULT_SYMBOL
-        return str(raw_symbol).upper()
+        normalized = normalize_symbol(str(raw_symbol))
+        if not normalized:
+            return self.DEFAULT_SYMBOL
+        return normalized

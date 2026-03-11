@@ -7,7 +7,7 @@ from eurusd_quant.strategies.ny_impulse_mean_reversion import (
     NYImpulseMeanReversionConfig,
     NYImpulseMeanReversionStrategy,
 )
-from eurusd_quant.utils.fx import infer_pip_size
+from eurusd_quant.utils import infer_pip_size
 
 
 def _config(

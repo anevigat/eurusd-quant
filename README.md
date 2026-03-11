@@ -16,6 +16,17 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - Python 3.11+
 - `pandas`, `numpy`, `pyarrow`, `pyyaml`, `pytest`
 
+## FX utility helpers
+
+Shared FX helpers live in `src/eurusd_quant/utils/fx_utils.py`:
+
+- `normalize_symbol`
+- `infer_pip_size`
+- `pips_to_price`
+- `price_to_pips`
+
+Future strategies should use these helpers for symbol normalization and pip/price conversions instead of hardcoding pair-specific values.
+
 ## Quick Start
 
 ```bash
