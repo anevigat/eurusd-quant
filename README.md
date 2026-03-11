@@ -261,6 +261,10 @@ Run NY impulse mean reversion MVP:
 Hypothesis: large NY opening impulses (`13:00-13:30 UTC`) tend to overreact and mean-revert in
 `13:30-15:00 UTC`, with entry on midpoint cross back against impulse direction.
 
+Extended diagnostics and regime-analysis findings for this strategy are documented in:
+
+- `docs/strategy_ny_impulse_mean_reversion.md`
+
 ```bash
 .venv/bin/python scripts/run_backtest.py \
   --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
