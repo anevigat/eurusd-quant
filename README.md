@@ -370,6 +370,35 @@ This writes:
 - `outputs/ny_impulse_walkforward/walkforward_summary.csv`
 - `outputs/ny_impulse_walkforward/equity_curve.csv`
 
+## NY impulse execution stress test
+
+Evaluate execution robustness for frozen `ny_impulse_mean_reversion` parameters
+(p90 threshold, `0.50` entry ratio, `exit_model=atr`, `atr_target_multiple=1.0`)
+under four scenarios:
+
+- `baseline`
+- `spread_x2`
+- `slippage_1pip`
+- `slippage_2pip`
+
+```bash
+.venv/bin/python scripts/run_ny_impulse_execution_stress.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-root outputs/ny_impulse_execution_stress
+```
+
+This writes:
+
+- `outputs/ny_impulse_execution_stress/baseline/metrics.json`
+- `outputs/ny_impulse_execution_stress/baseline/trades.parquet`
+- `outputs/ny_impulse_execution_stress/spread_x2/metrics.json`
+- `outputs/ny_impulse_execution_stress/spread_x2/trades.parquet`
+- `outputs/ny_impulse_execution_stress/slippage_1pip/metrics.json`
+- `outputs/ny_impulse_execution_stress/slippage_1pip/trades.parquet`
+- `outputs/ny_impulse_execution_stress/slippage_2pip/metrics.json`
+- `outputs/ny_impulse_execution_stress/slippage_2pip/trades.parquet`
+- `outputs/ny_impulse_execution_stress/summary.json`
+
 ## Running diagnostics
 
 ```bash
