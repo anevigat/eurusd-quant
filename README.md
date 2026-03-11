@@ -426,10 +426,40 @@ python scripts/run_live_signal_engine.py \
   --log-dir paper_trading_log
 ```
 
+Select a strategy explicitly (default is `ny_impulse_mean_reversion`):
+
+```bash
+python scripts/run_live_signal_engine.py \
+  --bars-file data/bars/15m/latest.parquet \
+  --strategy ny_impulse_mean_reversion
+```
+
+Evaluate all registered live strategies:
+
+```bash
+python scripts/run_live_signal_engine.py \
+  --bars-file data/bars/15m/latest.parquet \
+  --all-strategies
+```
+
 This writes:
 
 - `signals/YYYY-MM-DD_HHMM.json`
 - `paper_trading_log/signals_log.csv`
+
+## Strategy registry architecture
+
+Live strategies are loaded through a registry so the engine code does not need strategy-specific edits.
+
+- Base interface: `src/eurusd_quant/live/base_strategy.py`
+- Registry: `src/eurusd_quant/live/strategy_registry.py`
+- NY adapter: `src/eurusd_quant/live/strategies/ny_impulse_live.py`
+
+To add a new live strategy:
+
+1. Implement `LiveStrategy` with `name()` and `evaluate_latest(bars)` in `src/eurusd_quant/live/strategies/`.
+2. Register it in `strategy_registry.py` with `register_strategy(\"your_name\", YourStrategyClass)`.
+3. Run with `--strategy your_name` or `--all-strategies`.
 
 ## Paper trading simulator
 
