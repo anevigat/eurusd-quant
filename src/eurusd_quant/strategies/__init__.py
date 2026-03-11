@@ -9,6 +9,7 @@ from .london_pullback_continuation import (
 )
 from .ny_impulse_mean_reversion import NYImpulseMeanReversionConfig, NYImpulseMeanReversionStrategy
 from .session_breakout import SessionBreakoutConfig, SessionRangeBreakoutStrategy
+from .vwap_intraday_reversion import VWAPIntradayReversionConfig, VWAPIntradayReversionStrategy
 
 __all__ = [
     "AsianRangeCompressionBreakoutConfig",
@@ -21,4 +22,6 @@ __all__ = [
     "LondonPullbackContinuationStrategy",
     "NYImpulseMeanReversionConfig",
     "NYImpulseMeanReversionStrategy",
+    "VWAPIntradayReversionConfig",
+    "VWAPIntradayReversionStrategy",
 ]

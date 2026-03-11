@@ -209,6 +209,7 @@ Available strategies:
 - `false_breakout_reversal` (MVP research hypothesis; not a validated edge)
 - `london_pullback_continuation` (MVP research hypothesis; not a validated edge)
 - `ny_impulse_mean_reversion` (MVP research hypothesis; not a validated edge)
+- `vwap_intraday_reversion` (MVP research hypothesis; not a validated edge)
 
 Run on fixture data:
 
@@ -280,6 +281,32 @@ Symbol handling for `ny_impulse_mean_reversion`:
 - Symbol is inferred from input bars (not hardcoded).
 - JPY pairs use pip size `0.01` (for example `USDJPY`).
 - Non-JPY FX pairs use pip size `0.0001` (for example `EURUSD`, `GBPUSD`).
+
+## VWAP Intraday Reversion MVP
+
+Hypothesis: when price is far from intraday VWAP proxy during active hours, it may partially
+mean-revert over the next few bars.
+
+Entry logic:
+
+- active window: `07:00-17:00 UTC`
+- compute VWAP proxy from cumulative daily typical price
+- compute `deviation_atr = (mid_close - vwap_proxy) / ATR(14)`
+- short when `deviation_atr >= threshold` (default `2.8`)
+- long when `deviation_atr <= -threshold` (default `-2.8`)
+
+Exit logic:
+
+- stop: `1.0 * ATR(14)`
+- target: `0.5 * abs(entry_reference - vwap_at_entry)` toward VWAP
+- time exit: `max_holding_bars = 4`
+
+```bash
+.venv/bin/python scripts/run_backtest.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --strategy vwap_intraday_reversion \
+  --output-dir outputs/vwap_intraday_reversion_smoke
+```
 
 Backtest outputs:
 
