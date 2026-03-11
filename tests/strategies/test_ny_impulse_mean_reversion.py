@@ -7,6 +7,7 @@ from eurusd_quant.strategies.ny_impulse_mean_reversion import (
     NYImpulseMeanReversionConfig,
     NYImpulseMeanReversionStrategy,
 )
+from eurusd_quant.utils.fx import infer_pip_size
 
 
 def _config(
@@ -47,11 +48,13 @@ def _bar(
     mid_low: float,
     mid_close: float,
     spread: float = 0.0001,
+    symbol: str = "EURUSD",
 ) -> pd.Series:
     half = spread / 2.0
     return pd.Series(
         {
             "timestamp": pd.Timestamp(ts, tz="UTC"),
+            "symbol": symbol,
             "mid_open": mid_open,
             "mid_high": mid_high,
             "mid_low": mid_low,
@@ -62,14 +65,14 @@ def _bar(
     )
 
 
-def _bullish_impulse_setup(strategy: NYImpulseMeanReversionStrategy) -> None:
+def _bullish_impulse_setup(strategy: NYImpulseMeanReversionStrategy, *, symbol: str = "EURUSD") -> None:
     strategy.generate_order(
-        _bar("2024-01-02 13:00:00", 1.1000, 1.1010, 1.0998, 1.1008),
+        _bar("2024-01-02 13:00:00", 1.1000, 1.1010, 1.0998, 1.1008, symbol=symbol),
         False,
         False,
     )
     strategy.generate_order(
-        _bar("2024-01-02 13:15:00", 1.1008, 1.1014, 1.1006, 1.1012),
+        _bar("2024-01-02 13:15:00", 1.1008, 1.1014, 1.1006, 1.1012, symbol=symbol),
         False,
         False,
     )
@@ -217,3 +220,112 @@ def test_atr_exit_target_uses_atr_multiple() -> None:
     # Entry reference short = bid_close = 1.10035 -> TP = 1.09925.
     assert order.stop_loss == pytest.approx(1.1016)
     assert order.take_profit == pytest.approx(1.09925)
+
+
+def test_infer_pip_size_for_common_pairs() -> None:
+    assert infer_pip_size("EURUSD") == pytest.approx(0.0001)
+    assert infer_pip_size("GBPUSD") == pytest.approx(0.0001)
+    assert infer_pip_size("USDJPY") == pytest.approx(0.01)
+
+
+def test_generated_order_uses_symbol_from_input_bars() -> None:
+    strategy = NYImpulseMeanReversionStrategy(_config())
+    _bullish_impulse_setup(strategy, symbol="GBPUSD")
+    order = strategy.generate_order(
+        _bar("2024-01-02 13:30:00", 1.1012, 1.1013, 1.1002, 1.1004, symbol="GBPUSD"),
+        False,
+        False,
+    )
+    assert order is not None
+    assert order.symbol == "GBPUSD"
+
+
+def test_usdjpy_uses_jpy_pip_size_for_threshold_and_stop_buffer() -> None:
+    strategy = NYImpulseMeanReversionStrategy(_config(impulse_threshold_pips=30.0))
+    strategy.generate_order(
+        _bar(
+            "2024-01-02 13:00:00",
+            150.00,
+            150.20,
+            149.90,
+            150.15,
+            spread=0.01,
+            symbol="USDJPY",
+        ),
+        False,
+        False,
+    )
+    strategy.generate_order(
+        _bar(
+            "2024-01-02 13:15:00",
+            150.15,
+            150.25,
+            150.10,
+            150.22,
+            spread=0.01,
+            symbol="USDJPY",
+        ),
+        False,
+        False,
+    )
+    order = strategy.generate_order(
+        _bar(
+            "2024-01-02 13:30:00",
+            150.22,
+            150.23,
+            150.00,
+            150.05,
+            spread=0.01,
+            symbol="USDJPY",
+        ),
+        False,
+        False,
+    )
+    assert order is not None
+    assert order.symbol == "USDJPY"
+    assert order.stop_loss == pytest.approx(150.27)
+    assert order.take_profit == pytest.approx(149.87)
+
+
+def test_usdjpy_threshold_blocks_signal_when_impulse_too_small() -> None:
+    strategy = NYImpulseMeanReversionStrategy(_config(impulse_threshold_pips=40.0))
+    strategy.generate_order(
+        _bar(
+            "2024-01-02 13:00:00",
+            150.00,
+            150.20,
+            149.90,
+            150.15,
+            spread=0.01,
+            symbol="USDJPY",
+        ),
+        False,
+        False,
+    )
+    strategy.generate_order(
+        _bar(
+            "2024-01-02 13:15:00",
+            150.15,
+            150.25,
+            150.10,
+            150.22,
+            spread=0.01,
+            symbol="USDJPY",
+        ),
+        False,
+        False,
+    )
+    order = strategy.generate_order(
+        _bar(
+            "2024-01-02 13:30:00",
+            150.22,
+            150.23,
+            150.00,
+            150.05,
+            spread=0.01,
+            symbol="USDJPY",
+        ),
+        False,
+        False,
+    )
+    assert order is None

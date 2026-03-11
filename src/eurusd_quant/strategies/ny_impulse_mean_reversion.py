@@ -8,6 +8,7 @@ import pandas as pd
 from eurusd_quant.data.sessions import in_time_window, parse_hhmm
 from eurusd_quant.execution.models import Order
 from eurusd_quant.strategies.base import BaseStrategy
+from eurusd_quant.utils.fx import infer_pip_size
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,7 @@ class NYImpulseMeanReversionConfig:
 
 
 class NYImpulseMeanReversionStrategy(BaseStrategy):
+    DEFAULT_SYMBOL = "EURUSD"
     PIP_SIZE = 0.0001
 
     def __init__(self, config: NYImpulseMeanReversionConfig) -> None:
@@ -115,6 +117,8 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
         has_pending_order: bool,
     ) -> Order | None:
         timestamp: pd.Timestamp = bar["timestamp"]
+        symbol = self._extract_symbol(bar)
+        pip_size = infer_pip_size(symbol)
         bar_day = timestamp.date()
         if self._current_date != bar_day:
             self._reset_day(bar_day)
@@ -142,7 +146,7 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
             return None
 
         impulse_size = self._impulse_high - self._impulse_low
-        threshold = self.config.impulse_threshold_pips * self.PIP_SIZE
+        threshold = self.config.impulse_threshold_pips * pip_size
         if impulse_size < threshold:
             return None
 
@@ -152,7 +156,7 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
         retracement_level_long = self._impulse_low + (
             self.config.retracement_entry_ratio * impulse_size
         )
-        stop_buffer = self.config.stop_buffer_pips * self.PIP_SIZE
+        stop_buffer = self.config.stop_buffer_pips * pip_size
         retracement_target = self.config.retracement_target_ratio * impulse_size
         atr_target = (self._atr or 0.0) * self.config.atr_target_multiple
 
@@ -172,7 +176,7 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
             if stop_loss > entry_reference and take_profit < entry_reference:
                 self._traded_today = True
                 return Order(
-                    symbol="EURUSD",
+                    symbol=symbol,
                     timeframe="15m",
                     side="short",
                     signal_time=timestamp,
@@ -198,7 +202,7 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
             if stop_loss < entry_reference and take_profit > entry_reference:
                 self._traded_today = True
                 return Order(
-                    symbol="EURUSD",
+                    symbol=symbol,
                     timeframe="15m",
                     side="long",
                     signal_time=timestamp,
@@ -209,3 +213,9 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
                 )
 
         return None
+
+    def _extract_symbol(self, bar: pd.Series) -> str:
+        raw_symbol = bar.get("symbol", self.DEFAULT_SYMBOL)
+        if pd.isna(raw_symbol):
+            return self.DEFAULT_SYMBOL
+        return str(raw_symbol).upper()
