@@ -10,6 +10,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [London pullback continuation (refined) diagnostic summary](docs/strategy_london_pullback_continuation_refined.md)
 - [VWAP intraday reversion summary (researched but not promising, MVP tested)](docs/strategy_vwap_intraday_reversion.md)
 - [Multi-day momentum continuation diagnostic summary](docs/strategy_multi_day_momentum_continuation.md)
+- [Filtered London breakout diagnostic summary](docs/strategy_filtered_london_breakout.md)
 - [Asian range compression breakout strategy summary](docs/strategy_asian_range_compression_breakout.md)
 - [London opening range breakout diagnostic summary](docs/strategy_london_range_breakout.md)
 - [NY impulse mean reversion strategy summary](docs/strategy_ny_impulse_mean_reversion.md)
@@ -931,6 +932,22 @@ Outputs:
 - `outputs/multi_day_momentum_continuation_diagnostic/summary.json`
 - `outputs/multi_day_momentum_continuation_diagnostic/daily_metrics.csv`
 - `outputs/multi_day_momentum_continuation_diagnostic/distribution.csv`
+
+## Filtered London Breakout diagnostic
+
+Analyze London breakout behavior with an Asian-range compression filter and close-confirmed breakout rule:
+
+```bash
+python scripts/analyze_filtered_london_breakout.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/filtered_london_breakout_diagnostic
+```
+
+Outputs:
+
+- `outputs/filtered_london_breakout_diagnostic/summary.json`
+- `outputs/filtered_london_breakout_diagnostic/daily_metrics.csv`
+- `outputs/filtered_london_breakout_diagnostic/distribution.csv`
 
 ## Running excursion analysis
 
