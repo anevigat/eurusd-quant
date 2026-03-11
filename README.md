@@ -124,6 +124,39 @@ Final dataset:
 
 - `data/bars/15m/eurusd_bars_15m_2023.parquet`
 
+## Multi-pair data preparation script
+
+Use the pair-by-pair orchestration script to prepare two ranges for a single pair:
+
+1. `2018-01-01` -> `2024-12-31`
+2. `2025-01-01` -> `today` (UTC by default, or explicit override)
+
+The script runs the full existing pipeline per range:
+
+- download raw ticks
+- retry failed downloads
+- clean ticks
+- build raw 15m bars
+- add session labels
+- validate dataset
+
+Examples:
+
+```bash
+bash scripts/prepare_pair_data.sh EURUSD
+bash scripts/prepare_pair_data.sh GBPUSD
+bash scripts/prepare_pair_data.sh USDJPY 2026-03-11
+```
+
+Outputs follow pair/range naming conventions such as:
+
+- `data/raw/dukascopy/EURUSD_2018_2024`
+- `data/raw/dukascopy/EURUSD_2025_now`
+- `data/cleaned_ticks/EURUSD/2018_2024/eurusd_ticks_2018_2024.parquet`
+- `data/cleaned_ticks/EURUSD/2025_now/eurusd_ticks_2025_now.parquet`
+- `data/bars/15m/eurusd_bars_15m_2018_2024.parquet`
+- `data/bars/15m/eurusd_bars_15m_2025_now.parquet`
+
 ## Dataset validation
 
 Validate cleaned ticks + bars for a target year:
