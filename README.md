@@ -481,6 +481,32 @@ This writes:
 - `paper_trading_log/trades_closed.csv`
 - `paper_trading_log/equity_curve.csv`
 
+## Paper trading loop orchestrator
+
+Run the full paper trading workflow sequentially:
+
+1. update recent bars
+2. run live signal engine
+3. run paper trading simulator
+
+```bash
+python scripts/run_paper_trading_loop.py \
+  --symbol EURUSD \
+  --days-back 7 \
+  --strategy ny_impulse_mean_reversion
+```
+
+What it updates:
+
+- `data/bars/15m/eurusd_bars_latest.parquet`
+- `signals/*.json`
+- `paper_trading_log/trades_open.csv`
+- `paper_trading_log/trades_closed.csv`
+- `paper_trading_log/equity_curve.csv`
+- `paper_trading_log/orchestrator_log.csv`
+
+The orchestrator is intended to be run every 15 minutes; scheduling is external (cron/systemd/etc.).
+
 ## Running diagnostics
 
 ```bash
