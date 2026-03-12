@@ -12,7 +12,9 @@ if str(SRC_DIR) not in sys.path:
 from eurusd_quant.data.dukascopy_downloader import (
     DownloadConfig,
     build_tasks,
+    count_market_closed_hours,
     default_manifest_path,
+    generate_hour_timestamps,
     parse_date_range,
     print_summary,
     run_downloads,
@@ -52,6 +54,8 @@ def main() -> None:
         end_date_str=args.end_date,
     )
     tasks = build_tasks(args.symbol.upper(), start_date, end_date)
+    requested_hours = len(generate_hour_timestamps(start_date, end_date))
+    closed_hours_skipped = count_market_closed_hours(start_date, end_date)
     manifest_path = (
         Path(args.manifest_file)
         if args.manifest_file
@@ -73,8 +77,14 @@ def main() -> None:
     print(
         f"Starting Dukascopy download for {args.symbol.upper()} "
         f"{start_date.isoformat()} -> {end_date.isoformat()} "
-        f"(hours={len(tasks)}, workers={args.max_workers}, resume={args.resume})"
+        f"(workers={args.max_workers}, resume={args.resume})"
     )
+    print(
+        "requested hours: "
+        f"{start_date.isoformat()} 00:00 -> {end_date.isoformat()} 23:00"
+    )
+    print(f"market-closed hours skipped: {closed_hours_skipped}")
+    print(f"hours attempted: {len(tasks)} / {requested_hours}")
     summary = run_downloads(tasks, cfg)
     print_summary(summary)
 
