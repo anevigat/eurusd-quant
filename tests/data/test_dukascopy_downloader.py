@@ -239,6 +239,9 @@ def test_is_expected_no_data_hour_weekend_boundaries() -> None:
     ) is False
     assert is_expected_no_data_hour(
         DownloadTask(symbol="EURUSD", year=2023, month=1, day=6, hour=22)
+    ) is False
+    assert is_expected_no_data_hour(
+        DownloadTask(symbol="EURUSD", year=2023, month=1, day=6, hour=23)
     ) is True
     assert is_expected_no_data_hour(
         DownloadTask(symbol="EURUSD", year=2023, month=1, day=8, hour=21)

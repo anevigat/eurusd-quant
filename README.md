@@ -74,6 +74,7 @@ Raw files are saved under:
 - `data/raw/dukascopy/EURUSD/<year>/<month>/<day>/<hour>h_ticks.bi5`
 - Manifest is written as `data/raw/dukascopy/download_manifest_YYYY.jsonl`
 - Market-closed empty hours are classified as `skipped_no_data` and are not retried
+- Closed-market hours are filtered at task generation (`Saturday`, `Sunday < 22:00 UTC`, `Friday > 22:00 UTC`) so they are not attempted at all. This reduces useless weekend-heavy downloads and speeds range builds.
 
 Resume an interrupted run:
 

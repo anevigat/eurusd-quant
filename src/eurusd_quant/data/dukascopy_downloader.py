@@ -85,14 +85,7 @@ def is_expected_no_data_hour(task: DownloadTask) -> bool:
         hour=task.hour,
         tzinfo=timezone.utc,
     )
-    weekday = ts.weekday()
-    if weekday == 5:
-        return True
-    if weekday == 6 and ts.hour < 22:
-        return True
-    if weekday == 4 and ts.hour >= 22:
-        return True
-    return False
+    return not is_fx_market_open(ts)
 
 
 class ManifestLogger:
@@ -165,8 +158,24 @@ def parse_date_range(
     return start_dt, end_dt
 
 
-def build_tasks(symbol: str, start_date: date, end_date: date) -> list[DownloadTask]:
-    tasks: list[DownloadTask] = []
+def is_fx_market_open(ts: datetime) -> bool:
+    if ts.tzinfo is None:
+        ts_utc = ts.replace(tzinfo=timezone.utc)
+    else:
+        ts_utc = ts.astimezone(timezone.utc)
+
+    weekday = ts_utc.weekday()  # Monday=0, Friday=4, Saturday=5, Sunday=6
+    if weekday == 5:
+        return False
+    if weekday == 6 and ts_utc.hour < 22:
+        return False
+    if weekday == 4 and ts_utc.hour > 22:
+        return False
+    return True
+
+
+def generate_hour_timestamps(start_date: date, end_date: date) -> list[datetime]:
+    timestamps: list[datetime] = []
     current = datetime(
         year=start_date.year,
         month=start_date.month,
@@ -181,6 +190,20 @@ def build_tasks(symbol: str, start_date: date, end_date: date) -> list[DownloadT
         tzinfo=timezone.utc,
     )
     while current <= final:
+        timestamps.append(current)
+        current += timedelta(hours=1)
+    return timestamps
+
+
+def count_market_closed_hours(start_date: date, end_date: date) -> int:
+    return sum(1 for ts in generate_hour_timestamps(start_date, end_date) if not is_fx_market_open(ts))
+
+
+def build_tasks(symbol: str, start_date: date, end_date: date) -> list[DownloadTask]:
+    tasks: list[DownloadTask] = []
+    for current in generate_hour_timestamps(start_date, end_date):
+        if not is_fx_market_open(current):
+            continue
         tasks.append(
             DownloadTask(
                 symbol=symbol,
@@ -190,7 +213,6 @@ def build_tasks(symbol: str, start_date: date, end_date: date) -> list[DownloadT
                 hour=current.hour,
             )
         )
-        current += timedelta(hours=1)
     return tasks
 
 
@@ -403,6 +425,7 @@ def run_downloads(
             "elapsed_seconds": 0.0,
             "first_requested_hour": None,
             "last_requested_hour": None,
+            "manifest_path": str(cfg.manifest_path),
         }
 
     manifest = ManifestLogger(cfg.manifest_path)
@@ -505,10 +528,13 @@ def print_summary(summary: dict[str, object]) -> None:
         f"retries={summary['total_retries']}"
     )
     print(f"elapsed seconds={summary['elapsed_seconds']}")
-    print(
-        "requested hours: "
-        f"{summary['first_requested_hour']} -> {summary['last_requested_hour']}"
-    )
+    if summary["first_requested_hour"] is None:
+        print("requested hours: none (all hours filtered or empty range)")
+    else:
+        print(
+            "requested hours: "
+            f"{summary['first_requested_hour']} -> {summary['last_requested_hour']}"
+        )
     print(f"manifest: {summary['manifest_path']}")
 
 
