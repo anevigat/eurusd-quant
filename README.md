@@ -19,7 +19,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [Session liquidity sweep reversal diagnostic summary](docs/strategy_session_liquidity_sweep_reversal.md)
 - [NY liquidity sweep reversal diagnostic summary](docs/strategy_ny_liquidity_sweep_reversal.md)
 - [Liquidity sweep reversal diagnostic summary](docs/strategy_liquidity_sweep_reversal.md)
-- [London impulse to NY reversal diagnostic summary](docs/strategy_london_impulse_ny_reversal.md)
+- [London impulse to NY reversal summary (includes London-open fade MVP, rejected)](docs/strategy_london_impulse_ny_reversal.md)
 - [Double impulse exhaustion diagnostic summary](docs/strategy_double_impulse_exhaustion.md)
 - [Session VWAP reversion diagnostic summary](docs/strategy_session_vwap_reversion.md)
 - [Double top / double bottom reversal diagnostic summary](docs/strategy_double_top_bottom_reversal.md)
@@ -282,6 +282,7 @@ Available strategies:
 - `ny_impulse_mean_reversion` (MVP research hypothesis; not a validated edge)
 - `compression_breakout` (MVP tested, rejected in current form)
 - `compression_breakout_continuation` (MVP tested, rejected in current form)
+- `london_open_impulse_fade` (MVP tested, rejected in current form)
 - `head_shoulders_reversal` (MVP tested, rejected in current form)
 - `trend_exhaustion_reversal` (MVP tested, rejected in current form)
 - `vwap_intraday_reversion` (MVP research hypothesis; not a validated edge)
@@ -415,6 +416,23 @@ Stricter breakout-gating variant of compression breakout:
   --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
   --strategy compression_breakout_continuation \
   --output-dir outputs/compression_breakout_continuation_smoke
+```
+
+## London Open Impulse Fade MVP
+
+London-open fade variant derived from the London-impulse reversal research:
+
+- setup window: `07:00-08:00 UTC`
+- impulse measured on first `2` bars from `07:00`
+- require strong impulse: `abs(impulse_move) / ATR(14) >= 1.0`
+- entry confirmation by midpoint cross against impulse direction
+- stop: `1.0 * ATR`, target: `1.0 * ATR`, time exit: `6` bars
+
+```bash
+.venv/bin/python scripts/run_backtest.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --strategy london_open_impulse_fade \
+  --output-dir outputs/london_open_impulse_fade_smoke
 ```
 
 ## Exit engine abstraction

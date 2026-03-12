@@ -16,6 +16,10 @@ from .london_pullback_continuation import (
     LondonPullbackContinuationConfig,
     LondonPullbackContinuationStrategy,
 )
+from .london_open_impulse_fade import (
+    LondonOpenImpulseFadeConfig,
+    LondonOpenImpulseFadeStrategy,
+)
 from .ny_impulse_mean_reversion import NYImpulseMeanReversionConfig, NYImpulseMeanReversionStrategy
 from .session_breakout import SessionBreakoutConfig, SessionRangeBreakoutStrategy
 from .trend_exhaustion_reversal import (
@@ -43,6 +47,8 @@ __all__ = [
     "HeadShouldersReversalStrategy",
     "LondonPullbackContinuationConfig",
     "LondonPullbackContinuationStrategy",
+    "LondonOpenImpulseFadeConfig",
+    "LondonOpenImpulseFadeStrategy",
     "NYImpulseMeanReversionConfig",
     "NYImpulseMeanReversionStrategy",
     "TrendExhaustionReversalConfig",
