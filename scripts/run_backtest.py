@@ -32,6 +32,10 @@ from eurusd_quant.strategies.ny_impulse_mean_reversion import (
     NYImpulseMeanReversionStrategy,
 )
 from eurusd_quant.strategies.session_breakout import SessionBreakoutConfig, SessionRangeBreakoutStrategy
+from eurusd_quant.strategies.trend_exhaustion_reversal import (
+    TrendExhaustionReversalConfig,
+    TrendExhaustionReversalStrategy,
+)
 from eurusd_quant.strategies.volatility_expansion_after_compression import (
     VolatilityExpansionAfterCompressionConfig,
     VolatilityExpansionAfterCompressionStrategy,
@@ -98,6 +102,11 @@ def main() -> None:
             strategy_cfg_all["volatility_expansion_after_compression"]
         )
         strategy = VolatilityExpansionAfterCompressionStrategy(strategy_cfg)
+    elif args.strategy == "trend_exhaustion_reversal":
+        strategy_cfg = TrendExhaustionReversalConfig.from_dict(
+            strategy_cfg_all["trend_exhaustion_reversal"]
+        )
+        strategy = TrendExhaustionReversalStrategy(strategy_cfg)
     else:
         raise ValueError(f"Strategy wired in config but not implemented in runner: {args.strategy}")
 

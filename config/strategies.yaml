@@ -106,3 +106,13 @@ volatility_expansion_after_compression:
   target_atr_multiple: 1.5
   max_holding_bars: 8
   one_trade_per_day: false
+
+trend_exhaustion_reversal:
+  timeframe: "15m"
+  atr_period: 14
+  impulse_lookback_bars: 4
+  impulse_threshold_atr: 1.5
+  stop_atr_multiple: 1.0
+  target_atr_multiple: 1.0
+  max_holding_bars: 6
+  one_trade_per_day: false
