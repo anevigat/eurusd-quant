@@ -12,6 +12,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [VWAP band reversion (filtered) research mapping](docs/strategy_vwap_band_reversion_filtered.md)
 - [Multi-day momentum continuation diagnostic summary](docs/strategy_multi_day_momentum_continuation.md)
 - [Filtered London breakout diagnostic summary](docs/strategy_filtered_london_breakout.md)
+- [Session breakout continuation research mapping](docs/strategy_session_breakout_continuation.md)
 - [Asian range compression breakout strategy summary](docs/strategy_asian_range_compression_breakout.md)
 - [London opening range breakout diagnostic summary](docs/strategy_london_range_breakout.md)
 - [Asia drift to London reversal diagnostic summary](docs/strategy_asia_drift_london_reversal.md)
