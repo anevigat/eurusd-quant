@@ -138,3 +138,15 @@ compression_breakout:
   target_atr_multiple: 1.5
   max_holding_bars: 8
   one_trade_per_day: false
+
+compression_breakout_continuation:
+  timeframe: "15m"
+  atr_period: 14
+  compression_median_lookback_bars: 40
+  breakout_lookback_bars: 20
+  compression_threshold: 0.60
+  breakout_close_strength_threshold: 0.70
+  stop_atr_multiple: 1.0
+  target_atr_multiple: 1.5
+  max_holding_bars: 8
+  one_trade_per_day: false

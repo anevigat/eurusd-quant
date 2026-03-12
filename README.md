@@ -28,7 +28,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [Cup and handle breakout diagnostic summary](docs/strategy_cup_handle_breakout.md)
 - [Daily extreme move reversal diagnostic summary](docs/strategy_daily_extreme_move_reversal.md)
 - [Range midpoint reversion diagnostic summary](docs/strategy_range_midpoint_reversion.md)
-- [Volatility expansion after compression summary (MVP variants tested, rejected)](docs/strategy_volatility_expansion_after_compression.md)
+- [Volatility expansion after compression summary (multiple MVP variants tested, all rejected)](docs/strategy_volatility_expansion_after_compression.md)
 - [Break-retest continuation diagnostic summary](docs/strategy_break_retest_continuation.md)
 - [NY impulse mean reversion strategy summary](docs/strategy_ny_impulse_mean_reversion.md)
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
@@ -281,6 +281,7 @@ Available strategies:
 - `london_pullback_continuation` (MVP research hypothesis; not a validated edge)
 - `ny_impulse_mean_reversion` (MVP research hypothesis; not a validated edge)
 - `compression_breakout` (MVP tested, rejected in current form)
+- `compression_breakout_continuation` (MVP tested, rejected in current form)
 - `head_shoulders_reversal` (MVP tested, rejected in current form)
 - `trend_exhaustion_reversal` (MVP tested, rejected in current form)
 - `vwap_intraday_reversion` (MVP research hypothesis; not a validated edge)
@@ -396,6 +397,24 @@ Alternative compression-breakout formulation from event-edge discovery:
   --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
   --strategy compression_breakout \
   --output-dir outputs/compression_breakout_smoke
+```
+
+## Compression Breakout Continuation MVP
+
+Stricter breakout-gating variant of compression breakout:
+
+- same ATR compression regime (`ATR(14) / rolling_median_ATR(40) <= 0.60`)
+- breakout by close beyond prior 20-bar range
+- requires strong candle close location:
+  - long: close in top 30% of bar range
+  - short: close in bottom 30% of bar range
+- stop: `1.0 * ATR`, target: `1.5 * ATR`, time exit: `8` bars
+
+```bash
+.venv/bin/python scripts/run_backtest.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --strategy compression_breakout_continuation \
+  --output-dir outputs/compression_breakout_continuation_smoke
 ```
 
 ## Exit engine abstraction

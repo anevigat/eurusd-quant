@@ -157,3 +157,51 @@ Alternative MVP implementation:
 ### 5. Status
 
 `compression_breakout`: `mvp_implemented_rejected`
+
+## Compression + Breakout Continuation MVP
+
+### 1. Improved breakout logic
+
+Second alternative MVP implementation:
+
+- strategy key: `compression_breakout_continuation`
+- compression:
+  - `compression_ratio = ATR(14) / rolling_median_ATR(40)`
+  - compressed when `compression_ratio <= 0.60`
+- breakout window: prior `20` bars
+- long trigger:
+  - compressed state true
+  - close above prior 20-bar high
+  - close in top 30% of candle range
+- short trigger:
+  - compressed state true
+  - close below prior 20-bar low
+  - close in bottom 30% of candle range
+- execution remains next-bar open via existing simulator
+
+### 2. Exits
+
+- stop: `1.0 * ATR`
+- target: `1.5 * ATR`
+- time exit: `8` bars
+
+### 3. Smoke metrics
+
+- dataset: `data/bars/15m/eurusd_bars_15m_2018_2024.parquet`
+- output: `outputs/compression_breakout_continuation_smoke/`
+- `total_trades`: `1463`
+- `win_rate`: `0.2891`
+- `net_pnl`: `-0.1603`
+- `expectancy`: `-1.0957e-04`
+- `profit_factor`: `0.5218`
+- `max_drawdown`: `0.1603`
+
+### 4. Interpretation
+
+- The stronger close-confirmation filter reduced trade count versus the prior compression breakout variant.
+- Performance remained clearly negative with very weak profit factor and high drawdown.
+- The compression plus structural-breakout continuation formulation still does not show a tradable edge in this MVP form.
+
+### 5. Status
+
+`compression_breakout_continuation`: `mvp_implemented_rejected`
