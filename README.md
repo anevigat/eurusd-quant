@@ -72,6 +72,24 @@ python scripts/analyze_event_combinations.py \
 
 See details in [docs/event_combination_analysis.md](docs/event_combination_analysis.md).
 
+## Event Strategy Parameter Sweeps
+
+Run large parameter grids for event-driven strategy templates (v1: impulse-reversion) and rank top configurations:
+
+```bash
+python scripts/run_event_strategy_sweep.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/event_strategy_sweeps
+```
+
+Key outputs:
+
+- `outputs/event_strategy_sweeps/experiment_results.csv`
+- `outputs/event_strategy_sweeps/top_configs.csv`
+- `outputs/event_strategy_sweeps/summary.json`
+
+See details in [docs/event_strategy_sweeps.md](docs/event_strategy_sweeps.md).
+
 ## Requirements
 
 - Python 3.11+
