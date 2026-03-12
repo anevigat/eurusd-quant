@@ -11,4 +11,4 @@
 | break_retest_continuation | market structure | diagnostic_complete_rejected | docs/strategy_break_retest_continuation.md | outputs/break_retest_continuation_diagnostic/ | researched_but_not_promising |
 | vwap_band_reversion_filtered | intraday mean reversion | already_researched | docs/strategy_vwap_band_reversion_filtered.md | outputs/vwap_intraday_reversion_diagnostic/ | already_researched |
 | session_breakout_continuation | momentum | already_researched | docs/strategy_session_breakout_continuation.md | outputs/london_range_breakout_diagnostic/ | already_researched |
-| multi_day_momentum_continuation | momentum | not_started | docs/strategy_multi_day_momentum_continuation.md | outputs/multi_day_momentum_continuation_diagnostic/ | not_started |
+| multi_day_momentum_continuation | momentum | already_researched | docs/strategy_multi_day_momentum_continuation.md | outputs/multi_day_momentum_continuation_diagnostic/ | already_researched |
