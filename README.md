@@ -307,6 +307,32 @@ Symbol handling for `ny_impulse_mean_reversion`:
 - JPY pairs use pip size `0.01` (for example `USDJPY`).
 - Non-JPY FX pairs use pip size `0.0001` (for example `EURUSD`, `GBPUSD`).
 
+## Volatility Expansion After Compression MVP
+
+Hypothesis: after a compressed volatility regime, directional expansion can be captured on a
+close-confirmed breakout.
+
+Entry logic:
+
+- compute ATR(14) and rolling median ATR over `compression_lookback_bars` (default `40`)
+- compressed regime when `current_atr <= compression_threshold * rolling_median_atr`
+- arm breakout range from rolling window high/low
+- long when `mid_close` breaks above armed range high
+- short when `mid_close` breaks below armed range low
+
+Exit logic:
+
+- stop loss: `1.0 * ATR`
+- take profit: `1.5 * ATR`
+- time exit: `max_holding_bars = 8`
+
+```bash
+.venv/bin/python scripts/run_backtest.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --strategy volatility_expansion_after_compression \
+  --output-dir outputs/volatility_expansion_after_compression_smoke
+```
+
 ## Exit engine abstraction
 
 NY impulse exit behavior now uses modular exit models under `src/eurusd_quant/exits/` so
