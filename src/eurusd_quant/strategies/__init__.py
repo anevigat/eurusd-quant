@@ -2,6 +2,7 @@ from .asian_range_compression_breakout import (
     AsianRangeCompressionBreakoutConfig,
     AsianRangeCompressionBreakoutStrategy,
 )
+from .compression_breakout import CompressionBreakoutConfig, CompressionBreakoutStrategy
 from .false_breakout_reversal import FalseBreakoutReversalConfig, FalseBreakoutReversalStrategy
 from .head_shoulders_reversal import (
     HeadShouldersReversalConfig,
@@ -26,6 +27,8 @@ from .vwap_intraday_reversion import VWAPIntradayReversionConfig, VWAPIntradayRe
 __all__ = [
     "AsianRangeCompressionBreakoutConfig",
     "AsianRangeCompressionBreakoutStrategy",
+    "CompressionBreakoutConfig",
+    "CompressionBreakoutStrategy",
     "SessionBreakoutConfig",
     "SessionRangeBreakoutStrategy",
     "FalseBreakoutReversalConfig",

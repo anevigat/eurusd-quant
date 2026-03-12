@@ -116,3 +116,44 @@ MVP smoke outputs:
 - `outputs/volatility_expansion_after_compression_smoke/`
 - `outputs/volatility_expansion_after_compression_smoke/metrics.json`
 - `outputs/volatility_expansion_after_compression_smoke/trades.parquet`
+
+## Alternative Compression Breakout MVP
+
+### 1. Compression rule and trigger
+
+Alternative MVP implementation:
+
+- strategy key: `compression_breakout`
+- ATR(14) compression ratio:
+  - `compression_ratio = ATR(14) / rolling_median_ATR(40)`
+- compressed when `compression_ratio <= 0.60`
+- breakout reference window: prior `20` bars
+- long trigger: close above prior 20-bar high while compressed
+- short trigger: close below prior 20-bar low while compressed
+- next-bar execution via existing simulator
+
+### 2. Exits
+
+- stop: `1.0 * ATR`
+- target: `1.5 * ATR`
+- time exit: `8` bars
+
+### 3. Smoke metrics
+
+- dataset: `data/bars/15m/eurusd_bars_15m_2018_2024.parquet`
+- output: `outputs/compression_breakout_smoke/`
+- `total_trades`: `1766`
+- `win_rate`: `0.3029`
+- `net_pnl`: `-0.1710`
+- `expectancy`: `-9.68e-05`
+- `profit_factor`: `0.5642`
+- `max_drawdown`: `0.1705`
+
+### 4. Interpretation
+
+- This variant remains unprofitable with lower win rate and lower profit factor than the prior volatility-expansion MVP.
+- The core compression-expansion observation still does not translate into a robust tradable breakout formulation in this simple design.
+
+### 5. Status
+
+`compression_breakout`: `mvp_implemented_rejected`
