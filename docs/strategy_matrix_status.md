@@ -7,6 +7,7 @@
 | ny_liquidity_sweep_reversal | session mean reversion | diagnostic_complete_rejected | docs/strategy_ny_liquidity_sweep_reversal.md | outputs/ny_liquidity_sweep_reversal_diagnostic/ | researched_but_not_promising |
 | liquidity_sweep_reversal | liquidity pattern / mean reversion | diagnostic_complete_rejected | docs/strategy_liquidity_sweep_reversal.md | outputs/liquidity_sweep_reversal_diagnostic/ | researched_but_not_promising |
 | london_impulse_ny_reversal | session transition mean reversion | diagnostic_complete_rejected | docs/strategy_london_impulse_ny_reversal.md | outputs/london_impulse_ny_reversal_diagnostic/ | researched_but_not_promising |
+| london_open_impulse_fade | session transition mean reversion | mvp_implemented_rejected | docs/strategy_london_impulse_ny_reversal.md | outputs/london_open_impulse_fade_smoke/ | London-open fade MVP had manageable drawdown but remained slightly negative (PF 0.86); rejected |
 | double_impulse_exhaustion | impulse exhaustion / mean reversion | diagnostic_complete_rejected | docs/strategy_double_impulse_exhaustion.md | outputs/double_impulse_exhaustion_diagnostic/ | researched_but_not_promising |
 | session_vwap_reversion | session mean reversion | diagnostic_complete_rejected | docs/strategy_session_vwap_reversion.md | outputs/session_vwap_reversion_diagnostic/ | researched_but_not_promising |
 | double_top_bottom_reversal | chart pattern reversal | diagnostic_complete_rejected | docs/strategy_double_top_bottom_reversal.md | outputs/double_top_bottom_reversal_diagnostic/ | researched_but_not_promising |
