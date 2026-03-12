@@ -9,6 +9,7 @@
 | london_impulse_ny_reversal | session transition mean reversion | diagnostic_complete_rejected | docs/strategy_london_impulse_ny_reversal.md | outputs/london_impulse_ny_reversal_diagnostic/ | researched_but_not_promising |
 | double_impulse_exhaustion | impulse exhaustion / mean reversion | diagnostic_complete_rejected | docs/strategy_double_impulse_exhaustion.md | outputs/double_impulse_exhaustion_diagnostic/ | researched_but_not_promising |
 | session_vwap_reversion | session mean reversion | diagnostic_complete_rejected | docs/strategy_session_vwap_reversion.md | outputs/session_vwap_reversion_diagnostic/ | researched_but_not_promising |
+| double_top_bottom_reversal | chart pattern reversal | diagnostic_complete_rejected | docs/strategy_double_top_bottom_reversal.md | outputs/double_top_bottom_reversal_diagnostic/ | researched_but_not_promising |
 | daily_extreme_move_reversal | multi-day mean reversion | diagnostic_complete_rejected | docs/strategy_daily_extreme_move_reversal.md | outputs/daily_extreme_move_reversal_diagnostic/ | researched_but_not_promising |
 | range_midpoint_reversion | session mean reversion | diagnostic_complete_rejected | docs/strategy_range_midpoint_reversion.md | outputs/range_midpoint_reversion_diagnostic/ | researched_but_not_promising |
 | volatility_expansion_after_compression | volatility regime | diagnostic_complete_rejected | docs/strategy_volatility_expansion_after_compression.md | outputs/volatility_expansion_after_compression_diagnostic/ | diagnostic looked promising; MVP failed clearly; current form rejected |
