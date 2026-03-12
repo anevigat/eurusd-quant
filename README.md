@@ -34,6 +34,18 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
 
+## Event Return Analyzer
+
+Use the reusable event-return scanner to measure forward ATR-normalized return distributions after event families (impulses, compression, new highs/lows, session opens):
+
+```bash
+python scripts/analyze_event_returns.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/event_return_analyzer
+```
+
+See details in [docs/event_return_analyzer.md](docs/event_return_analyzer.md).
+
 ## Requirements
 
 - Python 3.11+
