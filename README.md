@@ -46,6 +46,20 @@ python scripts/analyze_event_returns.py \
 
 See details in [docs/event_return_analyzer.md](docs/event_return_analyzer.md).
 
+## Event Edge Discovery
+
+Use the discovery layer to rank statistically interesting event buckets and emit candidate strategy ideas from analyzer output:
+
+```bash
+python scripts/discover_event_edges.py \
+  --input outputs/event_return_analyzer/event_bucket_summary.csv \
+  --output-dir outputs/event_edge_discovery
+```
+
+The script scores buckets with `abs(median_return_4_bars) * log(sample_size)`, separates continuation/reversal edges, and exports ranked tables plus JSON candidates.
+
+See details in [docs/event_edge_discovery.md](docs/event_edge_discovery.md).
+
 ## Requirements
 
 - Python 3.11+
