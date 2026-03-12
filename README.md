@@ -19,6 +19,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [Daily extreme move reversal diagnostic summary](docs/strategy_daily_extreme_move_reversal.md)
 - [Range midpoint reversion diagnostic summary](docs/strategy_range_midpoint_reversion.md)
 - [Volatility expansion after compression diagnostic summary](docs/strategy_volatility_expansion_after_compression.md)
+- [Break-retest continuation diagnostic summary](docs/strategy_break_retest_continuation.md)
 - [NY impulse mean reversion strategy summary](docs/strategy_ny_impulse_mean_reversion.md)
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
