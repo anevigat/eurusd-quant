@@ -53,3 +53,36 @@ Final status: diagnostic complete, promising for MVP implementation research.
 - `outputs/trend_exhaustion_reversal_diagnostic/summary.json`
 - `outputs/trend_exhaustion_reversal_diagnostic/daily_metrics.csv`
 - `outputs/trend_exhaustion_reversal_diagnostic/distribution.csv`
+
+## MVP Implementation and Initial Backtest
+
+MVP rules implemented:
+
+- strong directional impulse over recent `4` bars
+- impulse magnitude threshold: `>= 1.5 * ATR(14)`
+- exhaustion confirmation:
+  - up impulse -> bearish close below prior bar low -> short
+  - down impulse -> bullish close above prior bar high -> long
+- next-bar execution via existing simulator
+- exits:
+  - stop: `1.0 * ATR`
+  - target: `1.0 * ATR`
+  - time exit: `6` bars
+
+Smoke run:
+
+- dataset: `data/bars/15m/eurusd_bars_15m_2018_2024.parquet`
+- output: `outputs/trend_exhaustion_reversal_smoke/`
+- `total_trades`: `5734`
+- `win_rate`: `0.4409`
+- `net_pnl`: `-0.4293`
+- `expectancy`: `-7.49e-05`
+- `profit_factor`: `0.7850`
+- `max_drawdown`: `0.4421`
+
+Interpretation:
+
+- despite strong diagnostic asymmetry, this naive tradable formulation over-trades and is structurally unprofitable.
+- payoff symmetry with costs and noise leads to clear edge decay in implementation form.
+
+Current status: `mvp_implemented_rejected`
