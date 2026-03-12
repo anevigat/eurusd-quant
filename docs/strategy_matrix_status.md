@@ -3,7 +3,7 @@
 | strategy_name | family | status | documentation_path | outputs_path | short_conclusion |
 |---|---|---|---|---|---|
 | asia_drift_london_reversal | session mean reversion | diagnostic_complete_rejected | docs/strategy_asia_drift_london_reversal.md | outputs/asia_drift_london_reversal_diagnostic/ | researched_but_not_promising |
-| session_liquidity_sweep_reversal | liquidity pattern | not_started | docs/strategy_session_liquidity_sweep_reversal.md | outputs/session_liquidity_sweep_reversal_diagnostic/ | not_started |
+| session_liquidity_sweep_reversal | liquidity pattern | diagnostic_complete_rejected | docs/strategy_session_liquidity_sweep_reversal.md | outputs/session_liquidity_sweep_reversal_diagnostic/ | researched_but_not_promising |
 | ny_liquidity_sweep_reversal | session mean reversion | not_started | docs/strategy_ny_liquidity_sweep_reversal.md | outputs/ny_liquidity_sweep_reversal_diagnostic/ | not_started |
 | daily_extreme_move_reversal | multi-day mean reversion | not_started | docs/strategy_daily_extreme_move_reversal.md | outputs/daily_extreme_move_reversal_diagnostic/ | not_started |
 | range_midpoint_reversion | session mean reversion | not_started | docs/strategy_range_midpoint_reversion.md | outputs/range_midpoint_reversion_diagnostic/ | not_started |
