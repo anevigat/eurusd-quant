@@ -96,3 +96,13 @@ vwap_intraday_reversion:
   target_reversion_ratio: 0.5
   max_holding_bars: 4
   one_trade_per_day: true
+
+volatility_expansion_after_compression:
+  timeframe: "15m"
+  atr_period: 14
+  compression_threshold: 0.75
+  compression_lookback_bars: 40
+  stop_atr_multiple: 1.0
+  target_atr_multiple: 1.5
+  max_holding_bars: 8
+  one_trade_per_day: false
