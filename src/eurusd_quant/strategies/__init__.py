@@ -3,6 +3,10 @@ from .asian_range_compression_breakout import (
     AsianRangeCompressionBreakoutStrategy,
 )
 from .false_breakout_reversal import FalseBreakoutReversalConfig, FalseBreakoutReversalStrategy
+from .head_shoulders_reversal import (
+    HeadShouldersReversalConfig,
+    HeadShouldersReversalStrategy,
+)
 from .london_pullback_continuation import (
     LondonPullbackContinuationConfig,
     LondonPullbackContinuationStrategy,
@@ -26,6 +30,8 @@ __all__ = [
     "SessionRangeBreakoutStrategy",
     "FalseBreakoutReversalConfig",
     "FalseBreakoutReversalStrategy",
+    "HeadShouldersReversalConfig",
+    "HeadShouldersReversalStrategy",
     "LondonPullbackContinuationConfig",
     "LondonPullbackContinuationStrategy",
     "NYImpulseMeanReversionConfig",
