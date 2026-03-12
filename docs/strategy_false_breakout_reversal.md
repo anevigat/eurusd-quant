@@ -104,3 +104,32 @@ Primary result folders:
 - `outputs/false_breakout_exit_models/`
 - `outputs/false_breakout_pre_london_drift/`
 - `outputs/false_breakout_drift_down_short_only/`
+
+## Classical chart-pattern diagnostic (separate pass)
+
+In a separate classical-pattern batch, a dedicated diagnostic was run with a simpler mechanical
+definition:
+
+- reference range: `00:00-07:00 UTC`
+- detect breakout beyond range high/low
+- require return inside range within `4` bars (false break confirmation)
+- measure reversal over next `8` bars
+
+Diagnostic outputs:
+
+- `outputs/false_breakout_reversal_diagnostic/summary.json`
+- `outputs/false_breakout_reversal_diagnostic/daily_metrics.csv`
+- `outputs/false_breakout_reversal_diagnostic/distribution.csv`
+
+Key metrics (`2018-2024`):
+
+- `false_break_frequency`: `0.8749`
+- `reversal_probability`: `0.5094`
+- `median_follow_through_R`: `0.4197`
+- `median_adverse_move_R`: `0.3985`
+
+Interpretation:
+
+- events are very frequent under this loose classical definition
+- reversal probability is near random and asymmetry is weak
+- result is consistent with the broader conclusion that this idea is not robust enough in current form
