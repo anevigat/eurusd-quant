@@ -60,6 +60,18 @@ The script scores buckets with `abs(median_return_4_bars) * log(sample_size)`, s
 
 See details in [docs/event_edge_discovery.md](docs/event_edge_discovery.md).
 
+## Event Combination Analysis
+
+Analyze pairwise event interactions (impulse+breakout, impulse+session open, compression+session open, compression+breakout) and rank combination edges:
+
+```bash
+python scripts/analyze_event_combinations.py \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/event_combination_analysis
+```
+
+See details in [docs/event_combination_analysis.md](docs/event_combination_analysis.md).
+
 ## Requirements
 
 - Python 3.11+
