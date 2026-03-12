@@ -25,6 +25,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [Double top / double bottom reversal diagnostic summary](docs/strategy_double_top_bottom_reversal.md)
 - [Head and shoulders reversal diagnostic summary](docs/strategy_head_shoulders_reversal.md)
 - [Trend exhaustion reversal diagnostic summary](docs/strategy_trend_exhaustion_reversal.md)
+- [Cup and handle breakout diagnostic summary](docs/strategy_cup_handle_breakout.md)
 - [Daily extreme move reversal diagnostic summary](docs/strategy_daily_extreme_move_reversal.md)
 - [Range midpoint reversion diagnostic summary](docs/strategy_range_midpoint_reversion.md)
 - [Volatility expansion after compression summary (researched but not promising, MVP tested)](docs/strategy_volatility_expansion_after_compression.md)
