@@ -5,6 +5,7 @@
 | asia_drift_london_reversal | session mean reversion | diagnostic_complete_rejected | docs/strategy_asia_drift_london_reversal.md | outputs/asia_drift_london_reversal_diagnostic/ | researched_but_not_promising |
 | session_liquidity_sweep_reversal | liquidity pattern | diagnostic_complete_rejected | docs/strategy_session_liquidity_sweep_reversal.md | outputs/session_liquidity_sweep_reversal_diagnostic/ | researched_but_not_promising |
 | ny_liquidity_sweep_reversal | session mean reversion | diagnostic_complete_rejected | docs/strategy_ny_liquidity_sweep_reversal.md | outputs/ny_liquidity_sweep_reversal_diagnostic/ | researched_but_not_promising |
+| liquidity_sweep_reversal | liquidity pattern / mean reversion | diagnostic_complete_rejected | docs/strategy_liquidity_sweep_reversal.md | outputs/liquidity_sweep_reversal_diagnostic/ | researched_but_not_promising |
 | london_impulse_ny_reversal | session transition mean reversion | diagnostic_complete_rejected | docs/strategy_london_impulse_ny_reversal.md | outputs/london_impulse_ny_reversal_diagnostic/ | researched_but_not_promising |
 | daily_extreme_move_reversal | multi-day mean reversion | diagnostic_complete_rejected | docs/strategy_daily_extreme_move_reversal.md | outputs/daily_extreme_move_reversal_diagnostic/ | researched_but_not_promising |
 | range_midpoint_reversion | session mean reversion | diagnostic_complete_rejected | docs/strategy_range_midpoint_reversion.md | outputs/range_midpoint_reversion_diagnostic/ | researched_but_not_promising |
