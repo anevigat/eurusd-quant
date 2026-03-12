@@ -415,6 +415,7 @@ def run_downloads(
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
     if not tasks:
+        workers_used = max(0, min(cfg.max_workers, 0))
         return {
             "total_attempted": 0,
             "successful": 0,
@@ -422,6 +423,9 @@ def run_downloads(
             "skipped_no_data": 0,
             "failed": 0,
             "total_retries": 0,
+            "workers_used": workers_used,
+            "tasks_submitted": 0,
+            "tasks_completed": 0,
             "elapsed_seconds": 0.0,
             "first_requested_hour": None,
             "last_requested_hour": None,
@@ -502,6 +506,7 @@ def run_downloads(
                 handle_result(idx, future.result())
 
     elapsed = time.monotonic() - start
+    workers_used = max(1, min(cfg.max_workers, len(tasks)))
     summary = {
         "total_attempted": len(tasks),
         "successful": counts["success"],
@@ -509,6 +514,9 @@ def run_downloads(
         "skipped_no_data": counts["skipped_no_data"],
         "failed": counts["failed"],
         "total_retries": total_retries,
+        "workers_used": workers_used,
+        "tasks_submitted": len(tasks),
+        "tasks_completed": sum(counts.values()),
         "elapsed_seconds": round(elapsed, 2),
         "first_requested_hour": tasks[0].hour_label,
         "last_requested_hour": tasks[-1].hour_label,
@@ -519,6 +527,11 @@ def run_downloads(
 
 def print_summary(summary: dict[str, object]) -> None:
     print("Download completed")
+    print(f"workers used: {summary['workers_used']}")
+    print(
+        f"tasks submitted: {summary['tasks_submitted']}, "
+        f"tasks completed: {summary['tasks_completed']}"
+    )
     print(
         f"total attempted={summary['total_attempted']}, "
         f"successful={summary['successful']}, "

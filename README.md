@@ -62,7 +62,7 @@ Recommended safe command for large ranges:
   --end-date 2023-12-31 \
   --output-dir data/raw/dukascopy/EURUSD \
   --resume \
-  --max-workers 1 \
+  --max-workers 3 \
   --max-retries 5 \
   --timeout 30 \
   --sleep-seconds 0.25 \
@@ -75,6 +75,7 @@ Raw files are saved under:
 - Manifest is written as `data/raw/dukascopy/download_manifest_YYYY.jsonl`
 - Market-closed empty hours are classified as `skipped_no_data` and are not retried
 - Closed-market hours are filtered at task generation (`Saturday`, `Sunday < 22:00 UTC`, `Friday > 22:00 UTC`) so they are not attempted at all. This reduces useless weekend-heavy downloads and speeds range builds.
+- Downloader supports bounded parallelism with `--max-workers` (default `3`, conservative). Higher values can improve throughput but may trigger server throttling.
 
 Resume an interrupted run:
 
@@ -85,6 +86,18 @@ Resume an interrupted run:
   --end-date 2023-12-31 \
   --output-dir data/raw/dukascopy/EURUSD \
   --resume
+```
+
+Parallel download example (bounded concurrency):
+
+```bash
+.venv/bin/python scripts/download_dukascopy_ticks.py \
+  --symbol EURUSD \
+  --start-date 2024-01-01 \
+  --end-date 2024-03-01 \
+  --output-dir data/raw/dukascopy/EURUSD \
+  --resume \
+  --max-workers 3
 ```
 
 Retry only failed files from a previous run:
@@ -1040,7 +1053,7 @@ Buffer outputs:
 
 ```bash
 # Full pipeline + backtest + diagnostics
-.venv/bin/python scripts/download_dukascopy_ticks.py --symbol EURUSD --start-date 2023-01-01 --end-date 2023-12-31 --output-dir data/raw/dukascopy/EURUSD --resume --max-workers 1 --max-retries 5 --timeout 30 --sleep-seconds 0.25 --max-consecutive-failures 25
+.venv/bin/python scripts/download_dukascopy_ticks.py --symbol EURUSD --start-date 2023-01-01 --end-date 2023-12-31 --output-dir data/raw/dukascopy/EURUSD --resume --max-workers 3 --max-retries 5 --timeout 30 --sleep-seconds 0.25 --max-consecutive-failures 25
 .venv/bin/python scripts/retry_failed_downloads.py --manifest-file data/raw/dukascopy/download_manifest_2023.jsonl --symbol EURUSD --output-dir data/raw/dukascopy/EURUSD --resume --max-retries 6 --timeout 30 --sleep-seconds 0.5
 .venv/bin/python scripts/clean_ticks.py --input-dir data/raw/dukascopy/EURUSD/2023 --output-file data/ticks/clean/eurusd_ticks_2023.parquet
 .venv/bin/python scripts/build_bars.py --input-file data/ticks/clean/eurusd_ticks_2023.parquet --output-file data/bars/15m/eurusd_bars_15m_2023_raw.parquet

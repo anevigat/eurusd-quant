@@ -63,6 +63,7 @@ if [[ "${PAIR}" == *JPY ]]; then
 else
   PRICE_SCALE="100000.0"
 fi
+MAX_DOWNLOAD_WORKERS=3
 
 RAW_BASE="data/raw/dukascopy"
 CLEAN_BASE="data/cleaned_ticks/${PAIR}"
@@ -100,7 +101,7 @@ run_range() {
     --output-dir "${raw_dir}" \
     --manifest-file "${manifest_file}" \
     --resume \
-    --max-workers 1 \
+    --max-workers "${MAX_DOWNLOAD_WORKERS}" \
     --max-retries 5 \
     --timeout 30 \
     --sleep-seconds 0.25
@@ -111,7 +112,7 @@ run_range() {
     --symbol "${PAIR}" \
     --output-dir "${raw_dir}" \
     --resume \
-    --max-workers 1 \
+    --max-workers "${MAX_DOWNLOAD_WORKERS}" \
     --max-retries 6 \
     --timeout 30 \
     --sleep-seconds 0.5

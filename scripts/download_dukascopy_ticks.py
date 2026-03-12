@@ -32,7 +32,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", default="data/raw/dukascopy/EURUSD")
     parser.add_argument("--manifest-file", help="JSONL manifest path")
     parser.add_argument("--resume", action="store_true", help="Skip already valid files")
-    parser.add_argument("--max-workers", type=int, default=1)
+    parser.add_argument("--max-workers", type=int, default=3)
     parser.add_argument("--max-retries", "--retries", dest="max_retries", type=int, default=4)
     parser.add_argument("--timeout", "--timeout-seconds", dest="timeout", type=float, default=30.0)
     parser.add_argument("--sleep-seconds", type=float, default=0.25)
