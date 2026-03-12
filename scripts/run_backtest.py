@@ -96,6 +96,12 @@ def main() -> None:
 
     for _, bar in bars.iterrows():
         simulator.process_bar(bar)
+        if simulator.has_open_position():
+            position = simulator.get_open_position()
+            if position is not None:
+                updated = strategy.update_open_position(bar, position)
+                if updated is not None:
+                    simulator.update_open_position_brackets(*updated)
         order = strategy.generate_order(
             bar,
             has_open_position=simulator.has_open_position(),

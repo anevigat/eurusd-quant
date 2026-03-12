@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, time
+from typing import Any
 
 import pandas as pd
 
 from eurusd_quant.data.sessions import in_time_window, parse_hhmm
-from eurusd_quant.execution.models import Order
+from eurusd_quant.exits import ExitModel, build_exit_model
+from eurusd_quant.execution.models import Order, Position
 from eurusd_quant.strategies.base import BaseStrategy
 from eurusd_quant.utils import normalize_symbol, pips_to_price
 
@@ -27,6 +29,10 @@ class NYImpulseMeanReversionConfig:
     exit_model: str = "retracement"
     atr_target_multiple: float = 1.0
     retracement_entry_ratio: float = 0.5
+    atr_trail_multiple: float = 0.8
+    initial_stop_atr: float = 1.0
+    breakeven_trigger_atr: float = 0.5
+    trailing_start_atr: float = 1.0
     one_trade_per_day: bool = True
     allowed_side: str = "both"
 
@@ -51,12 +57,27 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
             raise ValueError("allowed_side must be 'both', 'long_only', or 'short_only'")
         if config.retracement_entry_ratio <= 0 or config.retracement_entry_ratio >= 1:
             raise ValueError("retracement_entry_ratio must be between 0 and 1 (exclusive)")
-        if config.exit_model not in {"retracement", "atr"}:
-            raise ValueError("exit_model must be 'retracement' or 'atr'")
+        if config.exit_model not in {
+            "retracement",
+            "atr",
+            "atr_trailing",
+            "breakeven_atr_trailing",
+        }:
+            raise ValueError(
+                "exit_model must be 'retracement', 'atr', 'atr_trailing', or 'breakeven_atr_trailing'"
+            )
         if config.atr_period < 1:
             raise ValueError("atr_period must be >= 1")
         if config.atr_target_multiple <= 0:
             raise ValueError("atr_target_multiple must be > 0")
+        if config.atr_trail_multiple <= 0:
+            raise ValueError("atr_trail_multiple must be > 0")
+        if config.initial_stop_atr <= 0:
+            raise ValueError("initial_stop_atr must be > 0")
+        if config.breakeven_trigger_atr <= 0:
+            raise ValueError("breakeven_trigger_atr must be > 0")
+        if config.trailing_start_atr <= 0:
+            raise ValueError("trailing_start_atr must be > 0")
 
         self._current_date: date | None = None
         self._impulse_high: float | None = None
@@ -68,6 +89,44 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
         self._prev_mid_close: float | None = None
         self._atr_values: list[float] = []
         self._atr: float | None = None
+        self._exit_model: ExitModel = self._build_exit_model(config)
+        self._pending_exit_context: dict[str, Any] | None = None
+        self._pending_exit_state: dict[str, Any] | None = None
+        self._active_exit_context: dict[str, Any] | None = None
+        self._active_exit_state: dict[str, Any] | None = None
+
+    def _build_exit_model(self, config: NYImpulseMeanReversionConfig) -> ExitModel:
+        if config.exit_model == "retracement":
+            return build_exit_model(
+                "retracement",
+                {"target_reversion_ratio": config.retracement_target_ratio},
+            )
+        if config.exit_model == "atr":
+            return build_exit_model(
+                "atr",
+                {"atr_target_multiple": config.atr_target_multiple},
+            )
+        if config.exit_model == "atr_trailing":
+            return build_exit_model(
+                "atr_trailing",
+                {
+                    "atr_trail_multiple": config.atr_trail_multiple,
+                    "initial_stop_atr": config.initial_stop_atr,
+                },
+            )
+        return build_exit_model(
+            "breakeven_atr_trailing",
+            {
+                "initial_stop_atr": config.initial_stop_atr,
+                "breakeven_trigger_atr": config.breakeven_trigger_atr,
+                "trailing_start_atr": config.trailing_start_atr,
+                "atr_trail_multiple": config.atr_trail_multiple,
+            },
+        )
+
+    def _clear_active_exit_state(self) -> None:
+        self._active_exit_context = None
+        self._active_exit_state = None
 
     def _reset_day(self, current_day: date) -> None:
         self._current_date = current_day
@@ -80,6 +139,39 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
         self._prev_mid_close = None
         self._atr_values = []
         self._atr = None
+
+    def update_open_position(
+        self,
+        bar: pd.Series,
+        position: Position,
+    ) -> tuple[float, float] | None:
+        if self._active_exit_context is None:
+            if self._pending_exit_context is None:
+                return None
+            self._active_exit_context = dict(self._pending_exit_context)
+            self._active_exit_state = dict(self._pending_exit_state or {})
+            self._pending_exit_context = None
+            self._pending_exit_state = None
+
+        if self._active_exit_context is None:
+            return None
+
+        context = dict(self._active_exit_context)
+        if self._atr is not None:
+            context["atr"] = self._atr
+        state = dict(self._active_exit_state or {})
+
+        stop_loss, take_profit, new_state = self._exit_model.update(
+            side=position.side,
+            entry_price=position.entry_price,
+            stop_loss=position.stop_loss,
+            take_profit=position.take_profit,
+            bar=bar,
+            context=context,
+            state=state,
+        )
+        self._active_exit_state = new_state
+        return float(stop_loss), float(take_profit)
 
     def _update_impulse(self, bar: pd.Series, timestamp: pd.Timestamp) -> None:
         if not in_time_window(timestamp, self._impulse_start, self._impulse_end):
@@ -120,6 +212,8 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
         bar_day = timestamp.date()
         if self._current_date != bar_day:
             self._reset_day(bar_day)
+        if not has_open_position:
+            self._clear_active_exit_state()
 
         prev_mid_close = self._prev_mid_close
         self._update_impulse(bar, timestamp)
@@ -171,7 +265,17 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
                 take_profit = entry_reference - retracement_target
             else:
                 take_profit = entry_reference - atr_target
+            exit_context = {"impulse_size": impulse_size, "atr": self._atr or 0.0}
+            stop_loss, take_profit, exit_state = self._exit_model.initialize_position(
+                side="short",
+                entry_price=entry_reference,
+                stop_loss=stop_loss,
+                take_profit=take_profit,
+                context=exit_context,
+            )
             if stop_loss > entry_reference and take_profit < entry_reference:
+                self._pending_exit_context = exit_context
+                self._pending_exit_state = exit_state
                 self._traded_today = True
                 return Order(
                     symbol=symbol,
@@ -197,7 +301,17 @@ class NYImpulseMeanReversionStrategy(BaseStrategy):
                 take_profit = entry_reference + retracement_target
             else:
                 take_profit = entry_reference + atr_target
+            exit_context = {"impulse_size": impulse_size, "atr": self._atr or 0.0}
+            stop_loss, take_profit, exit_state = self._exit_model.initialize_position(
+                side="long",
+                entry_price=entry_reference,
+                stop_loss=stop_loss,
+                take_profit=take_profit,
+                context=exit_context,
+            )
             if stop_loss < entry_reference and take_profit > entry_reference:
+                self._pending_exit_context = exit_context
+                self._pending_exit_state = exit_state
                 self._traded_today = True
                 return Order(
                     symbol=symbol,

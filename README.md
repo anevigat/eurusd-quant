@@ -284,6 +284,24 @@ Symbol handling for `ny_impulse_mean_reversion`:
 - JPY pairs use pip size `0.01` (for example `USDJPY`).
 - Non-JPY FX pairs use pip size `0.0001` (for example `EURUSD`, `GBPUSD`).
 
+## Exit engine abstraction
+
+NY impulse exit behavior now uses modular exit models under `src/eurusd_quant/exits/` so
+entry logic can stay stable while exits are swapped for research:
+
+- `retracement`
+- `atr`
+- `atr_trailing`
+- `breakeven_atr_trailing`
+
+Run the NY exit grid on frozen entry settings:
+
+```bash
+.venv/bin/python scripts/run_ny_impulse_exit_grid.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-root outputs/ny_impulse_exit_grid
+```
+
 ## VWAP Intraday Reversion MVP
 
 Hypothesis: when price is far from intraday VWAP proxy during active hours, it may partially
