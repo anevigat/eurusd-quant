@@ -45,54 +45,74 @@ Per session row:
 - Expansion magnitude is material (median next session about `2.0x` compressed range).
 - This supports the regime hypothesis as a potentially useful filter for later strategy design.
 
-## Conclusion
+## Diagnostic Conclusion
 
 Verdict: `promising_enough_to_implement_mvp`
 
 Classification: diagnostic complete, promising enough for MVP research implementation.
 
-## MVP Implementation and Initial Backtest
+## MVP Implementation and Results
 
-Implemented strategy:
+### 1. MVP design
+
+Implemented MVP:
 
 - `src/eurusd_quant/strategies/volatility_expansion_after_compression.py`
 - runner key: `volatility_expansion_after_compression`
 
-MVP rules:
+Rules:
 
 1. ATR(14) compression state vs rolling median ATR (40 bars)
 2. compressed when `current_atr <= 0.75 * rolling_median_atr`
 3. arm breakout range from compression window high/low
 4. enter on close breakout (long above range high, short below range low)
-5. stop `1.0 * ATR`, target `1.5 * ATR`, max hold `8` bars
+5. next-bar execution via existing simulator
+6. stop `1.0 * ATR`, target `1.5 * ATR`, time exit `8` bars
 
-Smoke backtest dataset:
+### 2. Backtest dataset
 
 - `data/bars/15m/eurusd_bars_15m_2018_2024.parquet`
 
-Smoke metrics:
+### 3. Smoke backtest results
 
 - `total_trades`: `1956`
 - `win_rate`: `0.3569`
 - `net_pnl`: `-0.1594`
 - `profit_factor`: `0.7658`
-- `expectancy`: `-8.15e-05`
 - `max_drawdown`: `0.1700`
 
-Initial interpretation:
+### 4. Interpretation
 
-- the compression-to-expansion structural diagnostic remains valid
-- this first tradable breakout implementation is not profitable in current form
-- additional structural filters are needed before advancing beyond MVP
+Although the diagnostic suggested that expansion after compression occurs frequently, the
+simple MVP trading implementation was not profitable.
 
-Current status after MVP smoke:
+The strategy generated a large number of trades, but:
 
-- `researched_but_not_promising` (current implementation)
+- win rate was low
+- profit factor was materially below 1
+- drawdown was high
 
-## Outputs
+This indicates that the observed expansion behavior does not translate into a robust tradable
+edge with the naive breakout formulation tested here.
+
+### 5. Final conclusion
+
+Final status: `researched_but_not_promising` (MVP tested)
+
+- the diagnostic identified real market behavior
+- the tested strategy structure was not strong enough
+- this exact formulation should not be pursued further without a materially different hypothesis
+
+### 6. Output references
+
+Diagnostic outputs:
 
 - `outputs/volatility_expansion_after_compression_diagnostic/summary.json`
 - `outputs/volatility_expansion_after_compression_diagnostic/daily_metrics.csv`
 - `outputs/volatility_expansion_after_compression_diagnostic/distribution.csv`
+
+MVP smoke outputs:
+
+- `outputs/volatility_expansion_after_compression_smoke/`
 - `outputs/volatility_expansion_after_compression_smoke/metrics.json`
 - `outputs/volatility_expansion_after_compression_smoke/trades.parquet`
