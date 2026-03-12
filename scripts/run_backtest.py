@@ -19,6 +19,10 @@ from eurusd_quant.strategies.asian_range_compression_breakout import (
     AsianRangeCompressionBreakoutConfig,
     AsianRangeCompressionBreakoutStrategy,
 )
+from eurusd_quant.strategies.compression_breakout import (
+    CompressionBreakoutConfig,
+    CompressionBreakoutStrategy,
+)
 from eurusd_quant.strategies.false_breakout_reversal import (
     FalseBreakoutReversalConfig,
     FalseBreakoutReversalStrategy,
@@ -81,6 +85,11 @@ def main() -> None:
             strategy_cfg_all["asian_range_compression_breakout"]
         )
         strategy = AsianRangeCompressionBreakoutStrategy(strategy_cfg)
+    elif args.strategy == "compression_breakout":
+        strategy_cfg = CompressionBreakoutConfig.from_dict(
+            strategy_cfg_all["compression_breakout"]
+        )
+        strategy = CompressionBreakoutStrategy(strategy_cfg)
     elif args.strategy == "false_breakout_reversal":
         strategy_cfg = FalseBreakoutReversalConfig.from_dict(
             strategy_cfg_all["false_breakout_reversal"]
