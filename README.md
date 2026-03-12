@@ -20,6 +20,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [NY liquidity sweep reversal diagnostic summary](docs/strategy_ny_liquidity_sweep_reversal.md)
 - [Liquidity sweep reversal diagnostic summary](docs/strategy_liquidity_sweep_reversal.md)
 - [London impulse to NY reversal diagnostic summary](docs/strategy_london_impulse_ny_reversal.md)
+- [Double impulse exhaustion diagnostic summary](docs/strategy_double_impulse_exhaustion.md)
 - [Daily extreme move reversal diagnostic summary](docs/strategy_daily_extreme_move_reversal.md)
 - [Range midpoint reversion diagnostic summary](docs/strategy_range_midpoint_reversion.md)
 - [Volatility expansion after compression summary (researched but not promising, MVP tested)](docs/strategy_volatility_expansion_after_compression.md)
