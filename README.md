@@ -36,6 +36,41 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [NY impulse mean reversion strategy summary](docs/strategy_ny_impulse_mean_reversion.md)
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
+- [Strategy promotion framework](docs/research/strategy_promotion_framework.md)
+- [Strategy matrix status](docs/strategy_matrix_status.md)
+
+## Strategy Promotion And Walk-Forward
+
+Formal promotion now lives under `src/eurusd_quant/validation/` and is driven by:
+
+- `scripts/run_walk_forward_validation.py`
+- `scripts/generate_promotion_report.py`
+- `docs/research/strategy_promotion_framework.md`
+- `docs/templates/strategy_promotion_template.md`
+
+Typical workflow:
+
+```bash
+.venv/bin/python scripts/run_walk_forward_validation.py \
+  --strategy false_breakout_reversal \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --train-years 3 \
+  --test-months 6 \
+  --output-dir outputs/walk_forward/false_breakout_reversal
+```
+
+```bash
+.venv/bin/python scripts/generate_promotion_report.py \
+  --input-dir outputs/walk_forward/false_breakout_reversal \
+  --output-file docs/experiments/false_breakout_reversal_promotion.md
+```
+
+Each config run writes:
+
+- `outputs/walk_forward/<strategy>/<config_hash>/splits.csv`
+- `outputs/walk_forward/<strategy>/<config_hash>/aggregate.json`
+- `outputs/walk_forward/<strategy>/<config_hash>/equity_curve.csv`
+- `outputs/walk_forward/<strategy>/<config_hash>/promotion_report.json`
 
 ## Event Return Analyzer
 
