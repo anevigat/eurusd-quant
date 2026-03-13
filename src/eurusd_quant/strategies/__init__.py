@@ -2,6 +2,10 @@ from .asian_range_compression_breakout import (
     AsianRangeCompressionBreakoutConfig,
     AsianRangeCompressionBreakoutStrategy,
 )
+from .atr_spike_new_high_low import (
+    ATRSpikeNewHighLowConfig,
+    ATRSpikeNewHighLowStrategy,
+)
 from .compression_breakout import CompressionBreakoutConfig, CompressionBreakoutStrategy
 from .compression_breakout_continuation import (
     CompressionBreakoutContinuationConfig,
@@ -39,6 +43,8 @@ from .vwap_intraday_reversion import VWAPIntradayReversionConfig, VWAPIntradayRe
 __all__ = [
     "AsianRangeCompressionBreakoutConfig",
     "AsianRangeCompressionBreakoutStrategy",
+    "ATRSpikeNewHighLowConfig",
+    "ATRSpikeNewHighLowStrategy",
     "CompressionBreakoutConfig",
     "CompressionBreakoutStrategy",
     "CompressionBreakoutContinuationConfig",

@@ -176,3 +176,14 @@ impulse_session_open:
   target_atr_multiple: 1.5
   max_holding_bars: 8
   one_trade_per_day: true
+
+atr_spike_new_high_low:
+  timeframe: "15m"
+  atr_period: 14
+  atr_median_lookback_bars: 40
+  atr_spike_threshold: 1.5
+  breakout_lookback_bars: 20
+  stop_atr_multiple: 1.0
+  target_atr_multiple: 1.5
+  max_holding_bars: 8
+  one_trade_per_day: false

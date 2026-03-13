@@ -19,6 +19,10 @@ from eurusd_quant.strategies.asian_range_compression_breakout import (
     AsianRangeCompressionBreakoutConfig,
     AsianRangeCompressionBreakoutStrategy,
 )
+from eurusd_quant.strategies.atr_spike_new_high_low import (
+    ATRSpikeNewHighLowConfig,
+    ATRSpikeNewHighLowStrategy,
+)
 from eurusd_quant.strategies.compression_breakout import (
     CompressionBreakoutConfig,
     CompressionBreakoutStrategy,
@@ -107,6 +111,11 @@ def main() -> None:
             strategy_cfg_all["compression_breakout_continuation"]
         )
         strategy = CompressionBreakoutContinuationStrategy(strategy_cfg)
+    elif args.strategy == "atr_spike_new_high_low":
+        strategy_cfg = ATRSpikeNewHighLowConfig.from_dict(
+            strategy_cfg_all["atr_spike_new_high_low"]
+        )
+        strategy = ATRSpikeNewHighLowStrategy(strategy_cfg)
     elif args.strategy == "false_breakout_reversal":
         strategy_cfg = FalseBreakoutReversalConfig.from_dict(
             strategy_cfg_all["false_breakout_reversal"]
