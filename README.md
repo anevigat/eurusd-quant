@@ -36,6 +36,93 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [NY impulse mean reversion strategy summary](docs/strategy_ny_impulse_mean_reversion.md)
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
+- [Strategy promotion framework](docs/research/strategy_promotion_framework.md)
+- [Strategy matrix status](docs/strategy_matrix_status.md)
+
+## Strategy Promotion And Walk-Forward
+
+Formal promotion now lives under `src/eurusd_quant/validation/` and is driven by:
+
+- `scripts/run_walk_forward_validation.py`
+- `scripts/generate_promotion_report.py`
+- `docs/research/strategy_promotion_framework.md`
+- `docs/templates/strategy_promotion_template.md`
+
+Typical workflow:
+
+```bash
+.venv/bin/python scripts/run_walk_forward_validation.py \
+  --strategy false_breakout_reversal \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --train-years 3 \
+  --test-months 6 \
+  --output-dir outputs/walk_forward/false_breakout_reversal
+```
+
+Sweep CSVs can now carry per-config neighborhood evidence in a `parameter_neighborhood_json` column. Example value using the current promotion gate schema:
+
+```json
+{"evaluated_neighbors": 8, "passing_neighbors": 7, "pass_rate": 0.875}
+```
+
+Walk-forward alone is not enough to reach `paper_trade_candidate`. That status still requires extra promotion evidence, including cross-pair validation and passing parameter-neighborhood stability.
+
+Plain usage stays unchanged:
+
+```bash
+.venv/bin/python scripts/run_walk_forward_validation.py \
+  --strategy false_breakout_reversal \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --train-years 3 \
+  --test-months 6 \
+  --output-dir outputs/walk_forward/false_breakout_reversal
+```
+
+CSV-driven usage with per-config `parameter_neighborhood_json`:
+
+```bash
+.venv/bin/python scripts/run_walk_forward_validation.py \
+  --strategy false_breakout_reversal \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --input-configs outputs/event_strategy_sweeps/top_configs.csv \
+  --output-dir outputs/walk_forward/false_breakout_reversal
+```
+
+Usage with global promotion metadata JSON:
+
+```bash
+.venv/bin/python scripts/run_walk_forward_validation.py \
+  --strategy false_breakout_reversal \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --input-configs outputs/event_strategy_sweeps/top_configs.csv \
+  --promotion-metadata-json config/promotion_metadata.json \
+  --output-dir outputs/walk_forward/false_breakout_reversal
+```
+
+Usage with explicit cross-pair metadata:
+
+```bash
+.venv/bin/python scripts/run_walk_forward_validation.py \
+  --strategy false_breakout_reversal \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --cross-pair-validated true \
+  --output-dir outputs/walk_forward/false_breakout_reversal
+```
+
+`--promotion-metadata-json` can carry promotion inputs such as `cross_pair_validated` or `parameter_neighborhood`. Per-row CSV metadata overrides file-level metadata when both are present.
+
+```bash
+.venv/bin/python scripts/generate_promotion_report.py \
+  --input-dir outputs/walk_forward/false_breakout_reversal \
+  --output-file docs/experiments/false_breakout_reversal_promotion.md
+```
+
+Each config run writes:
+
+- `outputs/walk_forward/<strategy>/<config_hash>/splits.csv`
+- `outputs/walk_forward/<strategy>/<config_hash>/aggregate.json`
+- `outputs/walk_forward/<strategy>/<config_hash>/equity_curve.csv`
+- `outputs/walk_forward/<strategy>/<config_hash>/promotion_report.json`
 
 ## Event Return Analyzer
 
