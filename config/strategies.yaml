@@ -162,3 +162,17 @@ london_open_impulse_fade:
   target_atr_multiple: 1.0
   max_holding_bars: 6
   one_trade_per_day: true
+
+impulse_session_open:
+  timeframe: "15m"
+  atr_period: 14
+  impulse_bars: 2
+  impulse_threshold_atr: 1.5
+  london_window_start_utc: "06:45"
+  london_window_end_utc: "07:15"
+  new_york_window_start_utc: "12:45"
+  new_york_window_end_utc: "13:15"
+  stop_atr_multiple: 1.0
+  target_atr_multiple: 1.5
+  max_holding_bars: 8
+  one_trade_per_day: true
