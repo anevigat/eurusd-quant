@@ -9,6 +9,16 @@ from eurusd_quant.execution.models import Order, Position
 
 
 class BaseStrategy(ABC):
+    def on_bar(self, bar: pd.Series) -> None:
+        return None
+
+    def should_exit_position(
+        self,
+        bar: pd.Series,
+        position: Position,
+    ) -> bool:
+        return False
+
     def update_open_position(
         self,
         bar: pd.Series,

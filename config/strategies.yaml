@@ -199,3 +199,29 @@ vwap_session_open:
   stop_atr_multiple: 1.2
   max_holding_bars: 8
   one_trade_per_day: true
+
+tsmom_ma_cross:
+  timeframe: "1d"
+  fast_window: 20
+  slow_window: 100
+  atr_period: 14
+  atr_stop_multiple: 1.5
+  trailing_stop: false
+  max_holding_bars: 252
+
+tsmom_donchian:
+  timeframe: "1d"
+  breakout_window: 55
+  atr_period: 14
+  atr_stop_multiple: 1.5
+  trailing_stop: false
+  max_holding_bars: 252
+
+tsmom_return_sign:
+  timeframe: "1d"
+  lookback_window: 60
+  return_threshold: 0.0
+  atr_period: 14
+  atr_stop_multiple: 1.5
+  trailing_stop: false
+  max_holding_bars: 252

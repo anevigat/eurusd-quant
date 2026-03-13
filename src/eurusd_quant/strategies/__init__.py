@@ -34,6 +34,9 @@ from .trend_exhaustion_reversal import (
     TrendExhaustionReversalConfig,
     TrendExhaustionReversalStrategy,
 )
+from .tsmom_donchian import TSMOMDonchianConfig, TSMOMDonchianStrategy
+from .tsmom_ma_cross import TSMOMMACrossConfig, TSMOMMACrossStrategy
+from .tsmom_return_sign import TSMOMReturnSignConfig, TSMOMReturnSignStrategy
 from .volatility_expansion_after_compression import (
     VolatilityExpansionAfterCompressionConfig,
     VolatilityExpansionAfterCompressionStrategy,
@@ -66,6 +69,12 @@ __all__ = [
     "NYImpulseMeanReversionStrategy",
     "TrendExhaustionReversalConfig",
     "TrendExhaustionReversalStrategy",
+    "TSMOMDonchianConfig",
+    "TSMOMDonchianStrategy",
+    "TSMOMMACrossConfig",
+    "TSMOMMACrossStrategy",
+    "TSMOMReturnSignConfig",
+    "TSMOMReturnSignStrategy",
     "VolatilityExpansionAfterCompressionConfig",
     "VolatilityExpansionAfterCompressionStrategy",
     "VWAPIntradayReversionConfig",

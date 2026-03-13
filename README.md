@@ -37,6 +37,8 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
 - [Strategy promotion framework](docs/research/strategy_promotion_framework.md)
+- [FX trend / momentum research plan](docs/research/tsmom_fx_research_plan.md)
+- [Initial FX trend / momentum results](docs/experiments/tsmom_initial_results.md)
 - [Strategy matrix status](docs/strategy_matrix_status.md)
 
 ## Strategy Promotion And Walk-Forward
@@ -123,6 +125,63 @@ Each config run writes:
 - `outputs/walk_forward/<strategy>/<config_hash>/aggregate.json`
 - `outputs/walk_forward/<strategy>/<config_hash>/equity_curve.csv`
 - `outputs/walk_forward/<strategy>/<config_hash>/promotion_report.json`
+
+## FX Trend / Momentum Family
+
+Phase 2 adds a first medium-horizon trend family:
+
+- `tsmom_ma_cross`
+- `tsmom_donchian`
+- `tsmom_return_sign`
+
+The first implementation is daily-bar based and uses the same generic backtest and walk-forward validation pipeline as the intraday strategies.
+
+Build daily bars from existing 15m bars:
+
+```bash
+.venv/bin/python scripts/prepare_higher_timeframe_bars.py \
+  --input-file data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-file data/bars/1d/eurusd_bars_1d_2018_2024.parquet \
+  --timeframe 1d
+```
+
+Run a smoke backtest:
+
+```bash
+.venv/bin/python scripts/run_backtest.py \
+  --input data/bars/1d/eurusd_bars_1d_2018_2024.parquet \
+  --strategy tsmom_ma_cross \
+  --output-dir outputs/trend_backtests/tsmom_ma_cross
+```
+
+Run a small sweep:
+
+```bash
+.venv/bin/python scripts/run_trend_strategy_sweep.py \
+  --strategy tsmom_ma_cross \
+  --bars data/bars/1d/eurusd_bars_1d_2018_2024.parquet \
+  --output-dir outputs/trend_sweeps/tsmom_ma_cross
+```
+
+Run walk-forward validation on the top config:
+
+```bash
+.venv/bin/python scripts/run_walk_forward_validation.py \
+  --strategy tsmom_ma_cross \
+  --bars data/bars/1d/eurusd_bars_1d_2018_2024.parquet \
+  --input-configs outputs/trend_sweeps/tsmom_ma_cross/top_configs.csv \
+  --top-n 1 \
+  --train-years 3 \
+  --test-months 6 \
+  --output-dir outputs/trend_walk_forward/tsmom_ma_cross
+```
+
+Trend outputs are saved under:
+
+- `outputs/trend_backtests/<strategy>/`
+- `outputs/trend_sweeps/<strategy>/`
+- `outputs/trend_walk_forward/<strategy>/`
+- `outputs/trend_cross_pair/`
 
 ## Event Return Analyzer
 

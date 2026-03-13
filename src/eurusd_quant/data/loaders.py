@@ -24,7 +24,6 @@ REQUIRED_COLUMNS = [
     "spread_high",
     "spread_low",
     "spread_close",
-    "session_label",
 ]
 
 
@@ -36,15 +35,13 @@ def load_bars(path: str | Path) -> pd.DataFrame:
         raise ValueError(f"Input parquet is missing columns: {missing}")
 
     out = df[REQUIRED_COLUMNS].copy()
+    if "session_label" in df.columns:
+        out["session_label"] = df["session_label"]
+    else:
+        out["session_label"] = "aggregated"
     out["timestamp"] = pd.to_datetime(out["timestamp"], utc=True)
 
     if not out["timestamp"].is_monotonic_increasing:
         raise ValueError("Input bars must be sorted by ascending timestamp")
-
-    if (out["symbol"] != "EURUSD").any():
-        raise ValueError("MVP only supports symbol EURUSD")
-
-    if (out["timeframe"] != "15m").any():
-        raise ValueError("MVP only supports timeframe 15m")
 
     return out.reset_index(drop=True)
