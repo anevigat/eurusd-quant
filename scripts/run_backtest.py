@@ -68,6 +68,10 @@ from eurusd_quant.strategies.vwap_intraday_reversion import (
     VWAPIntradayReversionConfig,
     VWAPIntradayReversionStrategy,
 )
+from eurusd_quant.strategies.vwap_session_open import (
+    VWAPSessionOpenConfig,
+    VWAPSessionOpenStrategy,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -151,6 +155,11 @@ def main() -> None:
             strategy_cfg_all["vwap_intraday_reversion"]
         )
         strategy = VWAPIntradayReversionStrategy(strategy_cfg)
+    elif args.strategy == "vwap_session_open":
+        strategy_cfg = VWAPSessionOpenConfig.from_dict(
+            strategy_cfg_all["vwap_session_open"]
+        )
+        strategy = VWAPSessionOpenStrategy(strategy_cfg)
     elif args.strategy == "volatility_expansion_after_compression":
         strategy_cfg = VolatilityExpansionAfterCompressionConfig.from_dict(
             strategy_cfg_all["volatility_expansion_after_compression"]
