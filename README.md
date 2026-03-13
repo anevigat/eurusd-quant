@@ -72,6 +72,25 @@ python scripts/analyze_event_combinations.py \
 
 See details in [docs/event_combination_analysis.md](docs/event_combination_analysis.md).
 
+## Event Combination Analysis v2 (Cross Pair)
+
+Run the v2 analyzer across auto-detected EURUSD/GBPUSD historical+forward datasets:
+
+```bash
+python scripts/analyze_event_combinations_v2.py \
+  --output-root outputs/event_combination_analysis_v2
+```
+
+Then aggregate shared edges across pairs/ranges:
+
+```bash
+python scripts/analyze_cross_pair_event_edges.py \
+  --input-root outputs/event_combination_analysis_v2 \
+  --output-dir outputs/event_combination_analysis_v2/cross_pair
+```
+
+See details in [docs/event_combination_analysis_v2.md](docs/event_combination_analysis_v2.md).
+
 ## Event Strategy Parameter Sweeps
 
 Run large parameter grids for event-driven strategy templates (v1: impulse-reversion) and rank top configurations:
