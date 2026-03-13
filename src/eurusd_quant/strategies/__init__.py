@@ -39,6 +39,7 @@ from .volatility_expansion_after_compression import (
     VolatilityExpansionAfterCompressionStrategy,
 )
 from .vwap_intraday_reversion import VWAPIntradayReversionConfig, VWAPIntradayReversionStrategy
+from .vwap_session_open import VWAPSessionOpenConfig, VWAPSessionOpenStrategy
 
 __all__ = [
     "AsianRangeCompressionBreakoutConfig",
@@ -69,4 +70,6 @@ __all__ = [
     "VolatilityExpansionAfterCompressionStrategy",
     "VWAPIntradayReversionConfig",
     "VWAPIntradayReversionStrategy",
+    "VWAPSessionOpenConfig",
+    "VWAPSessionOpenStrategy",
 ]
