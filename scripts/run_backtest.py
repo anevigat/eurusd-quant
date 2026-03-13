@@ -35,6 +35,10 @@ from eurusd_quant.strategies.head_shoulders_reversal import (
     HeadShouldersReversalConfig,
     HeadShouldersReversalStrategy,
 )
+from eurusd_quant.strategies.impulse_session_open import (
+    ImpulseSessionOpenConfig,
+    ImpulseSessionOpenStrategy,
+)
 from eurusd_quant.strategies.london_pullback_continuation import (
     LondonPullbackContinuationConfig,
     LondonPullbackContinuationStrategy,
@@ -123,6 +127,11 @@ def main() -> None:
             strategy_cfg_all["head_shoulders_reversal"]
         )
         strategy = HeadShouldersReversalStrategy(strategy_cfg)
+    elif args.strategy == "impulse_session_open":
+        strategy_cfg = ImpulseSessionOpenConfig.from_dict(
+            strategy_cfg_all["impulse_session_open"]
+        )
+        strategy = ImpulseSessionOpenStrategy(strategy_cfg)
     elif args.strategy == "ny_impulse_mean_reversion":
         strategy_cfg = NYImpulseMeanReversionConfig.from_dict(
             strategy_cfg_all["ny_impulse_mean_reversion"]

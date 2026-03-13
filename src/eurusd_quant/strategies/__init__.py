@@ -12,6 +12,10 @@ from .head_shoulders_reversal import (
     HeadShouldersReversalConfig,
     HeadShouldersReversalStrategy,
 )
+from .impulse_session_open import (
+    ImpulseSessionOpenConfig,
+    ImpulseSessionOpenStrategy,
+)
 from .london_pullback_continuation import (
     LondonPullbackContinuationConfig,
     LondonPullbackContinuationStrategy,
@@ -45,6 +49,8 @@ __all__ = [
     "FalseBreakoutReversalStrategy",
     "HeadShouldersReversalConfig",
     "HeadShouldersReversalStrategy",
+    "ImpulseSessionOpenConfig",
+    "ImpulseSessionOpenStrategy",
     "LondonPullbackContinuationConfig",
     "LondonPullbackContinuationStrategy",
     "LondonOpenImpulseFadeConfig",
