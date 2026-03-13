@@ -59,6 +59,27 @@ The generic walk-forward engine lives in `src/eurusd_quant/validation/walk_forwa
 - aggregate OOS metrics only
 - split-level output plus aggregate output
 - cost-stress overlays on the OOS windows
+- external promotion metadata passed through the CLI
+
+The Phase 1 CLI now carries, but does not generate, extra promotion evidence:
+
+- per-config `parameter_neighborhood_json` from sweep CSVs
+- global promotion metadata via `--promotion-metadata-json`
+- explicit cross-pair status via `--cross-pair-validated true|false`
+
+Merge priority for promotion metadata is:
+
+1. CLI defaults
+2. metadata JSON file
+3. per-config CSV row metadata
+
+Per-config CSVs may include `parameter_neighborhood_json`. Current promotion logic expects a JSON object with the neighborhood fields it already evaluates, for example:
+
+```json
+{"evaluated_neighbors": 8, "passing_neighbors": 7, "pass_rate": 0.875}
+```
+
+Walk-forward results alone are sufficient to reach `walk_forward_validated`, but not `paper_trade_candidate`. That higher status still requires extra evidence, including cross-pair validation and a passing neighborhood stability gate.
 
 Output convention:
 

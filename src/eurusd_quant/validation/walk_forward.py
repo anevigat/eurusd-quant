@@ -116,7 +116,14 @@ def run_walk_forward_validation(
     runner: Callable[[pd.DataFrame, str, dict[str, Any], dict[str, Any]], BacktestResult | pd.DataFrame] | None = None,
 ) -> WalkForwardResult:
     thresholds = thresholds or PromotionThresholds()
-    metadata = metadata or {}
+    metadata = dict(metadata or {})
+    metadata_parameter_neighborhood = metadata.get("parameter_neighborhood")
+    if parameter_neighborhood is None and metadata_parameter_neighborhood is not None:
+        if not isinstance(metadata_parameter_neighborhood, dict):
+            raise ValueError("metadata['parameter_neighborhood'] must be a dict when provided")
+        parameter_neighborhood = dict(metadata_parameter_neighborhood)
+    elif parameter_neighborhood is not None:
+        metadata.setdefault("parameter_neighborhood", parameter_neighborhood)
     runner = runner or run_backtest
 
     normalized_bars = bars.copy()

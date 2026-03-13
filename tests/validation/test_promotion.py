@@ -62,6 +62,8 @@ def test_evaluate_promotion_returns_continue_when_core_gates_pass_but_extra_evid
 
     assert report["decision"] == "continue"
     assert report["promotion_status"] == "walk_forward_validated"
+    gate = next(g for g in report["gates"] if g["name"] == "parameter_neighborhood_stability")
+    assert gate["passed"] is None
 
 
 def test_evaluate_promotion_returns_paper_trade_candidate_when_all_requirements_pass() -> None:
@@ -76,3 +78,16 @@ def test_evaluate_promotion_returns_paper_trade_candidate_when_all_requirements_
 
     assert report["decision"] == "paper_trade_candidate"
     assert report["promotion_status"] == "paper_trade_candidate"
+
+
+def test_evaluate_promotion_normalizes_cross_pair_metadata_values() -> None:
+    report = evaluate_promotion(
+        aggregate_metrics={"total_trades": 16, "expectancy": 0.12, "profit_factor": 1.25, "max_drawdown": 0.7},
+        yearly_metrics=_yearly_metrics(),
+        stress_results=_stress_results(),
+        thresholds=_thresholds(),
+        parameter_neighborhood={"evaluated_neighbors": 5, "passing_neighbors": 4, "pass_rate": 0.8},
+        metadata={"cross_pair_validated": "true"},
+    )
+
+    assert report["decision"] == "paper_trade_candidate"

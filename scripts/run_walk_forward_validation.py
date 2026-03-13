@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 import json
 import sys
 from pathlib import Path
@@ -18,6 +19,14 @@ from eurusd_quant.data.loaders import load_bars
 from eurusd_quant.validation import PromotionThresholds, run_walk_forward_validation
 
 
+@dataclass(frozen=True)
+class ConfigExecutionRequest:
+    strategy_config: dict[str, Any]
+    metadata: dict[str, Any]
+    parameter_neighborhood: dict[str, Any] | None
+    config_identifier: str
+
+
 CONFIG_METADATA_COLUMNS = {
     "strategy",
     "strategy_name",
@@ -32,6 +41,9 @@ CONFIG_METADATA_COLUMNS = {
     "max_drawdown",
     "trades",
     "total_trades",
+    "cross_pair_validated",
+    "parameter_neighborhood_json",
+    "parameter_neighborhood",
 }
 
 
@@ -45,6 +57,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", required=True, help="Output root for walk-forward runs")
     parser.add_argument("--input-configs", help="Optional CSV of configs to evaluate")
     parser.add_argument("--promotion-config", help="Optional YAML/JSON file overriding promotion thresholds")
+    parser.add_argument(
+        "--cross-pair-validated",
+        choices=["true", "false"],
+        help="Optional global cross-pair validation flag passed into promotion metadata",
+    )
+    parser.add_argument(
+        "--promotion-metadata-json",
+        help="Optional JSON file with additional promotion metadata, such as cross_pair_validated or parameter_neighborhood",
+    )
     parser.add_argument("--top-n", type=int, help="Optional limit when --input-configs is provided")
     return parser.parse_args()
 
@@ -57,8 +78,78 @@ def load_yaml(path: Path) -> dict[str, Any]:
 def load_structured_file(path: Path) -> dict[str, Any]:
     if path.suffix.lower() == ".json":
         with path.open("r", encoding="utf-8") as f:
-            return json.load(f)
-    return load_yaml(path)
+            payload = json.load(f)
+    else:
+        payload = load_yaml(path)
+
+    if not isinstance(payload, dict):
+        raise ValueError(f"Structured file '{path}' must decode to a JSON/YAML object")
+    return payload
+
+
+def _parse_optional_bool(value: Any, field_name: str) -> bool | None:
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        lowered = value.strip().lower()
+        if lowered in {"", "none"}:
+            return None
+        if lowered == "true":
+            return True
+        if lowered == "false":
+            return False
+    raise ValueError(f"{field_name} must be true, false, or omitted")
+
+
+def _parse_optional_json_dict(value: Any, field_name: str, context: str) -> dict[str, Any] | None:
+    if value is None:
+        return None
+    if isinstance(value, dict):
+        return dict(value)
+    if not isinstance(value, str):
+        raise ValueError(f"{field_name} for {context} must be a JSON object")
+
+    stripped = value.strip()
+    if not stripped:
+        return None
+
+    try:
+        parsed = json.loads(stripped)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid {field_name} for {context}: {exc.msg}") from exc
+
+    if parsed is None:
+        return None
+    if not isinstance(parsed, dict):
+        raise ValueError(f"{field_name} for {context} must decode to a JSON object")
+    return parsed
+
+
+def _parse_required_json_dict(value: Any, field_name: str, context: str) -> dict[str, Any]:
+    parsed = _parse_optional_json_dict(value, field_name, context)
+    if parsed is None:
+        raise ValueError(f"{field_name} for {context} must be a non-empty JSON object")
+    return parsed
+
+
+def _config_identifier(row_index: int, row_dict: dict[str, Any]) -> str:
+    config_id = row_dict.get("config_hash")
+    if config_id not in {None, ""}:
+        return f"row {row_index} (config_hash={config_id})"
+    rank = row_dict.get("rank")
+    if rank not in {None, ""}:
+        return f"row {row_index} (rank={rank})"
+    return f"row {row_index}"
+
+
+def _sanitize_strategy_config(config: dict[str, Any]) -> dict[str, Any]:
+    return {
+        key: value
+        for key, value in config.items()
+        if key not in CONFIG_METADATA_COLUMNS and value is not None
+    }
 
 
 def _coerce_value(value: Any) -> Any:
@@ -66,8 +157,6 @@ def _coerce_value(value: Any) -> Any:
         return None
     if isinstance(value, str):
         stripped = value.strip()
-        if stripped.startswith("{") or stripped.startswith("["):
-            return json.loads(stripped)
         lowered = stripped.lower()
         if lowered == "true":
             return True
@@ -77,16 +166,47 @@ def _coerce_value(value: Any) -> Any:
     return value.item() if hasattr(value, "item") else value
 
 
-def load_config_rows(
+def build_base_promotion_metadata(
+    *,
+    cross_pair_validated: str | None,
+    promotion_metadata_path: str | None,
+) -> dict[str, Any]:
+    metadata: dict[str, Any] = {}
+    cross_pair = _parse_optional_bool(cross_pair_validated, "cross_pair_validated")
+    if cross_pair is not None:
+        metadata["cross_pair_validated"] = cross_pair
+
+    if promotion_metadata_path is not None:
+        metadata.update(load_structured_file(Path(promotion_metadata_path)))
+    return metadata
+
+
+def load_config_requests(
     strategy_name: str,
     strategy_config_all: dict[str, Any],
     input_configs_path: str | None,
     top_n: int | None,
-) -> list[dict[str, Any]]:
+    *,
+    base_metadata: dict[str, Any] | None = None,
+) -> list[ConfigExecutionRequest]:
+    base_metadata = dict(base_metadata or {})
+
     if input_configs_path is None:
         if strategy_name not in strategy_config_all:
             raise ValueError(f"Strategy config '{strategy_name}' not found in config/strategies.yaml")
-        return [dict(strategy_config_all[strategy_name])]
+        parameter_neighborhood = _parse_optional_json_dict(
+            base_metadata.get("parameter_neighborhood"),
+            "parameter_neighborhood",
+            "global promotion metadata",
+        )
+        return [
+            ConfigExecutionRequest(
+                strategy_config=_sanitize_strategy_config(dict(strategy_config_all[strategy_name])),
+                metadata=base_metadata,
+                parameter_neighborhood=parameter_neighborhood,
+                config_identifier="default_config",
+            )
+        ]
 
     df = pd.read_csv(input_configs_path)
     if df.empty:
@@ -94,26 +214,53 @@ def load_config_rows(
     if top_n is not None:
         df = df.head(top_n)
 
-    configs: list[dict[str, Any]] = []
-    for _, row in df.iterrows():
+    requests: list[ConfigExecutionRequest] = []
+    for row_index, row in df.iterrows():
         row_dict = {key: _coerce_value(value) for key, value in row.items()}
+        context = _config_identifier(row_index, row_dict)
         config_blob = row_dict.get("config_json") or row_dict.get("config")
-        if isinstance(config_blob, dict):
-            configs.append(config_blob)
-            continue
-        if isinstance(config_blob, str):
-            configs.append(json.loads(config_blob))
-            continue
+        if config_blob is not None:
+            strategy_config = _sanitize_strategy_config(
+                _parse_required_json_dict(config_blob, "config_json", context)
+            )
+        else:
+            strategy_config = _sanitize_strategy_config(
+                {
+                    key.removeprefix("param_"): value
+                    for key, value in row_dict.items()
+                    if key not in CONFIG_METADATA_COLUMNS
+                    and key not in {"config_json", "config"}
+                    and value is not None
+                }
+            )
 
-        config = {
-            key.removeprefix("param_"): value
-            for key, value in row_dict.items()
-            if key not in CONFIG_METADATA_COLUMNS
-            and key not in {"config_json", "config", "parameter_neighborhood_json"}
-            and value is not None
-        }
-        configs.append(config)
-    return configs
+        metadata = dict(base_metadata)
+        row_cross_pair = _parse_optional_bool(row_dict.get("cross_pair_validated"), "cross_pair_validated")
+        if row_cross_pair is not None:
+            metadata["cross_pair_validated"] = row_cross_pair
+
+        row_parameter_neighborhood = _parse_optional_json_dict(
+            row_dict.get("parameter_neighborhood_json"),
+            "parameter_neighborhood_json",
+            context,
+        )
+        if row_parameter_neighborhood is not None:
+            metadata["parameter_neighborhood"] = row_parameter_neighborhood
+
+        parameter_neighborhood = _parse_optional_json_dict(
+            metadata.get("parameter_neighborhood"),
+            "parameter_neighborhood",
+            context,
+        )
+        requests.append(
+            ConfigExecutionRequest(
+                strategy_config=strategy_config,
+                metadata=metadata,
+                parameter_neighborhood=parameter_neighborhood,
+                config_identifier=context,
+            )
+        )
+    return requests
 
 
 def save_result(
@@ -192,29 +339,45 @@ def main() -> None:
         if args.promotion_config
         else PromotionThresholds()
     )
+    base_metadata = build_base_promotion_metadata(
+        cross_pair_validated=args.cross_pair_validated,
+        promotion_metadata_path=args.promotion_metadata_json,
+    )
 
-    configs = load_config_rows(args.strategy, strategy_cfg_all, args.input_configs, args.top_n)
+    requests = load_config_requests(
+        args.strategy,
+        strategy_cfg_all,
+        args.input_configs,
+        args.top_n,
+        base_metadata=base_metadata,
+    )
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     print("config_hash | splits | trades | PF | decision")
-    for strategy_config in configs:
+    for request in requests:
+        request_metadata = {
+            "bars": args.bars,
+            "strategy": args.strategy,
+            **request.metadata,
+        }
         result = run_walk_forward_validation(
             bars=bars,
             strategy_name=args.strategy,
-            strategy_config=strategy_config,
+            strategy_config=request.strategy_config,
             execution_config=execution_cfg,
             train_years=args.train_years,
             test_months=args.test_months,
             embargo_days=args.embargo_days,
             thresholds=thresholds,
-            metadata={"bars": args.bars, "strategy": args.strategy},
+            parameter_neighborhood=request.parameter_neighborhood,
+            metadata=request_metadata,
         )
         save_result(
             output_dir,
             args.strategy,
             args.bars,
-            strategy_config,
+            request.strategy_config,
             result,
             train_years=args.train_years,
             test_months=args.test_months,

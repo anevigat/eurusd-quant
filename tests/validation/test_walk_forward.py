@@ -124,3 +124,30 @@ def test_run_walk_forward_validation_supports_embargo_days() -> None:
     )
 
     assert result.splits[0].test_start == pd.Timestamp("2021-01-06 00:00:00+0000", tz="UTC")
+
+
+def test_run_walk_forward_validation_can_promote_with_metadata_backed_neighborhood() -> None:
+    result = run_walk_forward_validation(
+        bars=_bars(),
+        strategy_name="session_breakout",
+        strategy_config={},
+        execution_config={"market_slippage_pips": 0.1, "stop_slippage_pips": 0.2, "fee_per_trade": 0.0},
+        train_years=3,
+        test_months=12,
+        thresholds=PromotionThresholds(
+            min_total_trades=1,
+            min_trades_per_year=1,
+            min_oos_profit_factor=1.0,
+            max_oos_drawdown=5.0,
+            max_single_year_pnl_share=1.0,
+            min_stress_profit_factor=0.5,
+            min_stress_expectancy=-1.0,
+        ),
+        metadata={
+            "cross_pair_validated": True,
+            "parameter_neighborhood": {"evaluated_neighbors": 5, "passing_neighbors": 4, "pass_rate": 0.8},
+        },
+        runner=_fake_runner,
+    )
+
+    assert result.promotion_report["decision"] == "paper_trade_candidate"

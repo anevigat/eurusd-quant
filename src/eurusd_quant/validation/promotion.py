@@ -46,6 +46,22 @@ def _gate(
     }
 
 
+def _normalize_optional_bool(value: Any, field_name: str) -> bool:
+    if value is None:
+        return False
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        lowered = value.strip().lower()
+        if lowered in {"true", "1", "yes"}:
+            return True
+        if lowered in {"false", "0", "no", ""}:
+            return False
+    if isinstance(value, (int, float)):
+        return bool(value)
+    raise ValueError(f"{field_name} must be a boolean-compatible value")
+
+
 def _evaluate_parameter_neighborhood(
     parameter_neighborhood: dict[str, Any] | None,
     thresholds: PromotionThresholds,
@@ -197,7 +213,9 @@ def evaluate_promotion(
     neighborhood_pass = next(
         gate["passed"] for gate in gates if gate["name"] == "parameter_neighborhood_stability"
     )
-    cross_pair_validated = bool(metadata.get("cross_pair_validated", False))
+    # Cross-pair evidence is an extra promotion input. Walk-forward alone is not enough
+    # to classify a strategy as paper-trade ready.
+    cross_pair_validated = _normalize_optional_bool(metadata.get("cross_pair_validated"), "cross_pair_validated")
 
     if core_fail:
         decision = "reject"
