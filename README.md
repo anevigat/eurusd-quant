@@ -90,6 +90,23 @@ Key outputs:
 
 See details in [docs/event_strategy_sweeps.md](docs/event_strategy_sweeps.md).
 
+## Cross-Pair Robustness Testing
+
+Run cross-pair NY impulse sweeps (auto-detecting available EURUSD/GBPUSD/USDJPY/AUDUSD historical and forward files) and aggregate robustness rankings:
+
+```bash
+python scripts/run_cross_pair_sweeps.py \
+  --output-root outputs/cross_pair_sweeps
+```
+
+```bash
+python scripts/analyze_cross_pair_robustness.py \
+  --input-root outputs/cross_pair_sweeps \
+  --output-dir outputs/cross_pair_robustness
+```
+
+See details in [docs/cross_pair_robustness.md](docs/cross_pair_robustness.md).
+
 ## Requirements
 
 - Python 3.11+

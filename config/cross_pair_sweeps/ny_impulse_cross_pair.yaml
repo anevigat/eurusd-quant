@@ -1,0 +1,29 @@
+strategy: ny_impulse_mean_reversion
+expected_datasets:
+  EURUSD:
+    historical: data/bars/15m/eurusd_bars_15m_2018_2024.parquet
+    forward: data/bars/15m/eurusd_bars_15m_2025_now.parquet
+  GBPUSD:
+    historical: data/bars/15m/gbpusd_bars_15m_2018_2024.parquet
+    forward: data/bars/15m/gbpusd_bars_15m_2025_now.parquet
+  USDJPY:
+    historical: data/bars/15m/usdjpy_bars_15m_2018_2024.parquet
+    forward: data/bars/15m/usdjpy_bars_15m_2025_now.parquet
+  AUDUSD:
+    historical: data/bars/15m/audusd_bars_15m_2018_2024.parquet
+    forward: data/bars/15m/audusd_bars_15m_2025_now.parquet
+threshold_percentiles:
+  p85: 0.85
+  p90: 0.90
+  p95: 0.95
+entry_retracement_ratios: [0.4, 0.5, 0.6]
+exit_models:
+  atr_1_0:
+    exit_model: atr
+    atr_target_multiple: 1.0
+  atr_1_5:
+    exit_model: atr
+    atr_target_multiple: 1.5
+  retracement_0_75:
+    exit_model: retracement
+    retracement_target_ratio: 0.75
