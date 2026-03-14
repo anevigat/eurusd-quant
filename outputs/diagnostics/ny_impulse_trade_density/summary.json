@@ -1,0 +1,18 @@
+{
+  "total_trades": 129,
+  "dominant_year_pnl_share": 0.23781232648528278,
+  "zero_trade_month_count": 27,
+  "longest_zero_trade_gap_months": 6,
+  "metrics": {
+    "total_trades": 129,
+    "win_rate": 0.6434108527131783,
+    "gross_pnl": 0.03750249999999644,
+    "net_pnl": 0.03750249999999644,
+    "average_win": 0.001426174698795131,
+    "average_loss": -0.0017580434782608575,
+    "expectancy": 0.0002907170542635383,
+    "profit_factor": 1.463738098182227,
+    "max_drawdown": 0.014887499999999831
+  },
+  "trades_path": "outputs/ny_impulse_validation/baseline_backtest/trades.parquet"
+}

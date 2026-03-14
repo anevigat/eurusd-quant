@@ -37,18 +37,20 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
 - [Intraday strategy consolidation](docs/research/intraday_strategy_consolidation.md)
+- [NY impulse mean reversion hypothesis](docs/research/ny_impulse_mean_reversion_hypothesis.md)
 - [Portfolio construction plan](docs/research/portfolio_construction_plan.md)
 - [Strategy promotion framework](docs/research/strategy_promotion_framework.md)
 - [FX trend / momentum research plan](docs/research/tsmom_fx_research_plan.md)
 - [FX higher-timeframe session alignment note](docs/research/fx_higher_timeframe_session_alignment.md)
 - [Initial FX trend / momentum results](docs/experiments/tsmom_initial_results.md)
 - [Candidate strengthening and revalidation results](docs/experiments/candidate_strengthening_results.md)
+- [NY impulse mean reversion validation](docs/experiments/ny_impulse_mean_reversion_validation.md)
 - [Portfolio candidate analysis](docs/experiments/portfolio_candidate_analysis.md)
 - [Strategy matrix status](docs/strategy_matrix_status.md)
 
 ## Research Philosophy
 
-The repo is meant to reject weak ideas aggressively, not preserve every branch as a live roadmap item. Strategies are grouped into a small set of archetypes, the weakest families are explicitly frozen, and only a few directions remain active for deeper validation. After the latest candidate-strengthening reruns, the continuation branch is frozen again, the session-aligned GBPUSD trend sleeve is rejected, and the strongest remaining evidence sits in the reversal / event-combination cluster.
+The repo is meant to reject weak ideas aggressively, not preserve every branch as a live roadmap item. Strategies are grouped into a small set of archetypes, the weakest families are explicitly frozen, and only a few directions remain active for deeper validation. After the latest NY impulse validation pass, the continuation branch stays frozen, the first trend family remains rejected, the NY impulse sleeve is now rejected as well, and `false_breakout_reversal` is the only active sleeve still carrying credible follow-up evidence.
 
 ## Strategy Promotion And Walk-Forward
 
@@ -134,6 +136,44 @@ Each config run writes:
 - `outputs/walk_forward/<strategy>/<config_hash>/aggregate.json`
 - `outputs/walk_forward/<strategy>/<config_hash>/equity_curve.csv`
 - `outputs/walk_forward/<strategy>/<config_hash>/promotion_report.json`
+
+## Focused NY Impulse Validation
+
+Phase 6 adds a narrow validation workflow for `ny_impulse_mean_reversion`. The goal is to decide whether the sleeve is a real candidate or should be frozen, not to spawn a new branch zoo.
+
+Behavior and density diagnostics:
+
+```bash
+.venv/bin/python scripts/analyze_ny_impulse_behavior.py \
+  --bars /Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --output-dir outputs/diagnostics/ny_impulse_behavior/all_impulses
+
+.venv/bin/python scripts/analyze_ny_impulse_behavior.py \
+  --bars /Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --threshold-pips 22 \
+  --output-dir outputs/diagnostics/ny_impulse_behavior/threshold_22
+
+.venv/bin/python scripts/analyze_trade_density.py \
+  --trades outputs/ny_impulse_validation/baseline_backtest/trades.parquet \
+  --output-dir outputs/diagnostics/ny_impulse_trade_density
+```
+
+Reusable spread-only stress validation:
+
+```bash
+.venv/bin/python scripts/run_cost_stress_validation.py \
+  --strategy ny_impulse_mean_reversion \
+  --bars /Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --config-json '{"timeframe":"15m","impulse_start_utc":"13:00","impulse_end_utc":"13:30","entry_start_utc":"13:30","entry_end_utc":"15:00","impulse_threshold_pips":22.0,"entry_mode":"impulse_midpoint_cross","retracement_target_ratio":0.5,"stop_buffer_pips":2.0,"max_holding_bars":6,"atr_period":14,"exit_model":"retracement","atr_target_multiple":1.0,"retracement_entry_ratio":0.5,"atr_trail_multiple":0.8,"initial_stop_atr":1.0,"breakeven_trigger_atr":0.5,"trailing_start_atr":1.0,"one_trade_per_day":true,"allowed_side":"both"}' \
+  --spread-multipliers 1.0,1.5,2.0 \
+  --output-dir outputs/ny_impulse_validation/cost_stress_cli
+```
+
+Current result:
+
+- the thresholded subset shows some genuine-looking full-sample behavior
+- the walk-forward trade count and year concentration are still too weak
+- the sleeve is now treated as rejected historical research, not as an active candidate
 
 ## FX Trend / Momentum Family
 

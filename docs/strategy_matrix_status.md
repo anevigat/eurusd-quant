@@ -1,23 +1,23 @@
 # Strategy Matrix Status
 
-Phase 5 tightened the candidate set further. The current view keeps only the sleeves that still have credible follow-up evidence and freezes the continuation branch until a materially different hypothesis appears.
+Phase 6 closed the remaining `ny_impulse_mean_reversion` question. The sleeve keeps some interesting full-sample behavior, but it does not survive the walk-forward density and concentration bar, so the active set is now down to the one reversal archetype that still carries credible follow-up evidence.
 
 - Strategies tracked: `36`
-- Rejected / frozen strategies: `32`
-- Candidate-or-better strategies: `2`
-- Active archetypes: `3`
-- Frozen families: `6`
-- Phase 5 note: session-aligned trend revalidation and focused intraday reruns removed the continuation sleeve from the active candidate set.
+- Rejected / frozen strategies: `33`
+- Candidate-or-better strategies: `1`
+- Active archetypes: `1`
+- Frozen families: `8`
+- Phase 6 note: focused NY impulse validation found a thresholded niche effect, but not one that survives active-candidate scrutiny.
 
 ## Active Archetypes
 
 - `session reversal / sweep reversal`
-- `event-combination strategies`
-- `trend / momentum`
 
 ## Frozen Families
 
 - `session breakout continuation`
+- `event-combination strategies`
+- `trend / momentum`
 - `session-open fades and impulse-open variants`
 - `VWAP / midpoint mean reversion`
 - `pattern-based reversals and exhaustion patterns`
@@ -59,7 +59,7 @@ Tracked rows below include both implemented code paths (`code`) and documented h
 | `liquidity_sweep_reversal` | `doc` | session reversal / sweep reversal | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Generic sweep reversal branch stays frozen. |
 | `session_liquidity_sweep_reversal` | `doc` | session reversal / sweep reversal | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Session-specific sweep variant did not earn a continued branch. |
 | `ny_liquidity_sweep_reversal` | `doc` | session reversal / sweep reversal | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | NY sweep variant is frozen with the rest of the sweep-only tree. |
-| `ny_impulse_mean_reversion` | `code` | event-combination strategies | `15m` | `candidate` | EURUSD 15m 2018-2024 threshold revalidation + walk-forward | Tightening the threshold to `22.0` pips improved PF and drawdown, but trade density and yearly concentration still fail formal promotion gates. |
+| `ny_impulse_mean_reversion` | `code` | event-combination strategies | `15m` | `rejected` | EURUSD 15m 2018-2024 focused validation | Raw thresholded behavior exists, but OOS trade density, yearly concentration, and portfolio context are too weak to keep the sleeve active. |
 | `impulse_session_open` | `code` | event-combination strategies | `15m` | `rejected` | EURUSD 15m 2018-2024 smoke backtest | Session-open momentum variant is frozen with the rest of the open variants. |
 | `atr_spike_new_high_low` | `code` | event-combination strategies | `15m` | `rejected` | EURUSD 15m 2018-2024 smoke backtest | Multi-condition event combo did not survive first-pass testing. |
 | `volatility_expansion_after_compression` | `code` | event-combination strategies | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostic + MVP tests | Family investigated broadly and frozen after repeated failure. |
