@@ -1,3 +1,5 @@
+# Active strategies
+
 session_breakout:
   timeframe: "15m"
   asian_range_start_utc: "00:00"
@@ -49,21 +51,6 @@ london_pullback_continuation:
   one_trade_per_day: true
   allowed_side: "both"
 
-asian_range_compression_breakout:
-  timeframe: "15m"
-  asian_start_utc: "00:00"
-  asian_end_utc: "06:00"
-  entry_start_utc: "07:00"
-  entry_end_utc: "10:00"
-  atr_period: 14
-  compression_atr_ratio: 0.6
-  breakout_buffer_pips: 0.5
-  stop_atr_multiple: 1.0
-  exit_model: "atr_target"
-  atr_target_multiple: 1.5
-  max_holding_bars: 12
-  one_trade_per_day: true
-
 ny_impulse_mean_reversion:
   timeframe: "15m"
   impulse_start_utc: "13:00"
@@ -85,6 +72,49 @@ ny_impulse_mean_reversion:
   max_holding_bars: 6
   one_trade_per_day: true
   allowed_side: "both"
+
+tsmom_ma_cross:
+  timeframe: "1d"
+  fast_window: 20
+  slow_window: 100
+  atr_period: 14
+  atr_stop_multiple: 1.5
+  trailing_stop: false
+  max_holding_bars: 252
+
+tsmom_donchian:
+  timeframe: "1d"
+  breakout_window: 55
+  atr_period: 14
+  atr_stop_multiple: 1.5
+  trailing_stop: false
+  max_holding_bars: 252
+
+tsmom_return_sign:
+  timeframe: "1d"
+  lookback_window: 60
+  return_threshold: 0.0
+  atr_period: 14
+  atr_stop_multiple: 1.5
+  trailing_stop: false
+  max_holding_bars: 252
+
+# Frozen strategies (historical reference)
+
+asian_range_compression_breakout:
+  timeframe: "15m"
+  asian_start_utc: "00:00"
+  asian_end_utc: "06:00"
+  entry_start_utc: "07:00"
+  entry_end_utc: "10:00"
+  atr_period: 14
+  compression_atr_ratio: 0.6
+  breakout_buffer_pips: 0.5
+  stop_atr_multiple: 1.0
+  exit_model: "atr_target"
+  atr_target_multiple: 1.5
+  max_holding_bars: 12
+  one_trade_per_day: true
 
 vwap_intraday_reversion:
   timeframe: "15m"
@@ -199,29 +229,3 @@ vwap_session_open:
   stop_atr_multiple: 1.2
   max_holding_bars: 8
   one_trade_per_day: true
-
-tsmom_ma_cross:
-  timeframe: "1d"
-  fast_window: 20
-  slow_window: 100
-  atr_period: 14
-  atr_stop_multiple: 1.5
-  trailing_stop: false
-  max_holding_bars: 252
-
-tsmom_donchian:
-  timeframe: "1d"
-  breakout_window: 55
-  atr_period: 14
-  atr_stop_multiple: 1.5
-  trailing_stop: false
-  max_holding_bars: 252
-
-tsmom_return_sign:
-  timeframe: "1d"
-  lookback_window: 60
-  return_threshold: 0.0
-  atr_period: 14
-  atr_stop_multiple: 1.5
-  trailing_stop: false
-  max_holding_bars: 252

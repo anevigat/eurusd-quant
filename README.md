@@ -36,11 +36,16 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [NY impulse mean reversion strategy summary](docs/strategy_ny_impulse_mean_reversion.md)
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
+- [Intraday strategy consolidation](docs/research/intraday_strategy_consolidation.md)
 - [Strategy promotion framework](docs/research/strategy_promotion_framework.md)
 - [FX trend / momentum research plan](docs/research/tsmom_fx_research_plan.md)
 - [FX higher-timeframe session alignment note](docs/research/fx_higher_timeframe_session_alignment.md)
 - [Initial FX trend / momentum results](docs/experiments/tsmom_initial_results.md)
 - [Strategy matrix status](docs/strategy_matrix_status.md)
+
+## Research Philosophy
+
+The repo is meant to reject weak ideas aggressively, not preserve every branch as a live roadmap item. Strategies are grouped into a small set of archetypes, the weakest families are explicitly frozen, and only a few directions remain active for deeper validation. Phase 3 formalized that consolidation so the next iterations focus on a narrower set of continuation, reversal, event-combination, and trend archetypes.
 
 ## Strategy Promotion And Walk-Forward
 
