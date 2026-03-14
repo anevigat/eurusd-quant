@@ -7,6 +7,7 @@ Phase 3 consolidates the research tree into a small number of archetypes and tre
 - Candidate-or-better strategies: `3`
 - Active archetypes: `4`
 - Frozen families: `5`
+- Phase 4 note: portfolio/risk analysis was added, but no individual strategy statuses were changed.
 
 ## Active Archetypes
 

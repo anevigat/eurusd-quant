@@ -1,0 +1,97 @@
+shared_members:
+  london_pullback_eurusd:
+    strategy: london_pullback_continuation
+    pair: EURUSD
+    timeframe: 15m
+    archetype: session breakout continuation
+    artifact_path: outputs/portfolio_inputs/london_pullback_continuation_eurusd/trades.parquet
+  false_breakout_eurusd:
+    strategy: false_breakout_reversal
+    pair: EURUSD
+    timeframe: 15m
+    archetype: session reversal / sweep reversal
+    artifact_path: outputs/portfolio_inputs/false_breakout_reversal_eurusd/trades.parquet
+  ny_impulse_eurusd:
+    strategy: ny_impulse_mean_reversion
+    pair: EURUSD
+    timeframe: 15m
+    archetype: event-combination strategies
+    artifact_path: outputs/portfolio_inputs/ny_impulse_mean_reversion_eurusd/trades.parquet
+  tsmom_ma_cross_gbpusd:
+    strategy: tsmom_ma_cross
+    pair: GBPUSD
+    timeframe: 1d
+    archetype: trend / momentum
+    artifact_path: outputs/portfolio_inputs/tsmom_ma_cross_gbpusd/trades.parquet
+
+experiments:
+  - name: core_equal_weight
+    member_names:
+      - london_pullback_eurusd
+      - false_breakout_eurusd
+      - ny_impulse_eurusd
+    weighting_method: equal_weight
+    max_weight_per_strategy: 0.40
+    rebalance_frequency: sample_wide
+    lookback_days: 63
+    max_weight_per_pair: 1.0
+    max_usd_direction_exposure: 1.0
+    max_active_strategies_per_pair: 3
+    notes: Equal-weight baseline for the three active EURUSD archetypes.
+
+  - name: core_inverse_vol
+    member_names:
+      - london_pullback_eurusd
+      - false_breakout_eurusd
+      - ny_impulse_eurusd
+    weighting_method: inverse_vol
+    max_weight_per_strategy: 0.50
+    rebalance_frequency: monthly
+    lookback_days: 63
+    max_weight_per_pair: 1.0
+    max_usd_direction_exposure: 1.0
+    max_active_strategies_per_pair: 3
+    notes: Vol-aware baseline without explicit exposure caps.
+
+  - name: core_inverse_vol_capped
+    member_names:
+      - london_pullback_eurusd
+      - false_breakout_eurusd
+      - ny_impulse_eurusd
+    weighting_method: capped_inverse_vol
+    max_weight_per_strategy: 0.45
+    rebalance_frequency: monthly
+    lookback_days: 63
+    max_weight_per_pair: 0.60
+    max_usd_direction_exposure: 0.65
+    max_active_strategies_per_pair: 2
+    notes: Same core set with conservative same-pair and same-USD caps.
+
+  - name: exploratory_with_trend
+    member_names:
+      - london_pullback_eurusd
+      - false_breakout_eurusd
+      - ny_impulse_eurusd
+      - tsmom_ma_cross_gbpusd
+    weighting_method: capped_inverse_vol
+    max_weight_per_strategy: 0.40
+    rebalance_frequency: monthly
+    lookback_days: 63
+    max_weight_per_pair: 0.55
+    max_usd_direction_exposure: 0.65
+    max_active_strategies_per_pair: 2
+    notes: Exploratory portfolio that adds one GBPUSD trend sleeve.
+
+  - name: exploratory_without_trend
+    member_names:
+      - london_pullback_eurusd
+      - false_breakout_eurusd
+      - ny_impulse_eurusd
+    weighting_method: capped_inverse_vol
+    max_weight_per_strategy: 0.40
+    rebalance_frequency: monthly
+    lookback_days: 63
+    max_weight_per_pair: 0.55
+    max_usd_direction_exposure: 0.65
+    max_active_strategies_per_pair: 2
+    notes: Comparison portfolio to isolate the effect of the exploratory trend sleeve.
