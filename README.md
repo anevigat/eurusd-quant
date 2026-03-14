@@ -37,10 +37,12 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [False breakout reversal regime diagnostics](docs/research/fbr_regime_diagnostics.md)
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
 - [Intraday strategy consolidation](docs/research/intraday_strategy_consolidation.md)
+- [Portfolio construction plan](docs/research/portfolio_construction_plan.md)
 - [Strategy promotion framework](docs/research/strategy_promotion_framework.md)
 - [FX trend / momentum research plan](docs/research/tsmom_fx_research_plan.md)
 - [FX higher-timeframe session alignment note](docs/research/fx_higher_timeframe_session_alignment.md)
 - [Initial FX trend / momentum results](docs/experiments/tsmom_initial_results.md)
+- [Portfolio candidate analysis](docs/experiments/portfolio_candidate_analysis.md)
 - [Strategy matrix status](docs/strategy_matrix_status.md)
 
 ## Research Philosophy
@@ -195,6 +197,29 @@ Trend outputs are saved under:
 - `outputs/trend_sweeps/<strategy>/`
 - `outputs/trend_walk_forward/<strategy>/`
 - `outputs/trend_cross_pair/`
+
+## Portfolio Analysis Workflow
+
+Phase 4 adds a simple portfolio/risk layer around existing trade artifacts. The current implementation works from realized trade PnL streams and active-position overlap, so it is useful for research governance and diversification checks, not for live execution.
+
+Candidate artifacts are defined in `config/portfolio_candidates.yaml`. A typical workflow is:
+
+```bash
+.venv/bin/python scripts/analyze_strategy_correlation.py \
+  --config config/portfolio_candidates.yaml \
+  --output-dir outputs/strategy_correlation
+```
+
+```bash
+.venv/bin/python scripts/run_portfolio_backtest.py \
+  --config config/portfolio_candidates.yaml \
+  --output-dir outputs/portfolio_candidates
+```
+
+Outputs are saved under:
+
+- `outputs/strategy_correlation/<experiment_name>/`
+- `outputs/portfolio_candidates/<portfolio_name>/`
 
 ## Event Return Analyzer
 
