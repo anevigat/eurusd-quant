@@ -1,5 +1,21 @@
 # Portfolio Candidate Analysis
 
+## Phase 5 Follow-Up
+
+This Phase 4 analysis remains useful as the baseline portfolio reference, but it should now be read together with the Phase 5 candidate-strengthening reruns in [candidate_strengthening_results.md](candidate_strengthening_results.md).
+
+Key follow-up changes:
+
+- the GBPUSD trend sleeve was rechecked on session-aligned daily bars and no longer improved the portfolio
+- the EURUSD continuation slot was rerun with a tighter `07:00-08:00 UTC` focus and still failed
+- `ny_impulse_mean_reversion` improved after tightening the threshold to `22.0` pips, which lifted the updated EURUSD core from `-0.01972` net pnl to `+0.00104` with max drawdown reduced from `0.03195` to `0.01952`
+
+Current interpretation:
+
+- the portfolio layer is still useful
+- the candidate set is less misleading than it was in Phase 4
+- the research basket is still not strong enough for operational work
+
 ## Candidate Members
 
 Core candidate portfolio members used in this phase:

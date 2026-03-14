@@ -4,6 +4,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -22,12 +23,56 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input", required=True, help="Path to input parquet bars")
     parser.add_argument("--strategy", required=True, help="Strategy key from config/strategies.yaml")
     parser.add_argument("--output-dir", required=True, help="Output directory for results")
+    config_group = parser.add_mutually_exclusive_group()
+    config_group.add_argument(
+        "--config-json",
+        help="Optional JSON object overriding the strategy config from config/strategies.yaml",
+    )
+    config_group.add_argument(
+        "--config-file",
+        help="Optional JSON/YAML file overriding the strategy config from config/strategies.yaml",
+    )
     return parser.parse_args()
 
 
 def load_yaml(path: Path) -> dict:
     with path.open("r", encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+def load_structured_file(path: Path) -> dict[str, Any]:
+    if path.suffix.lower() == ".json":
+        with path.open("r", encoding="utf-8") as f:
+            payload = json.load(f)
+    else:
+        payload = load_yaml(path)
+
+    if not isinstance(payload, dict):
+        raise ValueError(f"Structured file '{path}' must decode to an object")
+    return payload
+
+
+def resolve_strategy_config(
+    *,
+    base_config: dict[str, Any],
+    config_json: str | None,
+    config_file: str | None,
+) -> dict[str, Any]:
+    if config_json is None and config_file is None:
+        return dict(base_config)
+
+    if config_json is not None:
+        try:
+            payload = json.loads(config_json)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"--config-json must decode to a JSON object: {exc.msg}") from exc
+        if not isinstance(payload, dict):
+            raise ValueError("--config-json must decode to a JSON object")
+        override = payload
+    else:
+        override = load_structured_file(Path(config_file))
+
+    return dict(override)
 
 
 def main() -> None:
@@ -38,12 +83,17 @@ def main() -> None:
     if args.strategy not in strategy_cfg_all or args.strategy not in STRATEGY_REGISTRY:
         supported = ", ".join(sorted(STRATEGY_REGISTRY))
         raise ValueError(f"Unsupported strategy: {args.strategy}. Supported strategies: {supported}")
+    strategy_config = resolve_strategy_config(
+        base_config=strategy_cfg_all[args.strategy],
+        config_json=args.config_json,
+        config_file=args.config_file,
+    )
 
     bars = load_bars(args.input)
     result = run_backtest(
         bars=bars,
         strategy_name=args.strategy,
-        strategy_config=strategy_cfg_all[args.strategy],
+        strategy_config=strategy_config,
         execution_config=execution_cfg,
     )
 
