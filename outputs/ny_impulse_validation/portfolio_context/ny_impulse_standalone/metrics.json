@@ -1,0 +1,16 @@
+{
+  "net_pnl": 0.03750249999999644,
+  "profit_factor": 1.463738098182227,
+  "expectancy": 0.0002907170542635383,
+  "annualized_pnl": 0.07326069767441165,
+  "max_drawdown": 0.014887499999999831,
+  "volatility": 0.02644153434377803,
+  "return_to_drawdown": 2.5190596137697305,
+  "active_strategies_mean": 1.0,
+  "active_strategies_max": 1,
+  "average_pairwise_correlation": 0.0,
+  "max_pairwise_correlation": 0.0,
+  "weighted_standalone_volatility": 0.0016656600989669076,
+  "portfolio_volatility": 0.0016656600989669076,
+  "diversification_ratio": 1.0
+}
