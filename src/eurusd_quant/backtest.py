@@ -28,13 +28,18 @@ def run_backtest(
     )
 
     for _, bar in bars.iterrows():
+        strategy.on_bar(bar)
         simulator.process_bar(bar)
         if simulator.has_open_position():
             position = simulator.get_open_position()
             if position is not None:
-                updated = strategy.update_open_position(bar, position)
-                if updated is not None:
-                    simulator.update_open_position_brackets(*updated)
+                if strategy.should_exit_position(bar, position):
+                    simulator.close_open_position_at_market(bar, exit_reason="signal_exit")
+                    position = simulator.get_open_position()
+                if position is not None:
+                    updated = strategy.update_open_position(bar, position)
+                    if updated is not None:
+                        simulator.update_open_position_brackets(*updated)
         order = strategy.generate_order(
             bar,
             has_open_position=simulator.has_open_position(),

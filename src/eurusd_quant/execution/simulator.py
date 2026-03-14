@@ -78,6 +78,12 @@ class ExecutionSimulator:
         exit_price = compute_market_exit_price(self._position.side, bar)
         self._close_position(bar, exit_price=exit_price, exit_reason="end_of_data")
 
+    def close_open_position_at_market(self, bar: pd.Series, *, exit_reason: str = "signal_exit") -> None:
+        if self._position is None:
+            return
+        exit_price = compute_market_exit_price(self._position.side, bar)
+        self._close_position(bar, exit_price=exit_price, exit_reason=exit_reason)
+
     def get_trades_df(self) -> pd.DataFrame:
         rows = [trade.to_dict() for trade in self._trades]
         if not rows:

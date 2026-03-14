@@ -49,6 +49,9 @@ from eurusd_quant.strategies.trend_exhaustion_reversal import (
     TrendExhaustionReversalConfig,
     TrendExhaustionReversalStrategy,
 )
+from eurusd_quant.strategies.tsmom_donchian import TSMOMDonchianConfig, TSMOMDonchianStrategy
+from eurusd_quant.strategies.tsmom_ma_cross import TSMOMMACrossConfig, TSMOMMACrossStrategy
+from eurusd_quant.strategies.tsmom_return_sign import TSMOMReturnSignConfig, TSMOMReturnSignStrategy
 from eurusd_quant.strategies.volatility_expansion_after_compression import (
     VolatilityExpansionAfterCompressionConfig,
     VolatilityExpansionAfterCompressionStrategy,
@@ -117,6 +120,18 @@ STRATEGY_REGISTRY: dict[str, StrategyDefinition] = {
     "trend_exhaustion_reversal": StrategyDefinition(
         config_class=TrendExhaustionReversalConfig,
         strategy_class=TrendExhaustionReversalStrategy,
+    ),
+    "tsmom_donchian": StrategyDefinition(
+        config_class=TSMOMDonchianConfig,
+        strategy_class=TSMOMDonchianStrategy,
+    ),
+    "tsmom_ma_cross": StrategyDefinition(
+        config_class=TSMOMMACrossConfig,
+        strategy_class=TSMOMMACrossStrategy,
+    ),
+    "tsmom_return_sign": StrategyDefinition(
+        config_class=TSMOMReturnSignConfig,
+        strategy_class=TSMOMReturnSignStrategy,
     ),
     "volatility_expansion_after_compression": StrategyDefinition(
         config_class=VolatilityExpansionAfterCompressionConfig,
