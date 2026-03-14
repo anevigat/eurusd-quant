@@ -1,23 +1,23 @@
 # Strategy Matrix Status
 
-Phase 3 consolidates the research tree into a small number of archetypes and treats the rest as frozen historical branches.
+Phase 5 tightened the candidate set further. The current view keeps only the sleeves that still have credible follow-up evidence and freezes the continuation branch until a materially different hypothesis appears.
 
 - Strategies tracked: `36`
-- Rejected / frozen strategies: `30`
-- Candidate-or-better strategies: `3`
-- Active archetypes: `4`
-- Frozen families: `5`
-- Phase 4 note: portfolio/risk analysis was added, but no individual strategy statuses were changed.
+- Rejected / frozen strategies: `32`
+- Candidate-or-better strategies: `2`
+- Active archetypes: `3`
+- Frozen families: `6`
+- Phase 5 note: session-aligned trend revalidation and focused intraday reruns removed the continuation sleeve from the active candidate set.
 
 ## Active Archetypes
 
-- `session breakout continuation`
 - `session reversal / sweep reversal`
 - `event-combination strategies`
 - `trend / momentum`
 
 ## Frozen Families
 
+- `session breakout continuation`
 - `session-open fades and impulse-open variants`
 - `VWAP / midpoint mean reversion`
 - `pattern-based reversals and exhaustion patterns`
@@ -45,8 +45,8 @@ Tracked rows below include both implemented code paths (`code`) and documented h
 
 | strategy | impl | archetype | timeframe | status | last evaluation | notes |
 |---|---|---|---|---|---|---|
-| `session_breakout` | `code` | session breakout continuation | `15m` | `diagnostic` | EURUSD 15m 2018-2024 diagnostics | Implemented breakout baseline; archetype remains active, but no new variants before formal rerun. |
-| `london_pullback_continuation` | `code` | session breakout continuation | `15m` | `candidate` | EURUSD 15m 2018-2024 MVP analysis | Best current intraday continuation implementation; keep as the survivor for this archetype. |
+| `session_breakout` | `code` | session breakout continuation | `15m` | `rejected` | EURUSD 15m 2018-2024 focused rerun + walk-forward | Even the best `07:00-08:00 UTC` + breakout-buffer refinement stayed negative in sample and OOS; freeze the continuation slot. |
+| `london_pullback_continuation` | `code` | session breakout continuation | `15m` | `rejected` | EURUSD 15m 2018-2024 smoke + Phase 5 portfolio recheck | Old continuation survivor no longer deserves active status after repeated negative evidence and portfolio drag. |
 | `london_range_breakout` | `doc` | session breakout continuation | `15m` | `diagnostic` | EURUSD 15m 2018-2024 diagnostics | Historical diagnostic branch kept as reference for the breakout archetype, not as a separate expansion path. |
 | `session_breakout_continuation` | `doc` | session breakout continuation | `15m` | `diagnostic` | EURUSD 15m 2018-2024 research mapping | Archetype-level mapping doc; retained as reference, not as a license to keep spawning close variants. |
 | `asian_range_breakout` | `doc` | session breakout continuation | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Original session breakout variant failed under costs and stays frozen. |
@@ -59,7 +59,7 @@ Tracked rows below include both implemented code paths (`code`) and documented h
 | `liquidity_sweep_reversal` | `doc` | session reversal / sweep reversal | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Generic sweep reversal branch stays frozen. |
 | `session_liquidity_sweep_reversal` | `doc` | session reversal / sweep reversal | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Session-specific sweep variant did not earn a continued branch. |
 | `ny_liquidity_sweep_reversal` | `doc` | session reversal / sweep reversal | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | NY sweep variant is frozen with the rest of the sweep-only tree. |
-| `ny_impulse_mean_reversion` | `code` | event-combination strategies | `15m` | `walk_forward_validated` | EURUSD 15m 2018-2024 walk-forward | Strongest event-combination result; keep as the active event-driven mean-reversion archetype. |
+| `ny_impulse_mean_reversion` | `code` | event-combination strategies | `15m` | `candidate` | EURUSD 15m 2018-2024 threshold revalidation + walk-forward | Tightening the threshold to `22.0` pips improved PF and drawdown, but trade density and yearly concentration still fail formal promotion gates. |
 | `impulse_session_open` | `code` | event-combination strategies | `15m` | `rejected` | EURUSD 15m 2018-2024 smoke backtest | Session-open momentum variant is frozen with the rest of the open variants. |
 | `atr_spike_new_high_low` | `code` | event-combination strategies | `15m` | `rejected` | EURUSD 15m 2018-2024 smoke backtest | Multi-condition event combo did not survive first-pass testing. |
 | `volatility_expansion_after_compression` | `code` | event-combination strategies | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostic + MVP tests | Family investigated broadly and frozen after repeated failure. |
@@ -78,6 +78,6 @@ Tracked rows below include both implemented code paths (`code`) and documented h
 | `double_impulse_exhaustion` | `doc` | pattern-based reversal | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Exhaustion pattern branch frozen. |
 | `daily_extreme_move_reversal` | `doc` | experimental / one-off | `1d diagnostic` | `rejected` | EURUSD 15m 2018-2024 aggregated-to-daily diagnostic | Useful exploratory note, not a live research branch. |
 | `multi_day_momentum_continuation` | `doc` | trend / momentum | `1d diagnostic` | `rejected` | EURUSD 15m 2018-2024 aggregated-to-daily diagnostic | Early precursor to Phase 2; superseded by the formal trend family. |
-| `tsmom_ma_cross` | `code` | trend / momentum | `1d` | `rejected` | EURUSD 1d 2018-2024 walk-forward; GBPUSD spot check | Family stays active, but this specific config failed current Phase 1 gates. |
+| `tsmom_ma_cross` | `code` | trend / momentum | `1d` | `rejected` | EURUSD + GBPUSD 1d session-aligned walk-forward | Session-aware daily bars overturned the earlier exploratory GBPUSD strength; the narrow neighborhood now fails on both pairs. |
 | `tsmom_donchian` | `code` | trend / momentum | `1d` | `rejected` | EURUSD 1d 2018-2024 walk-forward | Thin-sample breakout variant rejected in current form. |
 | `tsmom_return_sign` | `code` | trend / momentum | `1d` | `rejected` | EURUSD 1d 2018-2024 walk-forward; GBPUSD spot check | Trend family remains active, but this variant still failed drawdown and concentration gates. |

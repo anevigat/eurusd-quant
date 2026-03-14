@@ -1,19 +1,5 @@
 # Active strategies
 
-session_breakout:
-  timeframe: "15m"
-  asian_range_start_utc: "00:00"
-  asian_range_end_utc: "06:00"
-  entry_start_utc: "07:00"
-  entry_end_utc: "10:00"
-  atr_period: 14
-  atr_min_threshold: 0.0005
-  stop_atr_multiple: 1.0
-  take_profit_r: 1.5
-  max_holding_bars: 12
-  breakout_buffer_atr: 0.0
-  entry_window_mode: "fixed_utc"
-
 false_breakout_reversal:
   timeframe: "15m"
   asian_range_start_utc: "00:00"
@@ -33,31 +19,13 @@ false_breakout_reversal:
   allowed_side: "both"
   one_trade_per_day: true
 
-london_pullback_continuation:
-  timeframe: "15m"
-  drift_start_utc: "00:00"
-  drift_end_utc: "07:45"
-  entry_start_utc: "08:00"
-  entry_end_utc: "10:00"
-  drift_threshold_pips: 8.0
-  pullback_mode: "ema20"
-  atr_period: 14
-  atr_min_threshold: 0.0004
-  stop_mode: "atr"
-  stop_atr_multiple: 1.0
-  exit_model: "atr_target"
-  atr_target_multiple: 1.2
-  max_holding_bars: 12
-  one_trade_per_day: true
-  allowed_side: "both"
-
 ny_impulse_mean_reversion:
   timeframe: "15m"
   impulse_start_utc: "13:00"
   impulse_end_utc: "13:30"
   entry_start_utc: "13:30"
   entry_end_utc: "15:00"
-  impulse_threshold_pips: 17.5
+  impulse_threshold_pips: 22.0
   entry_mode: "impulse_midpoint_cross"
   retracement_entry_ratio: 0.5
   exit_model: "retracement"
@@ -100,6 +68,38 @@ tsmom_return_sign:
   max_holding_bars: 252
 
 # Frozen strategies (historical reference)
+
+session_breakout:
+  timeframe: "15m"
+  asian_range_start_utc: "00:00"
+  asian_range_end_utc: "06:00"
+  entry_start_utc: "07:00"
+  entry_end_utc: "08:00"
+  atr_period: 14
+  atr_min_threshold: 0.0005
+  stop_atr_multiple: 1.0
+  take_profit_r: 1.5
+  max_holding_bars: 12
+  breakout_buffer_atr: 0.2
+  entry_window_mode: "fixed_utc"
+
+london_pullback_continuation:
+  timeframe: "15m"
+  drift_start_utc: "00:00"
+  drift_end_utc: "07:45"
+  entry_start_utc: "08:00"
+  entry_end_utc: "10:00"
+  drift_threshold_pips: 8.0
+  pullback_mode: "ema20"
+  atr_period: 14
+  atr_min_threshold: 0.0004
+  stop_mode: "atr"
+  stop_atr_multiple: 1.0
+  exit_model: "atr_target"
+  atr_target_multiple: 1.2
+  max_holding_bars: 12
+  one_trade_per_day: true
+  allowed_side: "both"
 
 asian_range_compression_breakout:
   timeframe: "15m"

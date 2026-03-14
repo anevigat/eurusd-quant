@@ -42,12 +42,13 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [FX trend / momentum research plan](docs/research/tsmom_fx_research_plan.md)
 - [FX higher-timeframe session alignment note](docs/research/fx_higher_timeframe_session_alignment.md)
 - [Initial FX trend / momentum results](docs/experiments/tsmom_initial_results.md)
+- [Candidate strengthening and revalidation results](docs/experiments/candidate_strengthening_results.md)
 - [Portfolio candidate analysis](docs/experiments/portfolio_candidate_analysis.md)
 - [Strategy matrix status](docs/strategy_matrix_status.md)
 
 ## Research Philosophy
 
-The repo is meant to reject weak ideas aggressively, not preserve every branch as a live roadmap item. Strategies are grouped into a small set of archetypes, the weakest families are explicitly frozen, and only a few directions remain active for deeper validation. Phase 3 formalized that consolidation so the next iterations focus on a narrower set of continuation, reversal, event-combination, and trend archetypes.
+The repo is meant to reject weak ideas aggressively, not preserve every branch as a live roadmap item. Strategies are grouped into a small set of archetypes, the weakest families are explicitly frozen, and only a few directions remain active for deeper validation. After the latest candidate-strengthening reruns, the continuation branch is frozen again, the session-aligned GBPUSD trend sleeve is rejected, and the strongest remaining evidence sits in the reversal / event-combination cluster.
 
 ## Strategy Promotion And Walk-Forward
 
@@ -168,6 +169,8 @@ Run a smoke backtest:
   --strategy tsmom_ma_cross \
   --output-dir outputs/trend_backtests/tsmom_ma_cross
 ```
+
+`scripts/run_backtest.py` also accepts `--config-json` or `--config-file` when a focused revalidation needs a one-off config without changing `config/strategies.yaml`.
 
 Run a small sweep:
 

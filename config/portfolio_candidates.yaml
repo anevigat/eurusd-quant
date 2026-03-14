@@ -23,6 +23,42 @@ shared_members:
     timeframe: 1d
     archetype: trend / momentum
     artifact_path: outputs/portfolio_inputs/tsmom_ma_cross_gbpusd/trades.parquet
+  london_pullback_eurusd_candidate_baseline:
+    strategy: london_pullback_continuation
+    pair: EURUSD
+    timeframe: 15m
+    archetype: session breakout continuation
+    artifact_path: outputs/candidate_strengthening/portfolio_inputs/london_pullback_eurusd_baseline/trades.parquet
+  false_breakout_eurusd_candidate_baseline:
+    strategy: false_breakout_reversal
+    pair: EURUSD
+    timeframe: 15m
+    archetype: session reversal / sweep reversal
+    artifact_path: outputs/candidate_strengthening/portfolio_inputs/false_breakout_eurusd_baseline/trades.parquet
+  ny_impulse_eurusd_candidate_baseline:
+    strategy: ny_impulse_mean_reversion
+    pair: EURUSD
+    timeframe: 15m
+    archetype: event-combination strategies
+    artifact_path: outputs/candidate_strengthening/portfolio_inputs/ny_impulse_eurusd_baseline/trades.parquet
+  session_breakout_eurusd_refined:
+    strategy: session_breakout
+    pair: EURUSD
+    timeframe: 15m
+    archetype: session breakout continuation
+    artifact_path: outputs/candidate_strengthening/portfolio_inputs/session_breakout_eurusd_refined/trades.parquet
+  ny_impulse_eurusd_refined:
+    strategy: ny_impulse_mean_reversion
+    pair: EURUSD
+    timeframe: 15m
+    archetype: event-combination strategies
+    artifact_path: outputs/candidate_strengthening/portfolio_inputs/ny_impulse_eurusd_refined/trades.parquet
+  tsmom_ma_cross_gbpusd_session22:
+    strategy: tsmom_ma_cross
+    pair: GBPUSD
+    timeframe: 1d
+    archetype: trend / momentum
+    artifact_path: outputs/candidate_strengthening/portfolio_inputs/tsmom_ma_cross_gbpusd_session22/trades.parquet
 
 experiments:
   - name: core_equal_weight
@@ -95,3 +131,60 @@ experiments:
     max_usd_direction_exposure: 0.65
     max_active_strategies_per_pair: 2
     notes: Comparison portfolio to isolate the effect of the exploratory trend sleeve.
+
+  - name: candidate_strengthening_core_baseline
+    member_names:
+      - london_pullback_eurusd_candidate_baseline
+      - false_breakout_eurusd_candidate_baseline
+      - ny_impulse_eurusd_candidate_baseline
+    weighting_method: capped_inverse_vol
+    max_weight_per_strategy: 0.40
+    rebalance_frequency: monthly
+    lookback_days: 63
+    max_weight_per_pair: 0.55
+    max_usd_direction_exposure: 0.65
+    max_active_strategies_per_pair: 2
+    notes: Phase 5 baseline portfolio using the pre-refinement EURUSD candidate set.
+
+  - name: candidate_strengthening_core_updated
+    member_names:
+      - session_breakout_eurusd_refined
+      - false_breakout_eurusd_candidate_baseline
+      - ny_impulse_eurusd_refined
+    weighting_method: capped_inverse_vol
+    max_weight_per_strategy: 0.40
+    rebalance_frequency: monthly
+    lookback_days: 63
+    max_weight_per_pair: 0.55
+    max_usd_direction_exposure: 0.65
+    max_active_strategies_per_pair: 2
+    notes: Phase 5 updated EURUSD core after one continuation and one event-combination refinement.
+
+  - name: candidate_strengthening_exploratory_with_trend
+    member_names:
+      - session_breakout_eurusd_refined
+      - false_breakout_eurusd_candidate_baseline
+      - ny_impulse_eurusd_refined
+      - tsmom_ma_cross_gbpusd_session22
+    weighting_method: capped_inverse_vol
+    max_weight_per_strategy: 0.40
+    rebalance_frequency: monthly
+    lookback_days: 63
+    max_weight_per_pair: 0.55
+    max_usd_direction_exposure: 0.65
+    max_active_strategies_per_pair: 2
+    notes: Updated exploratory portfolio after session-aligned GBPUSD trend revalidation.
+
+  - name: candidate_strengthening_exploratory_without_trend
+    member_names:
+      - session_breakout_eurusd_refined
+      - false_breakout_eurusd_candidate_baseline
+      - ny_impulse_eurusd_refined
+    weighting_method: capped_inverse_vol
+    max_weight_per_strategy: 0.40
+    rebalance_frequency: monthly
+    lookback_days: 63
+    max_weight_per_pair: 0.55
+    max_usd_direction_exposure: 0.65
+    max_active_strategies_per_pair: 2
+    notes: Companion portfolio to isolate the effect of the revalidated GBPUSD trend sleeve.
