@@ -1,5 +1,13 @@
 # Initial FX Trend / Momentum Results
 
+## Session-Alignment Note
+
+These Phase 2 results were generated before the higher-timeframe aggregation patch that made `1d` and `4h` bars session-aware. At the time of these runs, `scripts/prepare_higher_timeframe_bars.py` used naive UTC resampling boundaries rather than a fixed FX session rollover.
+
+The repo now uses a fixed `22:00 UTC` rollover for higher-timeframe FX bars so daily and 4h buckets align with the existing market-week convention already used elsewhere in the dataset. That improves the correctness of closes, breakout levels, moving averages, and trailing return calculations for trend research.
+
+Treat the results below as exploratory. They remain useful for first-pass family screening, but any serious trend candidate should be rechecked on the session-aligned bars before further refinement or promotion decisions.
+
 ## Commands Run
 
 ### Build daily bars

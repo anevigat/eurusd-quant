@@ -38,6 +38,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [False breakout reversal multi-year validation](docs/research/false_breakout_reversal_multiyear_validation.md)
 - [Strategy promotion framework](docs/research/strategy_promotion_framework.md)
 - [FX trend / momentum research plan](docs/research/tsmom_fx_research_plan.md)
+- [FX higher-timeframe session alignment note](docs/research/fx_higher_timeframe_session_alignment.md)
 - [Initial FX trend / momentum results](docs/experiments/tsmom_initial_results.md)
 - [Strategy matrix status](docs/strategy_matrix_status.md)
 
@@ -136,14 +137,21 @@ Phase 2 adds a first medium-horizon trend family:
 
 The first implementation is daily-bar based and uses the same generic backtest and walk-forward validation pipeline as the intraday strategies.
 
-Build daily bars from existing 15m bars:
+Build daily bars from existing 15m bars. Higher-timeframe aggregation is session-aware by default and uses a fixed `22:00 UTC` rollover to match the repo's existing FX week boundary. This is a fixed-UTC convention, not full DST-aware New York-close handling.
 
 ```bash
 .venv/bin/python scripts/prepare_higher_timeframe_bars.py \
   --input-file data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
   --output-file data/bars/1d/eurusd_bars_1d_2018_2024.parquet \
-  --timeframe 1d
+  --timeframe 1d \
+  --session-rollover-hour-utc 22
 ```
+
+The script also writes a sidecar metadata file such as `data/bars/1d/eurusd_bars_1d_2018_2024.metadata.json` so the aggregation convention is recoverable later.
+
+4h bars use the same anchor, which means default bucket starts are `22:00`, `02:00`, `06:00`, `10:00`, `14:00`, and `18:00 UTC`.
+
+Earlier Phase 2 trend results were generated before this session-aware alignment patch and should be treated as exploratory until promising configs are rechecked on the aligned bars.
 
 Run a smoke backtest:
 
