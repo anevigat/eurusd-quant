@@ -41,6 +41,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [Portfolio construction plan](docs/research/portfolio_construction_plan.md)
 - [Strategy promotion framework](docs/research/strategy_promotion_framework.md)
 - [Strategy failure post-mortem](docs/research/strategy_failure_postmortem.md)
+- [Session structure analysis](docs/research/session_structure_analysis.md)
 - [FX trend / momentum research plan](docs/research/tsmom_fx_research_plan.md)
 - [FX higher-timeframe session alignment note](docs/research/fx_higher_timeframe_session_alignment.md)
 - [Initial FX trend / momentum results](docs/experiments/tsmom_initial_results.md)
@@ -56,6 +57,8 @@ The repo is meant to reject weak ideas aggressively, not preserve every branch a
 ## Research Reset Phase
 
 The repo now includes a formal post-mortem reset in [docs/research/strategy_failure_postmortem.md](docs/research/strategy_failure_postmortem.md). That document summarizes the full tested strategy tree, the failure datasets under `outputs/research/`, and the lessons that should constrain the next research cycle.
+
+The reset phase now also includes descriptive session diagnostics in [docs/research/session_structure_analysis.md](docs/research/session_structure_analysis.md). The machine-readable outputs for that analysis are saved under `outputs/diagnostics/session_structure/`.
 
 ## Strategy Promotion And Walk-Forward
 
