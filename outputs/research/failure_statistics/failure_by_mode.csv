@@ -1,0 +1,8 @@
+failure_mode,count
+no_edge_after_costs,13
+false_breakout_noise,8
+portfolio_redundant,4
+parameter_instability,2
+overfit_parameter,2
+yearly_concentration,1
+too_few_trades,1

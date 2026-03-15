@@ -40,6 +40,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [NY impulse mean reversion hypothesis](docs/research/ny_impulse_mean_reversion_hypothesis.md)
 - [Portfolio construction plan](docs/research/portfolio_construction_plan.md)
 - [Strategy promotion framework](docs/research/strategy_promotion_framework.md)
+- [Strategy failure post-mortem](docs/research/strategy_failure_postmortem.md)
 - [FX trend / momentum research plan](docs/research/tsmom_fx_research_plan.md)
 - [FX higher-timeframe session alignment note](docs/research/fx_higher_timeframe_session_alignment.md)
 - [Initial FX trend / momentum results](docs/experiments/tsmom_initial_results.md)
@@ -51,6 +52,10 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 ## Research Philosophy
 
 The repo is meant to reject weak ideas aggressively, not preserve every branch as a live roadmap item. Strategies are grouped into a small set of archetypes, the weakest families are explicitly frozen, and only a few directions remain active for deeper validation. After the latest NY impulse validation pass, the continuation branch stays frozen, the first trend family remains rejected, the NY impulse sleeve is now rejected as well, and `false_breakout_reversal` is the only active sleeve still carrying credible follow-up evidence.
+
+## Research Reset Phase
+
+The repo now includes a formal post-mortem reset in [docs/research/strategy_failure_postmortem.md](docs/research/strategy_failure_postmortem.md). That document summarizes the full tested strategy tree, the failure datasets under `outputs/research/`, and the lessons that should constrain the next research cycle.
 
 ## Strategy Promotion And Walk-Forward
 
