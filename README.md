@@ -42,6 +42,7 @@ Minimal MVP for backtesting EURUSD M15 intraday strategies with a realistic bar-
 - [Strategy promotion framework](docs/research/strategy_promotion_framework.md)
 - [Strategy failure post-mortem](docs/research/strategy_failure_postmortem.md)
 - [Session structure analysis](docs/research/session_structure_analysis.md)
+- [Contextual structural breach analysis](docs/research/contextual_structural_breach_analysis.md)
 - [Structural extremes and liquidity sweep analysis](docs/research/structural_extremes_analysis.md)
 - [Volatility regime analysis](docs/research/volatility_regime_analysis.md)
 - [FX trend / momentum research plan](docs/research/tsmom_fx_research_plan.md)
@@ -65,6 +66,8 @@ The reset phase now also includes descriptive session diagnostics in [docs/resea
 The next reset layer adds volatility-state diagnostics in [docs/research/volatility_regime_analysis.md](docs/research/volatility_regime_analysis.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/volatility_regimes/`.
 
 The structural-extremes layer now adds breakout-versus-sweep diagnostics in [docs/research/structural_extremes_analysis.md](docs/research/structural_extremes_analysis.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/structural_extremes/`.
+
+The contextual breach layer adds session, transition, range, volatility, and magnitude conditioning in [docs/research/contextual_structural_breach_analysis.md](docs/research/contextual_structural_breach_analysis.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/contextual_breaches/`.
 
 ## Strategy Promotion And Walk-Forward
 
