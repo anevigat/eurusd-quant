@@ -1,0 +1,37 @@
+shared_members:
+  ny_impulse_current:
+    strategy: ny_impulse_mean_reversion
+    pair: EURUSD
+    timeframe: 15m
+    archetype: event-combination strategies
+    artifact_path: outputs/ny_impulse_validation/baseline_backtest/trades.parquet
+  false_breakout_current:
+    strategy: false_breakout_reversal
+    pair: EURUSD
+    timeframe: 15m
+    archetype: session reversal / sweep reversal
+    artifact_path: outputs/ny_impulse_validation/portfolio_inputs/false_breakout_eurusd/trades.parquet
+experiments:
+- name: ny_impulse_standalone
+  member_names:
+  - ny_impulse_current
+  weighting_method: equal_weight
+  max_weight_per_strategy: 1.0
+  rebalance_frequency: sample_wide
+  lookback_days: 63
+  max_weight_per_pair: 1.0
+  max_usd_direction_exposure: 1.0
+  max_active_strategies_per_pair: 1
+  notes: Standalone NY impulse sleeve context check.
+- name: ny_impulse_plus_false_breakout
+  member_names:
+  - ny_impulse_current
+  - false_breakout_current
+  weighting_method: capped_inverse_vol
+  max_weight_per_strategy: 0.6
+  rebalance_frequency: monthly
+  lookback_days: 63
+  max_weight_per_pair: 0.55
+  max_usd_direction_exposure: 0.65
+  max_active_strategies_per_pair: 2
+  notes: Small portfolio context check against the surviving reversal sleeve.

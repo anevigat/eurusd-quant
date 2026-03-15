@@ -1,5 +1,23 @@
 # Portfolio Candidate Analysis
 
+## Phase 6 Follow-Up
+
+This document is still the right place for the portfolio-level read across surviving sleeves, but it should now be read together with the focused NY impulse validation in [ny_impulse_mean_reversion_validation.md](ny_impulse_mean_reversion_validation.md).
+
+Latest change:
+
+- `ny_impulse_mean_reversion` no longer survives as an active candidate after the focused validation pass
+- full-sample standalone metrics remained positive, but the sleeve still failed OOS density and concentration requirements
+- a small portfolio context check with `false_breakout_reversal` was negative:
+  - standalone `ny_impulse`: `net_pnl 0.03750`, `PF 1.4637`, `max_drawdown 0.01489`
+  - `ny_impulse + false_breakout`: `net_pnl -0.01255`, `PF 0.9600`, `max_drawdown 0.03515`
+
+Current interpretation:
+
+- the portfolio layer remains useful for governance
+- the candidate set is now cleaner, but also smaller
+- the current evidence does not support paper-trading preparation
+
 ## Phase 5 Follow-Up
 
 This Phase 4 analysis remains useful as the baseline portfolio reference, but it should now be read together with the Phase 5 candidate-strengthening reruns in [candidate_strengthening_results.md](candidate_strengthening_results.md).

@@ -1,0 +1,103 @@
+{
+  "strategy": "ny_impulse_mean_reversion",
+  "bars": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/eurusd_bars_15m_2018_2024.parquet",
+  "strategy_config": {
+    "timeframe": "15m",
+    "impulse_start_utc": "13:00",
+    "impulse_end_utc": "13:30",
+    "entry_start_utc": "13:30",
+    "entry_end_utc": "15:00",
+    "impulse_threshold_pips": 22.0,
+    "entry_mode": "impulse_midpoint_cross",
+    "retracement_target_ratio": 0.5,
+    "stop_buffer_pips": 2.0,
+    "max_holding_bars": 6,
+    "atr_period": 14,
+    "exit_model": "retracement",
+    "atr_target_multiple": 1.0,
+    "retracement_entry_ratio": 0.5,
+    "atr_trail_multiple": 0.8,
+    "initial_stop_atr": 1.0,
+    "breakeven_trigger_atr": 0.5,
+    "trailing_start_atr": 1.0,
+    "one_trade_per_day": true,
+    "allowed_side": "both"
+  },
+  "results": {
+    "baseline": {
+      "scenario": {
+        "name": "baseline",
+        "spread_multiplier": 1.0,
+        "slippage_multiplier": 1.0,
+        "slippage_adder_pips": 0.0,
+        "commission_multiplier": 1.0,
+        "commission_override": null
+      },
+      "metrics": {
+        "total_trades": 129,
+        "win_rate": 0.6434108527131783,
+        "gross_pnl": 0.03750249999999644,
+        "net_pnl": 0.03750249999999644,
+        "average_win": 0.001426174698795131,
+        "average_loss": -0.0017580434782608575,
+        "expectancy": 0.0002907170542635383,
+        "profit_factor": 1.463738098182227,
+        "max_drawdown": 0.014887499999999831,
+        "years_covered": 7,
+        "dominant_year_pnl_share": 0.23781232648528278,
+        "start_time": "2018-02-09T14:15:00+00:00",
+        "end_time": "2024-12-19T15:45:00+00:00"
+      }
+    },
+    "spread_plus_50": {
+      "scenario": {
+        "name": "spread_plus_50",
+        "spread_multiplier": 1.5,
+        "slippage_multiplier": 1.0,
+        "slippage_adder_pips": 0.0,
+        "commission_multiplier": 1.0,
+        "commission_override": null
+      },
+      "metrics": {
+        "total_trades": 129,
+        "win_rate": 0.6434108527131783,
+        "gross_pnl": 0.03689249999999478,
+        "net_pnl": 0.03689249999999478,
+        "average_win": 0.0014250602409637892,
+        "average_loss": -0.0017692934782608635,
+        "expectancy": 0.00028598837209298277,
+        "profit_factor": 1.4532944248194735,
+        "max_drawdown": 0.015077499999999855,
+        "years_covered": 7,
+        "dominant_year_pnl_share": 0.23860964961377665,
+        "start_time": "2018-02-09T14:15:00+00:00",
+        "end_time": "2024-12-19T15:45:00+00:00"
+      }
+    },
+    "spread_plus_100": {
+      "scenario": {
+        "name": "spread_plus_100",
+        "spread_multiplier": 2.0,
+        "slippage_multiplier": 1.0,
+        "slippage_adder_pips": 0.0,
+        "commission_multiplier": 1.0,
+        "commission_override": null
+      },
+      "metrics": {
+        "total_trades": 129,
+        "win_rate": 0.6434108527131783,
+        "gross_pnl": 0.03628249999999478,
+        "net_pnl": 0.03628249999999478,
+        "average_win": 0.0014239457831324606,
+        "average_loss": -0.0017805434782608577,
+        "expectancy": 0.00028125968992244015,
+        "profit_factor": 1.4429827238873698,
+        "max_drawdown": 0.015267499999999656,
+        "years_covered": 7,
+        "dominant_year_pnl_share": 0.2394199300304588,
+        "start_time": "2018-02-09T14:15:00+00:00",
+        "end_time": "2024-12-19T15:45:00+00:00"
+      }
+    }
+  }
+}

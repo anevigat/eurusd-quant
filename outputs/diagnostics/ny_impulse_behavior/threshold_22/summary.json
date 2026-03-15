@@ -1,0 +1,221 @@
+{
+  "bars": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/eurusd_bars_15m_2018_2024.parquet",
+  "impulse_window_utc": {
+    "start": "13:00",
+    "end_exclusive": "13:30"
+  },
+  "threshold_pips": 22.0,
+  "pip_size": 0.0001,
+  "distribution": {
+    "total_impulses": 236,
+    "direction_counts": {
+      "down": 122,
+      "up": 114
+    },
+    "impulse_size_pips": {
+      "min": 22.050000000000125,
+      "median": 28.399999999999537,
+      "mean": 32.11101694915265,
+      "p75": 35.562500000000384,
+      "p90": 44.34999999999967,
+      "max": 121.6499999999998
+    }
+  },
+  "volatility_thresholds": {
+    "low_quantile_threshold": 0.0006785000000000072,
+    "high_quantile_threshold": 0.0009622857142857535
+  },
+  "forward_returns": {
+    "1": {
+      "all": {
+        "count": 236,
+        "mean_return_pips": 1.0091101694915219,
+        "mean_reversion_return_pips": 0.36673728813554013
+      },
+      "up": {
+        "count": 114,
+        "mean_return_pips": 0.6649122807018057,
+        "mean_reversion_return_pips": -0.6649122807018057
+      },
+      "down": {
+        "count": 122,
+        "mean_return_pips": 1.3307377049179783,
+        "mean_reversion_return_pips": 1.3307377049179783
+      },
+      "low_vol": {
+        "count": 4,
+        "mean_return_pips": 3.475000000001116,
+        "mean_reversion_return_pips": 3.475000000001116
+      },
+      "high_vol": {
+        "count": 197,
+        "mean_return_pips": 1.015736040609085,
+        "mean_reversion_return_pips": 0.20101522842632644
+      }
+    },
+    "2": {
+      "all": {
+        "count": 236,
+        "mean_return_pips": 2.149364406779671,
+        "mean_reversion_return_pips": 1.1074152542372089
+      },
+      "up": {
+        "count": 114,
+        "mean_return_pips": 1.0785087719299171,
+        "mean_reversion_return_pips": -1.0785087719299171
+      },
+      "down": {
+        "count": 122,
+        "mean_return_pips": 3.1499999999999333,
+        "mean_reversion_return_pips": 3.1499999999999333
+      },
+      "low_vol": {
+        "count": 4,
+        "mean_return_pips": 5.8000000000008045,
+        "mean_reversion_return_pips": 5.8000000000008045
+      },
+      "high_vol": {
+        "count": 197,
+        "mean_return_pips": 2.4081218274111467,
+        "mean_reversion_return_pips": 0.7898477157359006
+      }
+    },
+    "4": {
+      "all": {
+        "count": 236,
+        "mean_return_pips": 2.023516949152683,
+        "mean_reversion_return_pips": 0.45656779661015917
+      },
+      "up": {
+        "count": 114,
+        "mean_return_pips": 1.6219298245615599,
+        "mean_reversion_return_pips": -1.6219298245615599
+      },
+      "down": {
+        "count": 122,
+        "mean_return_pips": 2.3987704918034045,
+        "mean_reversion_return_pips": 2.3987704918034045
+      },
+      "low_vol": {
+        "count": 4,
+        "mean_return_pips": 15.212500000001405,
+        "mean_reversion_return_pips": 15.212500000001405
+      },
+      "high_vol": {
+        "count": 197,
+        "mean_return_pips": 2.187563451776734,
+        "mean_reversion_return_pips": -0.09060913705594649
+      }
+    },
+    "8": {
+      "all": {
+        "count": 236,
+        "mean_return_pips": 3.49555084745773,
+        "mean_reversion_return_pips": 2.557838983050753
+      },
+      "up": {
+        "count": 114,
+        "mean_return_pips": 0.970614035087923,
+        "mean_reversion_return_pips": -0.970614035087923
+      },
+      "down": {
+        "count": 122,
+        "mean_return_pips": 5.854918032786894,
+        "mean_reversion_return_pips": 5.854918032786894
+      },
+      "low_vol": {
+        "count": 4,
+        "mean_return_pips": 26.20000000000011,
+        "mean_reversion_return_pips": 26.20000000000011
+      },
+      "high_vol": {
+        "count": 197,
+        "mean_return_pips": 3.4238578680204403,
+        "mean_reversion_return_pips": 1.9822335025379598
+      }
+    }
+  },
+  "frequency_by_year": {
+    "2018": 35,
+    "2019": 12,
+    "2020": 47,
+    "2021": 18,
+    "2022": 73,
+    "2023": 38,
+    "2024": 13
+  },
+  "frequency_by_month": {
+    "2018-01": 3,
+    "2018-02": 6,
+    "2018-03": 3,
+    "2018-04": 3,
+    "2018-05": 5,
+    "2018-06": 4,
+    "2018-07": 1,
+    "2018-08": 3,
+    "2018-09": 3,
+    "2018-10": 3,
+    "2018-12": 1,
+    "2019-01": 1,
+    "2019-02": 1,
+    "2019-03": 1,
+    "2019-04": 2,
+    "2019-05": 1,
+    "2019-06": 2,
+    "2019-07": 1,
+    "2019-08": 1,
+    "2019-09": 1,
+    "2019-11": 1,
+    "2020-02": 1,
+    "2020-03": 14,
+    "2020-04": 4,
+    "2020-05": 6,
+    "2020-06": 3,
+    "2020-07": 2,
+    "2020-08": 6,
+    "2020-09": 4,
+    "2020-10": 3,
+    "2020-11": 2,
+    "2020-12": 2,
+    "2021-01": 1,
+    "2021-02": 1,
+    "2021-03": 2,
+    "2021-04": 1,
+    "2021-05": 3,
+    "2021-06": 1,
+    "2021-07": 2,
+    "2021-08": 1,
+    "2021-09": 1,
+    "2021-10": 2,
+    "2021-11": 1,
+    "2021-12": 2,
+    "2022-03": 8,
+    "2022-04": 6,
+    "2022-05": 7,
+    "2022-06": 4,
+    "2022-07": 10,
+    "2022-08": 8,
+    "2022-09": 9,
+    "2022-10": 8,
+    "2022-11": 9,
+    "2022-12": 4,
+    "2023-01": 5,
+    "2023-02": 1,
+    "2023-03": 6,
+    "2023-04": 4,
+    "2023-05": 3,
+    "2023-06": 3,
+    "2023-07": 3,
+    "2023-08": 5,
+    "2023-09": 4,
+    "2023-10": 3,
+    "2023-12": 1,
+    "2024-03": 1,
+    "2024-04": 2,
+    "2024-08": 1,
+    "2024-09": 2,
+    "2024-10": 1,
+    "2024-11": 4,
+    "2024-12": 2
+  }
+}

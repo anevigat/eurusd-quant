@@ -2,7 +2,7 @@
 
 ## Overview
 
-The repository accumulated a large number of intraday diagnostics, MVPs, and minor variants. That was useful for rejection, but it left the research tree harder to navigate than it needed to be. Phase 3 consolidates the tree around a small number of archetypes and freezes the weak families so future work has a narrower mandate.
+The repository accumulated a large number of intraday diagnostics, MVPs, and minor variants. That was useful for rejection, but it left the research tree harder to navigate than it needed to be. Phase 3 consolidated the tree around a small number of archetypes, and later revalidation phases tightened it further.
 
 This is a governance pass, not a strategy-development pass:
 
@@ -23,16 +23,16 @@ This is a governance pass, not a strategy-development pass:
 
 ## Active Archetypes
 
-The repo should continue only these archetypes for now:
+Later validation changed the Phase 3 picture. The only archetype that still has an active sleeve is:
 
-1. `session breakout continuation`
-   Survivor focus: `london_pullback_continuation`, with `session_breakout` and related diagnostics kept as reference only.
-2. `session reversal / sweep reversal`
+1. `session reversal / sweep reversal`
    Survivor focus: `false_breakout_reversal`.
-3. `event-combination strategies`
-   Survivor focus: `ny_impulse_mean_reversion`.
-4. `trend / momentum`
-   Survivor focus: the Phase 2 `tsmom_*` family, but only after session-aligned-bar rechecks and without immediate re-optimization.
+
+Historical note:
+
+- `ny_impulse_mean_reversion` was later rejected after the focused Phase 6 validation
+- the first trend / momentum family did not survive session-aligned rechecks
+- the continuation slot was already frozen in Phase 5
 
 ## Frozen Families
 
@@ -134,7 +134,7 @@ That is why these families are now frozen as historical reference rather than le
 | `session_breakout` | session breakout continuation | `15m` | Asian/session range breaks may continue through London. | `diagnostic` | EURUSD 15m 2018-2024 diagnostics | Active archetype baseline, but not a signal to expand variants. |
 | `london_pullback_continuation` | session breakout continuation | `15m` | Pre-London directional drift may resume after a shallow pullback. | `candidate` | EURUSD 15m 2018-2024 MVP analysis | Best current continuation survivor. |
 | `false_breakout_reversal` | session reversal / sweep reversal | `15m` | Failed Asian/London breakouts may reverse back through the range. | `multi_year_validated` | EURUSD 15m 2018-2024 multi-year validation | Surviving reversal archetype. |
-| `ny_impulse_mean_reversion` | event-combination strategies | `15m` | Large NY opening impulses may mean-revert after overreaction. | `walk_forward_validated` | EURUSD 15m 2018-2024 walk-forward | Strongest current event-combination branch. |
+| `ny_impulse_mean_reversion` | event-combination strategies | `15m` | Large NY opening impulses may mean-revert after overreaction. | `rejected` | EURUSD 15m 2018-2024 focused validation | Thresholded subset remained interesting, but OOS density and concentration were too weak for an active branch. |
 | `asian_range_compression_breakout` | event-combination strategies | `15m` | Compressed Asian ranges may expand directionally during London. | `rejected` | EURUSD 15m 2018-2024 smoke backtest | Family frozen. |
 | `atr_spike_new_high_low` | event-combination strategies | `15m` | ATR spikes plus fresh extremes may signal short-term continuation. | `rejected` | EURUSD 15m 2018-2024 smoke backtest | Family frozen. |
 | `compression_breakout` | event-combination strategies | `15m` | Compression followed by breakout may create tradeable expansion. | `rejected` | EURUSD 15m 2018-2024 smoke backtest | Family frozen. |
