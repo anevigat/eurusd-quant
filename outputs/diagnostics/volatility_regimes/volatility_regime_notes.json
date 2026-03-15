@@ -1,0 +1,63 @@
+{
+  "timeframe": "15m",
+  "timestamp_convention": "UTC bar-open timestamps",
+  "session_windows_utc": {
+    "asia": [
+      "00:00",
+      "07:00"
+    ],
+    "london": [
+      "07:00",
+      "13:00"
+    ],
+    "new_york": [
+      "13:00",
+      "24:00"
+    ]
+  },
+  "session_rollover_hour_utc": 22,
+  "regime_metric": "session realized volatility (std of 15m close-to-close returns within each session)",
+  "regime_metric_computed_per_pair": true,
+  "regime_metric_lookback_sessions": 120,
+  "regime_metric_min_history": 30,
+  "regime_quantiles": {
+    "low": 0.3333333333333333,
+    "high": 0.6666666666666666
+  },
+  "regime_labels": [
+    "low_vol",
+    "medium_vol",
+    "high_vol"
+  ],
+  "forward_return_horizons": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "forward_return_unit": "session steps",
+  "low_sample_threshold": 30,
+  "datasets": {
+    "EURUSD": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/eurusd_bars_15m_2018_2024.parquet",
+      "rows": 174603,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "session_count": 5704
+    },
+    "GBPUSD": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/gbpusd_bars_15m_2018_2024.parquet",
+      "rows": 174182,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "session_count": 5599
+    },
+    "USDJPY": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/usdjpy_bars_15m_2018_2024.parquet",
+      "rows": 173659,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "session_count": 5466
+    }
+  }
+}
