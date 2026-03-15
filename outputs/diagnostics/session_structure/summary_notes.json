@@ -1,0 +1,55 @@
+{
+  "timeframe": "15m",
+  "timestamp_convention": "UTC bar-open timestamps",
+  "session_rollover_hour_utc": 22,
+  "session_windows_utc": {
+    "asia": [
+      "00:00",
+      "07:00"
+    ],
+    "london": [
+      "07:00",
+      "13:00"
+    ],
+    "new_york": [
+      "13:00",
+      "24:00"
+    ]
+  },
+  "session_date_definition": "fx_session_date = (timestamp + 2h).date so the 22:00 UTC rollover starts a new FX trading date",
+  "transition_pairs": [
+    "asia_to_london",
+    "london_to_new_york"
+  ],
+  "volatility_regime_definition": "Within each pair+session, realized session volatility bucketed into low/medium/high quantile buckets.",
+  "range_regime_definition": "Current session range divided by trailing 20-session median range for the same pair+session; <0.8 compressed, 0.8-1.2 normal, >1.2 expanded.",
+  "extreme_regime_definition": "Bars since the last 15m bar with body >= 1.5 * ATR(14): <=8 recent_extreme, 9-32 intermediate, >32 stale.",
+  "continuation_definition": "Session close-open sign matches the first bar close-open sign.",
+  "reversal_definition": "Session close-open sign is opposite the first bar close-open sign.",
+  "directional_efficiency_ratio_definition": "abs(session_close - session_open) / sum(abs(intra-session close-to-close path steps))",
+  "close_location_value_definition": "(session_close - session_low) / (session_high - session_low), with zero-range sessions mapped to 0.5",
+  "low_sample_threshold": 30,
+  "datasets": {
+    "EURUSD": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/eurusd_bars_15m_2018_2024.parquet",
+      "rows": 174603,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "session_count": 5704
+    },
+    "GBPUSD": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/gbpusd_bars_15m_2018_2024.parquet",
+      "rows": 174182,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "session_count": 5599
+    },
+    "USDJPY": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/usdjpy_bars_15m_2018_2024.parquet",
+      "rows": 173659,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "session_count": 5466
+    }
+  }
+}
