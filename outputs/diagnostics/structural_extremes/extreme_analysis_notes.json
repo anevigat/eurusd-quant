@@ -1,0 +1,63 @@
+{
+  "timeframe": "15m",
+  "timestamp_convention": "UTC bar-open timestamps",
+  "session_windows_utc": {
+    "asia": [
+      "00:00",
+      "07:00"
+    ],
+    "london": [
+      "07:00",
+      "13:00"
+    ],
+    "new_york": [
+      "13:00",
+      "24:00"
+    ]
+  },
+  "session_rollover_hour_utc": 22,
+  "lookback_windows_bars": [
+    24,
+    48,
+    96
+  ],
+  "forward_return_horizons_bars": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "volatility_regime_source": "R3 time-aware session realized-volatility buckets",
+  "volatility_regime_lookback_sessions": 120,
+  "volatility_regime_min_history": 30,
+  "event_definitions": {
+    "breakout_high": "mid_high exceeds the prior rolling high and the close remains at or above that prior high",
+    "breakout_low": "mid_low falls below the prior rolling low and the close remains at or below that prior low",
+    "sweep_high": "mid_high exceeds the prior rolling high but the close returns below that prior high",
+    "sweep_low": "mid_low falls below the prior rolling low but the close returns above that prior low"
+  },
+  "low_sample_threshold": 30,
+  "datasets": {
+    "EURUSD": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/eurusd_bars_15m_2018_2024.parquet",
+      "rows": 174603,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "event_count": 76603
+    },
+    "GBPUSD": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/gbpusd_bars_15m_2018_2024.parquet",
+      "rows": 174182,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "event_count": 76770
+    },
+    "USDJPY": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/usdjpy_bars_15m_2018_2024.parquet",
+      "rows": 173659,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "event_count": 71914
+    }
+  }
+}
