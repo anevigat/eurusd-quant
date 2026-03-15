@@ -1,0 +1,30 @@
+{
+  "timeframe": "15m",
+  "session_state_direction_flat_threshold": 1e-06,
+  "session_state_breach_definition": "dominant breach within a session is the event with the largest breach_magnitude_atr",
+  "transition_model": "adjacent completed sessions in the expected FX session order",
+  "three_session_pattern_model": "previous session state + current session state -> next session outcome",
+  "datasets": {
+    "EURUSD": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/eurusd_bars_15m_2018_2024.parquet",
+      "rows": 174603,
+      "session_count": 5704,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00"
+    },
+    "GBPUSD": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/gbpusd_bars_15m_2018_2024.parquet",
+      "rows": 174182,
+      "session_count": 5599,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00"
+    },
+    "USDJPY": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/usdjpy_bars_15m_2018_2024.parquet",
+      "rows": 173659,
+      "session_count": 5466,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00"
+    }
+  }
+}
