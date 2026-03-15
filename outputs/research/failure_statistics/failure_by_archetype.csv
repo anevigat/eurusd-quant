@@ -1,0 +1,8 @@
+archetype,strategy_count,rejected_or_frozen,avg_profit_factor,avg_trade_count
+event-combination strategies,8,8,0.8434800000000001,1087.8
+session breakout continuation,8,6,0.9379,339.3333333333333
+session reversal / sweep reversal,7,6,0.8625,518.0
+trend / momentum,6,6,1.1099799999999997,347.2
+VWAP / midpoint mean reversion,5,5,0.9736,1580.0
+pattern-based reversal,5,5,0.8011,9400.0
+experimental / one-off,1,1,,

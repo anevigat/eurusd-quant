@@ -1,0 +1,8 @@
+archetype,eurusd_avg_pf,eurusd_avg_trade_count,eurusd_avg_max_drawdown,eurusd_cost_sensitive_share,gbpusd_avg_pf,gbpusd_avg_trade_count,gbpusd_avg_max_drawdown,gbpusd_cost_sensitive_share,usdjpy_avg_pf,usdjpy_avg_trade_count,usdjpy_avg_max_drawdown,usdjpy_cost_sensitive_share
+VWAP / midpoint mean reversion,0.9736,1580.0,0.03188,0.0,,,,,,,,
+event-combination strategies,0.828875,1328.5,0.1289225,0.0,0.9019,125.0,,0.0,,,,
+experimental / one-off,,,,0.0,,,,,,,,
+pattern-based reversal,0.8011,9400.0,0.6639,0.0,,,,,,,,
+session breakout continuation,0.9379,339.3333333333333,0.031516607142858984,0.0,,,,,,,,
+session reversal / sweep reversal,0.8625,518.0,0.021755999999999998,0.0,,,,,,,,
+trend / momentum,1.1779666666666666,312.6666666666667,0.15054900000000002,0.0,1.008,399.0,0.1627925,0.0,,,,
