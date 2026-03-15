@@ -1,0 +1,52 @@
+{
+  "timeframe": "15m",
+  "lookback_windows_bars": [
+    24,
+    48,
+    96
+  ],
+  "forward_return_horizons_bars": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "boundary_bars": 4,
+  "transition_context_definition": {
+    "inside_asia": "Asia session bars",
+    "asia_to_london_boundary": "first boundary bars of London session",
+    "inside_london": "London bars after the opening boundary window",
+    "london_to_new_york_boundary": "first boundary bars of New York session",
+    "inside_new_york": "New York bars after the opening boundary window"
+  },
+  "magnitude_buckets": [
+    "small",
+    "medium",
+    "large"
+  ],
+  "volatility_regime_source": "R3 time-aware session realized-volatility buckets",
+  "range_regime_source": "R2 trailing session-range baseline buckets",
+  "datasets": {
+    "EURUSD": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/eurusd_bars_15m_2018_2024.parquet",
+      "rows": 174603,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "breach_count": 76603
+    },
+    "GBPUSD": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/gbpusd_bars_15m_2018_2024.parquet",
+      "rows": 174182,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "breach_count": 76770
+    },
+    "USDJPY": {
+      "path": "/Users/anevigat/FX/eurusd-quant/eurusd_quant/data/bars/15m/usdjpy_bars_15m_2018_2024.parquet",
+      "rows": 173659,
+      "start_timestamp_utc": "2018-01-01T22:00:00+00:00",
+      "end_timestamp_utc": "2024-12-31T21:45:00+00:00",
+      "breach_count": 71914
+    }
+  }
+}
