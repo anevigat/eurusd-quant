@@ -28,6 +28,10 @@ from eurusd_quant.strategies.head_shoulders_reversal import (
     HeadShouldersReversalConfig,
     HeadShouldersReversalStrategy,
 )
+from eurusd_quant.strategies.h1_downside_continuation import (
+    H1DownsideContinuationConfig,
+    H1DownsideContinuationStrategy,
+)
 from eurusd_quant.strategies.impulse_session_open import (
     ImpulseSessionOpenConfig,
     ImpulseSessionOpenStrategy,
@@ -96,6 +100,18 @@ STRATEGY_REGISTRY: dict[str, StrategyDefinition] = {
     "head_shoulders_reversal": StrategyDefinition(
         config_class=HeadShouldersReversalConfig,
         strategy_class=HeadShouldersReversalStrategy,
+    ),
+    "h1_downside_continuation_exp_h1a_01": StrategyDefinition(
+        config_class=H1DownsideContinuationConfig,
+        strategy_class=H1DownsideContinuationStrategy,
+    ),
+    "h1_downside_continuation_exp_h1a_02": StrategyDefinition(
+        config_class=H1DownsideContinuationConfig,
+        strategy_class=H1DownsideContinuationStrategy,
+    ),
+    "h1_downside_continuation_exp_h1b_01": StrategyDefinition(
+        config_class=H1DownsideContinuationConfig,
+        strategy_class=H1DownsideContinuationStrategy,
     ),
     "impulse_session_open": StrategyDefinition(
         config_class=ImpulseSessionOpenConfig,

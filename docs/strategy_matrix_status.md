@@ -1,13 +1,13 @@
 # Strategy Matrix Status
 
-Phase 6 closed the remaining `ny_impulse_mean_reversion` question. The sleeve keeps some interesting full-sample behavior, but it does not survive the walk-forward density and concentration bar, so the active set is now down to the one reversal archetype that still carries credible follow-up evidence.
+The first post-reset `H1` MVP branch did not reopen the active set. `EXP_H1A_01` and `EXP_H1B_01` showed some positive OOS structure, but all three experiments still failed the current Phase 1 bar, mainly on trade density and concentration.
 
-- Strategies tracked: `36`
-- Rejected / frozen strategies: `33`
+- Strategies tracked: `39`
+- Rejected / frozen strategies: `36`
 - Candidate-or-better strategies: `1`
 - Active archetypes: `1`
 - Frozen families: `8`
-- Phase 6 note: focused NY impulse validation found a thresholded niche effect, but not one that survives active-candidate scrutiny.
+- Current note: post-reset continuation experiments were implemented and rejected quickly rather than being allowed to sprawl into a new family tree.
 
 ## Active Archetypes
 
@@ -52,6 +52,9 @@ Tracked rows below include both implemented code paths (`code`) and documented h
 | `asian_range_breakout` | `doc` | session breakout continuation | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Original session breakout variant failed under costs and stays frozen. |
 | `filtered_london_breakout` | `doc` | session breakout continuation | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Minor filtered variant of the same continuation tree; frozen to avoid branch proliferation. |
 | `break_retest_continuation` | `doc` | session breakout continuation | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Structure-follow-through hypothesis did not justify a live branch. |
+| `h1_downside_continuation_exp_h1a_01` | `code` | session breakout continuation | `15m` | `rejected` | EURUSD + GBPUSD 15m 2018-2024 smoke + walk-forward | Strongest post-reset continuation MVP, but still rejected for thin OOS trade counts; `GBPUSD` also failed yearly concentration and drawdown gates. |
+| `h1_downside_continuation_exp_h1a_02` | `code` | session breakout continuation | `15m` | `rejected` | EURUSD + GBPUSD 15m 2018-2024 smoke + walk-forward | One-bar confirmation variant failed the focused sweep and produced contradictory pair behavior in walk-forward. |
+| `h1_downside_continuation_exp_h1b_01` | `code` | session breakout continuation | `15m` | `rejected` | EURUSD + GBPUSD 15m 2018-2024 smoke + walk-forward | Early-New-York downside sweep branch showed some positive OOS PF, especially on `GBPUSD`, but still missed the trade-density and promotion bar. |
 | `false_breakout_reversal` | `code` | session reversal / sweep reversal | `15m` | `multi_year_validated` | EURUSD 15m 2018-2024 multi-year validation | Surviving reversal archetype; keep this family active, but promotion still stops short of paper-trade status. |
 | `asia_drift_london_reversal` | `doc` | session reversal / sweep reversal | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Session-transition fade did not hold up. |
 | `london_impulse_ny_reversal` | `doc` | session reversal / sweep reversal | `15m` | `rejected` | EURUSD 15m 2018-2024 diagnostics | Transition-reversal branch is frozen; includes the negative London-open fade MVP. |

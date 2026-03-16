@@ -80,6 +80,26 @@ The hypothesis-formulation layer now converts those edge candidates into a small
 
 The experiment-planning layer now maps those hypotheses into a small implementation queue in [docs/research/next_strategy_experiments.md](docs/research/next_strategy_experiments.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/strategy_experiments/`.
 
+The first post-reset implementation branch now lives in [docs/experiments/h1_downside_continuation_mvp.md](docs/experiments/h1_downside_continuation_mvp.md). It implemented only the `H1` downside continuation family experiments `EXP_H1A_01`, `EXP_H1A_02`, and `EXP_H1B_01`, with outputs under `outputs/post_reset_h1_smoke/`, `outputs/post_reset_h1_sweeps/`, and `outputs/post_reset_h1_walk_forward/`.
+
+Typical commands for the H1 family:
+
+```bash
+.venv/bin/python scripts/run_backtest.py \
+  --input data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --strategy h1_downside_continuation_exp_h1a_01 \
+  --output-dir outputs/post_reset_h1_smoke/h1_downside_continuation_exp_h1a_01/eurusd
+```
+
+```bash
+.venv/bin/python scripts/run_walk_forward_validation.py \
+  --strategy h1_downside_continuation_exp_h1a_01 \
+  --bars data/bars/15m/eurusd_bars_15m_2018_2024.parquet \
+  --train-years 3 \
+  --test-months 6 \
+  --output-dir outputs/post_reset_h1_walk_forward/h1_downside_continuation_exp_h1a_01/eurusd
+```
+
 ## Strategy Promotion And Walk-Forward
 
 Formal promotion now lives under `src/eurusd_quant/validation/` and is driven by:

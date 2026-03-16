@@ -16,6 +16,10 @@ from .head_shoulders_reversal import (
     HeadShouldersReversalConfig,
     HeadShouldersReversalStrategy,
 )
+from .h1_downside_continuation import (
+    H1DownsideContinuationConfig,
+    H1DownsideContinuationStrategy,
+)
 from .impulse_session_open import (
     ImpulseSessionOpenConfig,
     ImpulseSessionOpenStrategy,
@@ -59,6 +63,8 @@ __all__ = [
     "FalseBreakoutReversalStrategy",
     "HeadShouldersReversalConfig",
     "HeadShouldersReversalStrategy",
+    "H1DownsideContinuationConfig",
+    "H1DownsideContinuationStrategy",
     "ImpulseSessionOpenConfig",
     "ImpulseSessionOpenStrategy",
     "LondonPullbackContinuationConfig",
