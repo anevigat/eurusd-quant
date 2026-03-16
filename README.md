@@ -72,6 +72,8 @@ The contextual breach layer adds session, transition, range, volatility, and mag
 
 The session-state transition layer adds two-session and three-session sequence diagnostics in [docs/research/session_state_transition_analysis.md](docs/research/session_state_transition_analysis.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/session_state_transitions/`.
 
+The statistical reality-check layer now filters the strongest reset patterns in [docs/research/statistical_reality_checks.md](docs/research/statistical_reality_checks.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/statistical_reality_checks/`.
+
 ## Strategy Promotion And Walk-Forward
 
 Formal promotion now lives under `src/eurusd_quant/validation/` and is driven by:
