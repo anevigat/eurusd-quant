@@ -76,6 +76,8 @@ The statistical reality-check layer now filters the strongest reset patterns in 
 
 The edge-candidate layer now narrows the surviving structural region into concrete candidate definitions in [docs/research/edge_candidate_detection.md](docs/research/edge_candidate_detection.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/edge_candidates/`.
 
+The hypothesis-formulation layer now converts those edge candidates into a small formal hypothesis catalog in [docs/research/trading_hypotheses.md](docs/research/trading_hypotheses.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/hypotheses/`.
+
 ## Strategy Promotion And Walk-Forward
 
 Formal promotion now lives under `src/eurusd_quant/validation/` and is driven by:
