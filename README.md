@@ -74,6 +74,8 @@ The session-state transition layer adds two-session and three-session sequence d
 
 The statistical reality-check layer now filters the strongest reset patterns in [docs/research/statistical_reality_checks.md](docs/research/statistical_reality_checks.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/statistical_reality_checks/`.
 
+The edge-candidate layer now narrows the surviving structural region into concrete candidate definitions in [docs/research/edge_candidate_detection.md](docs/research/edge_candidate_detection.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/edge_candidates/`.
+
 ## Strategy Promotion And Walk-Forward
 
 Formal promotion now lives under `src/eurusd_quant/validation/` and is driven by:
