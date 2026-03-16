@@ -19,6 +19,66 @@ false_breakout_reversal:
   allowed_side: "both"
   one_trade_per_day: true
 
+h1_downside_continuation_exp_h1a_01:
+  timeframe: "15m"
+  experiment_id: "EXP_H1A_01"
+  pair_scope: ["EURUSD", "GBPUSD"]
+  session_context: "london"
+  entry_style: "breach_bar_close"
+  allowed_event_types: ["breakout_low", "sweep_low"]
+  allowed_magnitude_buckets: ["small", "medium"]
+  structural_lookback_windows: [24, 48, 96]
+  atr_period: 14
+  range_baseline_lookback_sessions: 20
+  range_history_min_sessions: 20
+  magnitude_history_min_events: 20
+  expansion_ratio_threshold: 1.2
+  expansion_percentile_threshold: 0.6666667
+  stop_buffer_atr_multiple: 0.25
+  fail_safe_take_profit_atr_multiple: 20.0
+  max_holding_bars: 16
+  one_trade_per_session: true
+
+h1_downside_continuation_exp_h1a_02:
+  timeframe: "15m"
+  experiment_id: "EXP_H1A_02"
+  pair_scope: ["EURUSD", "GBPUSD"]
+  session_context: "london"
+  entry_style: "one_bar_confirmation"
+  allowed_event_types: ["breakout_low", "sweep_low"]
+  allowed_magnitude_buckets: ["small", "medium"]
+  structural_lookback_windows: [24, 48, 96]
+  atr_period: 14
+  range_baseline_lookback_sessions: 20
+  range_history_min_sessions: 20
+  magnitude_history_min_events: 20
+  expansion_ratio_threshold: 1.2
+  expansion_percentile_threshold: 0.6666667
+  stop_buffer_atr_multiple: 0.25
+  fail_safe_take_profit_atr_multiple: 20.0
+  max_holding_bars: 16
+  one_trade_per_session: true
+
+h1_downside_continuation_exp_h1b_01:
+  timeframe: "15m"
+  experiment_id: "EXP_H1B_01"
+  pair_scope: ["EURUSD", "GBPUSD"]
+  session_context: "early_new_york"
+  entry_style: "breach_bar_close"
+  allowed_event_types: ["sweep_low"]
+  allowed_magnitude_buckets: ["medium"]
+  structural_lookback_windows: [24, 48, 96]
+  atr_period: 14
+  range_baseline_lookback_sessions: 20
+  range_history_min_sessions: 20
+  magnitude_history_min_events: 20
+  expansion_ratio_threshold: 1.2
+  expansion_percentile_threshold: 0.6666667
+  stop_buffer_atr_multiple: 0.25
+  fail_safe_take_profit_atr_multiple: 20.0
+  max_holding_bars: 16
+  one_trade_per_session: true
+
 ny_impulse_mean_reversion:
   timeframe: "15m"
   impulse_start_utc: "13:00"
