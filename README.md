@@ -78,6 +78,8 @@ The edge-candidate layer now narrows the surviving structural region into concre
 
 The hypothesis-formulation layer now converts those edge candidates into a small formal hypothesis catalog in [docs/research/trading_hypotheses.md](docs/research/trading_hypotheses.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/hypotheses/`.
 
+The experiment-planning layer now maps those hypotheses into a small implementation queue in [docs/research/next_strategy_experiments.md](docs/research/next_strategy_experiments.md). The machine-readable outputs for that phase are saved under `outputs/diagnostics/strategy_experiments/`.
+
 ## Strategy Promotion And Walk-Forward
 
 Formal promotion now lives under `src/eurusd_quant/validation/` and is driven by:
